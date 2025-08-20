@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -68,11 +68,7 @@ export default function ApplicationDetailPage() {
   const params = useParams()
   const applicationId = params.id as string
 
-  useEffect(() => {
-    fetchApplicationDetail()
-  }, [applicationId])
-
-  const fetchApplicationDetail = async () => {
+  const fetchApplicationDetail = useCallback(async () => {
     try {
       const response = await fetch(`/api/applications/${applicationId}`)
       const result = await response.json()
@@ -87,7 +83,11 @@ export default function ApplicationDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [applicationId])
+
+  useEffect(() => {
+    fetchApplicationDetail()
+  }, [fetchApplicationDetail])
 
   if (loading) {
     return (
