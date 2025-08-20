@@ -112,7 +112,7 @@ export default function EmployeeLoginPage() {
                 }}
               />
               <div className="text-xs text-gray-500">
-                Hint: Password adalah nama + "123" (contoh: sayudi123)
+                Hint: Password adalah nama + 123 (contoh: sayudi123)
               </div>
             </div>
           )}
