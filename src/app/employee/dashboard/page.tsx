@@ -220,7 +220,11 @@ export default function EmployeeDashboard() {
                           {app.status === 'PENDING' ? 'Menunggu' :
                            app.status === 'APPROVED' ? 'Disetujui' : 'Ditolak'}
                         </span>
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => router.push(`/employee/applications/${app.id}`)}
+                        >
                           Detail
                         </Button>
                       </div>

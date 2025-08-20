@@ -1,14 +1,31 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
+interface Application {
+  id: string
+  fullName: string
+  loanAmount: number
+  loanTerm: number
+  loanPurpose: string
+}
+
 export default function NewAnalysisPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const applicationId = searchParams.get('applicationId')
+  
+  const [applications, setApplications] = useState<Application[]>([])
+  const [selectedApplication, setSelectedApplication] = useState<string>(applicationId || '')
+  const [selectedAppData, setSelectedAppData] = useState<Application | null>(null)
+  const [loading, setLoading] = useState(true)
+  
   const [formData, setFormData] = useState({
+    applicationId: applicationId || '',
     // Data Pemohon
     nama: '',
     alamat: '',
@@ -75,7 +92,48 @@ export default function NewAnalysisPage() {
     }))
   }
 
+  useEffect(() => {
+    fetchApplications()
+  }, [])
+
+  useEffect(() => {
+    if (selectedApplication) {
+      const app = applications.find(a => a.id === selectedApplication)
+      if (app) {
+        setSelectedAppData(app)
+        // Auto-fill form data from application
+        setFormData(prev => ({
+          ...prev,
+          applicationId: app.id,
+          nama: app.fullName,
+          pengajuan: `Rp ${new Intl.NumberFormat('id-ID').format(app.loanAmount)}`,
+          jangkaWaktu: `${app.loanTerm} bulan`
+        }))
+      }
+    }
+  }, [selectedApplication, applications])
+
+  const fetchApplications = async () => {
+    try {
+      const response = await fetch('/api/applications')
+      const result = await response.json()
+      
+      if (response.ok) {
+        setApplications(result.applications)
+      }
+    } catch (error) {
+      console.error('Error fetching applications:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleSubmit = async () => {
+    if (!selectedApplication) {
+      alert('Silakan pilih pengajuan client terlebih dahulu')
+      return
+    }
+
     try {
       // TODO: Implement API call to save analysis
       console.log('Analysis data:', formData)
@@ -85,6 +143,17 @@ export default function NewAnalysisPage() {
       console.error('Error saving analysis:', error)
       alert('Terjadi kesalahan saat menyimpan analisa')
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Memuat data...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -115,6 +184,41 @@ export default function NewAnalysisPage() {
             <CardTitle className="text-center">Form Analisa Pembiayaan</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
+            {/* Pilih Pengajuan Client */}
+            {!applicationId && (
+              <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 className="text-lg font-bold text-blue-900">Pilih Pengajuan Client</h3>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Pilih pengajuan yang akan dianalisa:
+                  </label>
+                  <select
+                    value={selectedApplication}
+                    onChange={(e) => setSelectedApplication(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">-- Pilih Pengajuan --</option>
+                    {applications.map((app) => (
+                      <option key={app.id} value={app.id}>
+                        {app.fullName} - Rp {new Intl.NumberFormat('id-ID').format(app.loanAmount)} ({app.loanTerm} bulan)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {selectedAppData && (
+                  <div className="mt-4 p-3 bg-white rounded border">
+                    <h4 className="font-medium text-gray-900 mb-2">Detail Pengajuan:</h4>
+                    <div className="grid md:grid-cols-2 gap-2 text-sm">
+                      <div><strong>Nama:</strong> {selectedAppData.fullName}</div>
+                      <div><strong>Jumlah:</strong> Rp {new Intl.NumberFormat('id-ID').format(selectedAppData.loanAmount)}</div>
+                      <div><strong>Jangka Waktu:</strong> {selectedAppData.loanTerm} bulan</div>
+                      <div><strong>Tujuan:</strong> {selectedAppData.loanPurpose}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Data Pemohon */}
             <div className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">

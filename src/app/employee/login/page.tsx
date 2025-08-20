@@ -111,9 +111,6 @@ export default function EmployeeLoginPage() {
                   }
                 }}
               />
-              <div className="text-xs text-gray-500">
-                Hint: Password adalah nama + 123 (contoh: sayudi123)
-              </div>
             </div>
           )}
 
@@ -138,17 +135,6 @@ export default function EmployeeLoginPage() {
           >
             Kembali ke Beranda
           </Button>
-
-          {/* Info Password */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <h4 className="font-medium text-blue-900 mb-2">Informasi Login:</h4>
-            <div className="text-sm text-blue-800 space-y-1">
-              <div>• Sayudi: sayudi123</div>
-              <div>• Upik: upik123</div>
-              <div>• Arwan: arwan123</div>
-              <div>• Winarno: winarno123</div>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>
