@@ -38,7 +38,7 @@ export default function SignIn() {
           router.push("/client/dashboard")
         }
       }
-    } catch (error) {
+    } catch (_error) {
       setError("Terjadi kesalahan saat login")
     } finally {
       setIsLoading(false)
