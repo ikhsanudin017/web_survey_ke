@@ -24,7 +24,8 @@ export default function ClientDashboard() {
   useEffect(() => {
     if (status === "loading") return
 
-    if (!session || session.user.role !== "client") {
+    const sessionWithRole = session as { user: { name: string; email: string; role: string } } | null
+    if (!sessionWithRole || !sessionWithRole.user || sessionWithRole.user.role !== "client") {
       router.push("/auth/signin")
       return
     }
@@ -91,7 +92,7 @@ export default function ClientDashboard() {
                 Dashboard Client
               </h1>
               <p className="text-gray-600">
-                Selamat datang, {session?.user.name}
+                Selamat datang, {session?.user?.name}
               </p>
             </div>
             <Button
