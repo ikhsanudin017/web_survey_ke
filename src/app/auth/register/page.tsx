@@ -64,7 +64,7 @@ export default function Register() {
       } else {
         setError(data.error || "Terjadi kesalahan saat registrasi")
       }
-    } catch (_error) {
+    } catch {
       setError("Terjadi kesalahan saat registrasi")
     } finally {
       setIsLoading(false)

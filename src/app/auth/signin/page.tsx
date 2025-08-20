@@ -32,13 +32,13 @@ export default function SignIn() {
       } else {
         // Get session to check user role
         const session = await getSession()
-        if (session?.user.role === "employee") {
+        if (session?.user && 'role' in session.user && session.user.role === "employee") {
           router.push("/employee/dashboard")
         } else {
           router.push("/client/dashboard")
         }
       }
-    } catch (_error) {
+    } catch {
       setError("Terjadi kesalahan saat login")
     } finally {
       setIsLoading(false)
