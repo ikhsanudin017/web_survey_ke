@@ -38,7 +38,7 @@ export default function EmployeeDashboard() {
       const response = await fetch('/api/applications')
       const result = await response.json()
       
-      if (result.success) {
+      if (response.ok) {
         setApplications(result.applications)
         
         // Hitung statistik

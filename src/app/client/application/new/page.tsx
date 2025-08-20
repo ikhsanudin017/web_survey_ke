@@ -24,6 +24,7 @@ export default function NewApplicationPage() {
     spouseIncome: '',
 
     // Data Kontak
+    email: '',
     homeAddress: '',
     phoneNumber: '',
     emergencyContact: '',
@@ -40,7 +41,29 @@ export default function NewApplicationPage() {
     loanAmount: '',
     loanPurpose: '',
     loanTerm: '',
-    collateral: ''
+    collateral: '',
+
+    // Checklist Dokumen
+    checklist: {
+      ktpOriginal: false,
+      ktpCopy: false,
+      kkOriginal: false,
+      kkCopy: false,
+      slipGaji: false,
+      suratKeterjaKerja: false,
+      rekKoran: false,
+      buktiPenghasilan: false,
+      siup: false,
+      tdp: false,
+      buktiTempatUsaha: false,
+      fotoUsaha: false,
+      sertifikatTanah: false,
+      bpkb: false,
+      imb: false,
+      suratNikah: false,
+      aktaKelahiran: false,
+      referensiBank: false
+    }
   })
 
   const handleInputChange = (field: string, value: string) => {
@@ -51,7 +74,7 @@ export default function NewApplicationPage() {
   }
 
   const handleNext = () => {
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       setCurrentStep(currentStep + 1)
     }
   }
@@ -60,6 +83,16 @@ export default function NewApplicationPage() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
     }
+  }
+
+  const handleChecklistChange = (field: string, value: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      checklist: {
+        ...prev.checklist,
+        [field]: value
+      }
+    }))
   }
 
   const handleSubmit = async () => {
@@ -74,15 +107,15 @@ export default function NewApplicationPage() {
 
       const result = await response.json()
 
-      if (result.success) {
+      if (response.ok) {
         alert('Pengajuan berhasil dikirim! Terima kasih. ID Pengajuan: ' + result.applicationId)
         router.push('/')
       } else {
-        alert('Terjadi kesalahan: ' + result.message)
+        alert('Terjadi kesalahan: ' + result.error)
       }
     } catch (error) {
       console.error('Error submitting application:', error)
-      alert('Terjadi kesalahan. Silakan coba lagi.')
+      alert('Terjadi kesalahan saat menyimpan data pembiayaan. Silakan coba lagi.')
     }
   }
 
@@ -267,17 +300,30 @@ export default function NewApplicationPage() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nomor Telepon *
-            </label>
-            <Input
-              value={formData.phoneNumber}
-              onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-              placeholder="Masukkan nomor telepon"
-              required
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email *
+          </label>
+          <Input
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
+            placeholder="Masukkan alamat email"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Nomor Telepon *
+          </label>
+          <Input
+            value={formData.phoneNumber}
+            onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+            placeholder="Masukkan nomor telepon"
+            required
+          />
+        </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -435,6 +481,218 @@ export default function NewApplicationPage() {
     </div>
   )
 
+  const renderStep5 = () => (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-gray-900">Checklist Data Calon Pembiayaan</h3>
+      <p className="text-sm text-gray-600">Centang dokumen yang Anda miliki dan siap untuk diserahkan:</p>
+      
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Dokumen Identitas */}
+        <div className="space-y-3">
+          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Identitas</h4>
+          <div className="space-y-2">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.ktpOriginal}
+                onChange={(e) => handleChecklistChange('ktpOriginal', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">KTP Asli</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.ktpCopy}
+                onChange={(e) => handleChecklistChange('ktpCopy', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Fotocopy KTP</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.kkOriginal}
+                onChange={(e) => handleChecklistChange('kkOriginal', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Kartu Keluarga Asli</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.kkCopy}
+                onChange={(e) => handleChecklistChange('kkCopy', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Fotocopy Kartu Keluarga</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Dokumen Penghasilan */}
+        <div className="space-y-3">
+          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Penghasilan</h4>
+          <div className="space-y-2">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.slipGaji}
+                onChange={(e) => handleChecklistChange('slipGaji', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Slip Gaji</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.suratKeterjaKerja}
+                onChange={(e) => handleChecklistChange('suratKeterjaKerja', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Surat Keterangan Kerja</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.rekKoran}
+                onChange={(e) => handleChecklistChange('rekKoran', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Rekening Koran</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.buktiPenghasilan}
+                onChange={(e) => handleChecklistChange('buktiPenghasilan', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Bukti Penghasilan Lainnya</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Dokumen Usaha */}
+        <div className="space-y-3">
+          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Usaha</h4>
+          <div className="space-y-2">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.siup}
+                onChange={(e) => handleChecklistChange('siup', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">SIUP</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.tdp}
+                onChange={(e) => handleChecklistChange('tdp', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">TDP</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.buktiTempatUsaha}
+                onChange={(e) => handleChecklistChange('buktiTempatUsaha', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Bukti Tempat Usaha</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.fotoUsaha}
+                onChange={(e) => handleChecklistChange('fotoUsaha', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Foto Usaha</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Dokumen Jaminan */}
+        <div className="space-y-3">
+          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Jaminan</h4>
+          <div className="space-y-2">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.sertifikatTanah}
+                onChange={(e) => handleChecklistChange('sertifikatTanah', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Sertifikat Tanah</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.bpkb}
+                onChange={(e) => handleChecklistChange('bpkb', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">BPKB</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.imb}
+                onChange={(e) => handleChecklistChange('imb', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">IMB</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Dokumen Lainnya */}
+        <div className="space-y-3 md:col-span-2">
+          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Lainnya</h4>
+          <div className="grid md:grid-cols-3 gap-2">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.suratNikah}
+                onChange={(e) => handleChecklistChange('suratNikah', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Surat Nikah</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.aktaKelahiran}
+                onChange={(e) => handleChecklistChange('aktaKelahiran', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Akta Kelahiran</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={formData.checklist.referensiBank}
+                onChange={(e) => handleChecklistChange('referensiBank', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm">Referensi Bank</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-blue-50 p-4 rounded-lg">
+        <p className="text-sm text-blue-800">
+          <strong>Catatan:</strong> Dokumen yang telah dicentang menunjukkan bahwa Anda memiliki dan siap menyerahkan dokumen tersebut saat proses verifikasi.
+        </p>
+      </div>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
       {/* Header */}
@@ -443,7 +701,7 @@ export default function NewApplicationPage() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Pengajuan Pembiayaan</h1>
-              <p className="text-gray-700 mt-1">Langkah <span className="font-semibold text-blue-600">{currentStep}</span> dari 4</p>
+              <p className="text-gray-700 mt-1">Langkah <span className="font-semibold text-blue-600">{currentStep}</span> dari 5</p>
             </div>
             <Button 
               onClick={() => router.push('/')} 
@@ -460,7 +718,7 @@ export default function NewApplicationPage() {
       <div className="bg-white/60 backdrop-blur-sm border-b border-emerald-100">
         <div className="container mx-auto px-4 py-4">
           <div className="flex space-x-4">
-            {[1, 2, 3, 4].map((step) => (
+            {[1, 2, 3, 4, 5].map((step) => (
               <div
                 key={step}
                 className={`flex-1 h-3 rounded-full transition-all duration-300 ${
@@ -476,6 +734,7 @@ export default function NewApplicationPage() {
             <span className={currentStep >= 2 ? 'text-blue-600 font-medium' : 'text-gray-500'}>Data Kontak</span>
             <span className={currentStep >= 3 ? 'text-blue-600 font-medium' : 'text-gray-500'}>Data Usaha</span>
             <span className={currentStep >= 4 ? 'text-blue-600 font-medium' : 'text-gray-500'}>Pembiayaan</span>
+            <span className={currentStep >= 5 ? 'text-blue-600 font-medium' : 'text-gray-500'}>Checklist</span>
           </div>
         </div>
       </div>
@@ -489,6 +748,7 @@ export default function NewApplicationPage() {
               {currentStep === 2 && 'Data Kontak'}
               {currentStep === 3 && 'Data Usaha'}
               {currentStep === 4 && 'Data Pembiayaan'}
+              {currentStep === 5 && 'Checklist Dokumen'}
             </CardTitle>
             <CardDescription>
               Silakan lengkapi informasi berikut dengan benar
@@ -499,6 +759,7 @@ export default function NewApplicationPage() {
             {currentStep === 2 && renderStep2()}
             {currentStep === 3 && renderStep3()}
             {currentStep === 4 && renderStep4()}
+            {currentStep === 5 && renderStep5()}
 
             <div className="flex justify-between mt-8">
               <Button
@@ -509,7 +770,7 @@ export default function NewApplicationPage() {
                 Sebelumnya
               </Button>
 
-              {currentStep < 4 ? (
+              {currentStep < 5 ? (
                 <Button onClick={handleNext}>
                   Selanjutnya
                 </Button>
