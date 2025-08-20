@@ -81,7 +81,13 @@ export async function POST(request: NextRequest) {
     // Save uploaded files to database
     if (applicationData.uploadedFiles && applicationData.uploadedFiles.length > 0) {
       await Promise.all(
-        applicationData.uploadedFiles.map((file: any) =>
+        applicationData.uploadedFiles.map((file: {
+          filename: string;
+          originalName: string;
+          size: number;
+          url: string;
+          category: string;
+        }) =>
           prisma.document.create({
             data: {
               applicationId: application.id,
