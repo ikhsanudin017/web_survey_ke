@@ -185,30 +185,67 @@ export default function EmployeeDashboard() {
               </div>
             ) : (
               <div className="space-y-4">
-                {applications.slice(0, 5).map((app: { id: string; fullName: string; loanAmount: number; loanTerm: number; submittedAt: string; status: string }) => (
-                  <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">{app.fullName}</h4>
-                      <p className="text-sm text-gray-600">
-                        Pinjaman: Rp {new Intl.NumberFormat('id-ID').format(app.loanAmount)} - {app.loanTerm} bulan
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Diajukan: {new Date(app.submittedAt).toLocaleDateString('id-ID')}
-                      </p>
+                {applications.slice(0, 5).map((app: { 
+                  id: string; 
+                  fullName: string; 
+                  loanAmount: number; 
+                  loanTerm: number; 
+                  submittedAt: string; 
+                  status: string;
+                  documents?: Array<{ id: string; originalName: string; category: string; fileUrl: string }>;
+                }) => (
+                  <div key={app.id} className="p-4 border rounded-lg hover:bg-gray-50">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{app.fullName}</h4>
+                        <p className="text-sm text-gray-600">
+                          Pinjaman: Rp {new Intl.NumberFormat('id-ID').format(app.loanAmount)} - {app.loanTerm} bulan
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Diajukan: {new Date(app.submittedAt).toLocaleDateString('id-ID')}
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          app.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                          app.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {app.status === 'PENDING' ? 'Menunggu' :
+                           app.status === 'APPROVED' ? 'Disetujui' : 'Ditolak'}
+                        </span>
+                        <Button size="sm" variant="outline">
+                          Detail
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        app.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                        app.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {app.status === 'PENDING' ? 'Menunggu' :
-                         app.status === 'APPROVED' ? 'Disetujui' : 'Ditolak'}
-                      </span>
-                      <Button size="sm" variant="outline">
-                        Detail
-                      </Button>
-                    </div>
+                    
+                    {/* Display uploaded documents */}
+                    {app.documents && app.documents.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-gray-100">
+                        <p className="text-xs font-medium text-gray-700 mb-2">
+                          Dokumen Terupload ({app.documents.length}):
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {app.documents.slice(0, 3).map((doc, index) => (
+                            <a
+                              key={index}
+                              href={doc.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded hover:bg-blue-100"
+                            >
+                              📄 {doc.originalName.length > 15 ? doc.originalName.substring(0, 15) + '...' : doc.originalName}
+                            </a>
+                          ))}
+                          {app.documents.length > 3 && (
+                            <span className="inline-flex items-center px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
+                              +{app.documents.length - 3} lainnya
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
                 {applications.length > 5 && (

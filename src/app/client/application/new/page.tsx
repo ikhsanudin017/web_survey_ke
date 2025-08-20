@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 export default function NewApplicationPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
+  const [uploading, setUploading] = useState(false)
   const [formData, setFormData] = useState({
     // Data Pribadi
     fullName: '',
@@ -63,7 +64,16 @@ export default function NewApplicationPage() {
       suratNikah: false,
       aktaKelahiran: false,
       referensiBank: false
-    }
+    },
+
+    // Upload Files
+    uploadedFiles: [] as Array<{
+      category: string
+      filename: string
+      originalName: string
+      url: string
+      size: number
+    }>
   })
 
   const handleInputChange = (field: string, value: string) => {
@@ -92,6 +102,52 @@ export default function NewApplicationPage() {
         ...prev.checklist,
         [field]: value
       }
+    }))
+  }
+
+  const handleFileUpload = async (file: File, category: string) => {
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('category', category)
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        setFormData(prev => ({
+          ...prev,
+          uploadedFiles: [...prev.uploadedFiles, {
+            category: result.category,
+            filename: result.filename,
+            originalName: result.originalName,
+            url: result.url,
+            size: result.size
+          }]
+        }))
+        alert(`File ${result.originalName} berhasil diupload!`)
+      } else {
+        alert('Gagal upload file: ' + result.error)
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error)
+      alert('Terjadi kesalahan saat upload file')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const removeUploadedFile = (filename: string) => {
+    setFormData(prev => ({
+      ...prev,
+      uploadedFiles: prev.uploadedFiles.filter(file => file.filename !== filename)
     }))
   }
 
@@ -491,42 +547,98 @@ export default function NewApplicationPage() {
         <div className="space-y-3">
           <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Identitas</h4>
           <div className="space-y-2">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.ktpOriginal}
-                onChange={(e) => handleChecklistChange('ktpOriginal', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">KTP Asli</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.ktpCopy}
-                onChange={(e) => handleChecklistChange('ktpCopy', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Fotocopy KTP</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.kkOriginal}
-                onChange={(e) => handleChecklistChange('kkOriginal', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Kartu Keluarga Asli</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.kkCopy}
-                onChange={(e) => handleChecklistChange('kkCopy', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Fotocopy Kartu Keluarga</span>
-            </label>
+            <div className="space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.checklist.ktpOriginal}
+                  onChange={(e) => handleChecklistChange('ktpOriginal', e.target.checked)}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm">KTP Asli</span>
+              </label>
+              <div className="ml-6">
+                <input
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleFileUpload(file, 'KTP_ASLI')
+                  }}
+                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  disabled={uploading}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.checklist.ktpCopy}
+                  onChange={(e) => handleChecklistChange('ktpCopy', e.target.checked)}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm">Fotocopy KTP</span>
+              </label>
+              <div className="ml-6">
+                <input
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleFileUpload(file, 'KTP_COPY')
+                  }}
+                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  disabled={uploading}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.checklist.kkOriginal}
+                  onChange={(e) => handleChecklistChange('kkOriginal', e.target.checked)}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm">Kartu Keluarga Asli</span>
+              </label>
+              <div className="ml-6">
+                <input
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleFileUpload(file, 'KK_ASLI')
+                  }}
+                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  disabled={uploading}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.checklist.kkCopy}
+                  onChange={(e) => handleChecklistChange('kkCopy', e.target.checked)}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm">Fotocopy Kartu Keluarga</span>
+              </label>
+              <div className="ml-6">
+                <input
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleFileUpload(file, 'KK_COPY')
+                  }}
+                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  disabled={uploading}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -685,11 +797,48 @@ export default function NewApplicationPage() {
         </div>
       </div>
 
+      {/* Uploaded Files Display */}
+      {formData.uploadedFiles.length > 0 && (
+        <div className="bg-green-50 p-4 rounded-lg">
+          <h4 className="font-medium text-green-800 mb-3">File yang Sudah Diupload:</h4>
+          <div className="space-y-2">
+            {formData.uploadedFiles.map((file, index) => (
+              <div key={index} className="flex items-center justify-between bg-white p-2 rounded border">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">{file.originalName}</p>
+                  <p className="text-xs text-gray-500">
+                    {file.category.replace('_', ' ')} • {(file.size / 1024).toFixed(1)} KB
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeUploadedFile(file.filename)}
+                  className="text-red-600 hover:text-red-800 text-sm"
+                >
+                  Hapus
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="bg-blue-50 p-4 rounded-lg">
         <p className="text-sm text-blue-800">
-          <strong>Catatan:</strong> Dokumen yang telah dicentang menunjukkan bahwa Anda memiliki dan siap menyerahkan dokumen tersebut saat proses verifikasi.
+          <strong>Catatan:</strong> 
+          <br />• Centang dokumen yang Anda miliki
+          <br />• Upload file dokumen dalam format JPG, PNG, atau PDF (max 5MB)
+          <br />• File yang diupload akan disimpan dan dapat dilihat oleh pegawai KSU
         </p>
       </div>
+
+      {uploading && (
+        <div className="bg-yellow-50 p-4 rounded-lg">
+          <p className="text-sm text-yellow-800">
+            <strong>Sedang mengupload file...</strong> Mohon tunggu sebentar.
+          </p>
+        </div>
+      )}
     </div>
   )
 

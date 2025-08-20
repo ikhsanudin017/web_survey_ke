@@ -78,6 +78,25 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Save uploaded files to database
+    if (applicationData.uploadedFiles && applicationData.uploadedFiles.length > 0) {
+      await Promise.all(
+        applicationData.uploadedFiles.map((file: any) =>
+          prisma.document.create({
+            data: {
+              applicationId: application.id,
+              fileName: file.filename,
+              originalName: file.originalName,
+              fileType: file.originalName.split('.').pop() || 'unknown',
+              fileSize: file.size,
+              fileUrl: file.url,
+              category: file.category
+            }
+          })
+        )
+      )
+    }
+
     return NextResponse.json(
       { 
         message: "Aplikasi pembiayaan berhasil disubmit!", 
@@ -99,7 +118,8 @@ export async function GET() {
     const applications = await prisma.financingApplication.findMany({
       include: {
         client: true,
-        checklist: true
+        checklist: true,
+        documents: true
       },
       orderBy: { submittedAt: "desc" }
     })
