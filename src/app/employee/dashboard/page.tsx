@@ -42,9 +42,9 @@ export default function EmployeeDashboard() {
         setApplications(result.applications)
         
         // Hitung statistik
-        const pending = result.applications.filter((app: any) => app.status === 'PENDING').length
-        const inProgress = result.applications.filter((app: any) => app.financingAnalysis).length
-        const completed = result.applications.filter((app: any) => app.status === 'APPROVED' || app.status === 'REJECTED').length
+        const pending = result.applications.filter((app: { status: string }) => app.status === 'PENDING').length
+        const inProgress = result.applications.filter((app: { financingAnalysis: unknown }) => app.financingAnalysis).length
+        const completed = result.applications.filter((app: { status: string }) => app.status === 'APPROVED' || app.status === 'REJECTED').length
         
         setStats({ pending, inProgress, completed })
       }
@@ -185,7 +185,7 @@ export default function EmployeeDashboard() {
               </div>
             ) : (
               <div className="space-y-4">
-                {applications.slice(0, 5).map((app: any) => (
+                {applications.slice(0, 5).map((app: { id: string; fullName: string; loanAmount: number; loanTerm: number; submittedAt: string; status: string }) => (
                   <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
                     <div className="flex-1">
                       <h4 className="font-medium text-gray-900">{app.fullName}</h4>
