@@ -135,35 +135,41 @@ export default function EmployeeDashboard() {
             <CardHeader>
               <CardTitle className="text-xl text-blue-600">Analisa Pembiayaan</CardTitle>
               <CardDescription>
-                Buat analisa pembiayaan untuk pengajuan kredit
+                Form analisa pembiayaan sesuai standar KSU
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 mb-4 text-gray-600">
-                <li>• Analisa 5C (Character, Capacity, Capital, Condition, Collateral)</li>
-                <li>• Penilaian kelayakan kredit</li>
-                <li>• Rekomendasi persetujuan</li>
+                <li>• Analisa Karakter, Kapasitas, Modal, Kondisi, Jaminan</li>
+                <li>• Checklist kelengkapan dokumen</li>
+                <li>• Kesimpulan dan rekomendasi</li>
               </ul>
-              <Button className="w-full">
-                Buat Analisa Baru
+              <Button 
+                className="w-full"
+                onClick={() => router.push('/employee/analysis/new')}
+              >
+                Buat Analisa Pembiayaan
               </Button>
             </CardContent>
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle className="text-xl text-purple-600">Sub Analisa</CardTitle>
+              <CardTitle className="text-xl text-purple-600">Sub Analisa Pembiayaan</CardTitle>
               <CardDescription>
-                Buat sub analisa detail untuk setiap kategori
+                Form sub analisa detail per kategori
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 mb-4 text-gray-600">
-                <li>• Scoring per kategori</li>
-                <li>• Bobot penilaian</li>
-                <li>• Catatan detail</li>
+                <li>• Pemasukan dan pengeluaran detail</li>
+                <li>• Analisa pendapatan bersih</li>
+                <li>• Plafon maksimal dan angsuran</li>
               </ul>
-              <Button className="w-full bg-purple-600 hover:bg-purple-700">
+              <Button 
+                className="w-full bg-purple-600 hover:bg-purple-700"
+                onClick={() => router.push('/employee/sub-analysis/new')}
+              >
                 Buat Sub Analisa
               </Button>
             </CardContent>

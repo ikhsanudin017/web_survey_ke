@@ -1,0 +1,458 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+
+export default function NewSubAnalysisPage() {
+  const router = useRouter()
+  const [formData, setFormData] = useState({
+    // PEMASUKAN
+    suami: '',
+    istri: '',
+    lainnya1: '',
+    lainnya2: '',
+    lainnya3: '',
+    subTotalPemasukan: '',
+
+    // PENGELUARAN
+    suamiPengeluaran: '',
+    istriPengeluaran: '',
+    makan: '',
+    listrik: '',
+    sosial: '',
+    tanggunganLain: '',
+    subTotalPengeluaran: '',
+
+    // JUMLAH ANAK
+    jumlahAnak: '',
+    pengeluaranAnak: '',
+    sekolah: '',
+    uangSaku: '',
+    subTotalAnak: '',
+
+    // PENDAPATAN BERSIH
+    pendapatanBersih: '',
+
+    // JANGKA PEMBIAYAAN
+    jangkaPembiayaan: '',
+    plafonMaksimal: '',
+
+    // ANGSURAN MAKSIMAL
+    angsuranMaksimal: ''
+  })
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  // Auto calculate subtotals
+  const calculatePemasukanSubtotal = () => {
+    const suami = parseFloat(formData.suami) || 0
+    const istri = parseFloat(formData.istri) || 0
+    const lainnya1 = parseFloat(formData.lainnya1) || 0
+    const lainnya2 = parseFloat(formData.lainnya2) || 0
+    const lainnya3 = parseFloat(formData.lainnya3) || 0
+    return suami + istri + lainnya1 + lainnya2 + lainnya3
+  }
+
+  const calculatePengeluaranSubtotal = () => {
+    const suami = parseFloat(formData.suamiPengeluaran) || 0
+    const istri = parseFloat(formData.istriPengeluaran) || 0
+    const makan = parseFloat(formData.makan) || 0
+    const listrik = parseFloat(formData.listrik) || 0
+    const sosial = parseFloat(formData.sosial) || 0
+    const tanggungan = parseFloat(formData.tanggunganLain) || 0
+    return suami + istri + makan + listrik + sosial + tanggungan
+  }
+
+  const calculateAnakSubtotal = () => {
+    const sekolah = parseFloat(formData.sekolah) || 0
+    const uangSaku = parseFloat(formData.uangSaku) || 0
+    return sekolah + uangSaku
+  }
+
+  const calculatePendapatanBersih = () => {
+    const pemasukan = calculatePemasukanSubtotal()
+    const pengeluaran = calculatePengeluaranSubtotal()
+    const anak = calculateAnakSubtotal()
+    return pemasukan - pengeluaran - anak
+  }
+
+  const handleSubmit = async () => {
+    try {
+      // TODO: Implement API call to save sub analysis
+      console.log('Sub Analysis data:', formData)
+      alert('Sub analisa pembiayaan berhasil disimpan!')
+      router.push('/employee/dashboard')
+    } catch (error) {
+      console.error('Error saving sub analysis:', error)
+      alert('Terjadi kesalahan saat menyimpan sub analisa')
+    }
+  }
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
+    }).format(value)
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+      {/* Header */}
+      <div className="bg-white/80 backdrop-blur-sm shadow-lg border-b border-emerald-100">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-center text-gray-900">SUB-ANALISA PEMBIAYAAN</h1>
+            </div>
+            <Button 
+              onClick={() => router.push('/employee/dashboard')} 
+              variant="outline"
+              className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+            >
+              Kembali
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="container mx-auto px-4 py-8">
+        <Card className="max-w-4xl mx-auto">
+          <CardHeader>
+            <CardTitle className="text-center">Form Sub Analisa Pembiayaan</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            
+            {/* PEMASUKAN */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-gray-900 border-b pb-2">PEMASUKAN</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20">SUAMI</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.suami}
+                        onChange={(e) => handleInputChange('suami', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20">ISTRI</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.istri}
+                        onChange={(e) => handleInputChange('istri', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20">LAINNYA</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.lainnya1}
+                        onChange={(e) => handleInputChange('lainnya1', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20"></label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.lainnya2}
+                        onChange={(e) => handleInputChange('lainnya2', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20"></label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.lainnya3}
+                        onChange={(e) => handleInputChange('lainnya3', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between border-t pt-2">
+                    <label className="text-sm font-bold text-gray-900 w-20">Sub total</label>
+                    <div className="flex-1 mx-4">
+                      <div className="text-right font-bold text-gray-900">
+                        {formatCurrency(calculatePemasukanSubtotal())}
+                      </div>
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+                </div>
+
+                {/* PENGELUARAN */}
+                <div className="space-y-4">
+                  <h4 className="text-md font-bold text-gray-900">TIAP BULAN</h4>
+                  
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20">SUAMI</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.suamiPengeluaran}
+                        onChange={(e) => handleInputChange('suamiPengeluaran', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20">ISTRI</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.istriPengeluaran}
+                        onChange={(e) => handleInputChange('istriPengeluaran', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20">MAKAN</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.makan}
+                        onChange={(e) => handleInputChange('makan', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20">LISTRIK</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.listrik}
+                        onChange={(e) => handleInputChange('listrik', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20">SOSIAL</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.sosial}
+                        onChange={(e) => handleInputChange('sosial', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700 w-20">TANGGUNGAN LAIN</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.tanggunganLain}
+                        onChange={(e) => handleInputChange('tanggunganLain', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between border-t pt-2">
+                    <label className="text-sm font-bold text-gray-900 w-20">SUB TOTAL</label>
+                    <div className="flex-1 mx-4">
+                      <div className="text-right font-bold text-gray-900">
+                        {formatCurrency(calculatePengeluaranSubtotal())}
+                      </div>
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* JUMLAH ANAK */}
+            <div className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">JUMLAH ANAK</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm font-medium text-gray-700">Jumlah:</span>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.jumlahAnak}
+                        onChange={(e) => handleInputChange('jumlahAnak', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600">Orang</span>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-md font-bold text-gray-900 mb-4">PENGELUARAN ANAK</h4>
+                  
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-gray-700 w-20">SEKOLAH</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.sekolah}
+                        onChange={(e) => handleInputChange('sekolah', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-gray-700 w-20">UANG SAKU</label>
+                    <div className="flex-1 mx-4">
+                      <Input
+                        type="number"
+                        value={formData.uangSaku}
+                        onChange={(e) => handleInputChange('uangSaku', e.target.value)}
+                        className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                        placeholder="0"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+
+                  <div className="flex items-center justify-between border-t pt-2">
+                    <label className="text-sm font-bold text-gray-900 w-20">Sub total</label>
+                    <div className="flex-1 mx-4">
+                      <div className="text-right font-bold text-gray-900">
+                        {formatCurrency(calculateAnakSubtotal())}
+                      </div>
+                    </div>
+                    <span className="text-sm text-gray-600 w-16">Rp.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* PENDAPATAN BERSIH */}
+            <div className="space-y-4 bg-yellow-50 p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <label className="text-lg font-bold text-gray-900">Pendapatan Bersih</label>
+                <div className="flex-1 mx-4">
+                  <div className="text-right text-xl font-bold text-green-600">
+                    {formatCurrency(calculatePendapatanBersih())}
+                  </div>
+                </div>
+                <span className="text-sm text-gray-600 w-16">Rp.</span>
+              </div>
+            </div>
+
+            {/* JANGKA PEMBIAYAAN */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <label className="text-lg font-bold text-gray-900">JANGKA PEMBIAYAAN</label>
+                <div className="flex-1 mx-4">
+                  <Input
+                    type="number"
+                    value={formData.jangkaPembiayaan}
+                    onChange={(e) => handleInputChange('jangkaPembiayaan', e.target.value)}
+                    className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                    placeholder="0"
+                  />
+                </div>
+                <span className="text-sm text-gray-600">Kali</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label className="text-lg font-bold text-gray-900">PLAFON MAKSIMAL</label>
+                <div className="flex-1 mx-4">
+                  <Input
+                    type="number"
+                    value={formData.plafonMaksimal}
+                    onChange={(e) => handleInputChange('plafonMaksimal', e.target.value)}
+                    className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                    placeholder="0"
+                  />
+                </div>
+                <span className="text-sm text-gray-600 w-16">Rp.</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label className="text-lg font-bold text-gray-900">Angsuran Maksimal per bulan</label>
+                <div className="flex-1 mx-4">
+                  <Input
+                    type="number"
+                    value={formData.angsuranMaksimal}
+                    onChange={(e) => handleInputChange('angsuranMaksimal', e.target.value)}
+                    className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                    placeholder="0"
+                  />
+                </div>
+                <span className="text-sm text-gray-600 w-16">Rp.</span>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-center pt-8">
+              <Button 
+                onClick={handleSubmit}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3"
+              >
+                Simpan Sub Analisa Pembiayaan
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
