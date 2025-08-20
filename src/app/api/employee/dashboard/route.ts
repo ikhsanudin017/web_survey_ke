@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions) as any
+    const session = await getServerSession(authOptions) as { user: { email: string; role: string } } | null
 
     if (!session || !session.user || session.user.role !== "employee") {
       return NextResponse.json(
