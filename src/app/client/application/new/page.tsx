@@ -6,6 +6,41 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
+// Komponen untuk upload dokumen agar tidak berulang
+const DocumentUpload = ({
+  label,
+  category,
+  onFileUpload,
+  uploading,
+  required,
+}: {
+  label: string
+  category: string
+  onFileUpload: (file: File, category: string) => void
+  uploading: boolean
+  required?: boolean
+}) => (
+  <div className="space-y-2">
+    <label className="flex items-center space-x-2">
+      <span className="text-sm">
+        {label} {required && <span className="text-red-500">*</span>}
+      </span>
+    </label>
+    <div className="ml-6">
+      <input
+        type="file"
+        accept="image/*,.pdf"
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) onFileUpload(file, category)
+        }}
+        className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+        disabled={uploading}
+      />
+    </div>
+  </div>
+)
+
 export default function NewApplicationPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
@@ -28,43 +63,24 @@ export default function NewApplicationPage() {
     email: '',
     homeAddress: '',
     phoneNumber: '',
-    emergencyContact: '',
-    emergencyPhone: '',
+    contact1: '',
+    contact2: '',
+    contact3: '',
+    contact4: '',
+    contact5: '',
 
     // Data Usaha
     businessName: '',
     businessType: '',
     businessAddress: '',
-    businessDuration: '',
+    businessDuration: '', // dalam tahun
     businessIncome: '',
 
     // Data Pembiayaan
     loanAmount: '',
     loanPurpose: '',
-    loanTerm: '',
+    loanTerm: '6',
     collateral: '',
-
-    // Checklist Dokumen
-    checklist: {
-      ktpOriginal: false,
-      ktpCopy: false,
-      kkOriginal: false,
-      kkCopy: false,
-      slipGaji: false,
-      suratKeterjaKerja: false,
-      rekKoran: false,
-      buktiPenghasilan: false,
-      siup: false,
-      tdp: false,
-      buktiTempatUsaha: false,
-      fotoUsaha: false,
-      sertifikatTanah: false,
-      bpkb: false,
-      imb: false,
-      suratNikah: false,
-      aktaKelahiran: false,
-      referensiBank: false
-    },
 
     // Upload Files
     uploadedFiles: [] as Array<{
@@ -93,16 +109,6 @@ export default function NewApplicationPage() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
     }
-  }
-
-  const handleChecklistChange = (field: string, value: boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      checklist: {
-        ...prev.checklist,
-        [field]: value
-      }
-    }))
   }
 
   const handleFileUpload = async (file: File, category: string) => {
@@ -152,6 +158,29 @@ export default function NewApplicationPage() {
   }
 
   const handleSubmit = async () => {
+    // Validasi dokumen wajib
+    const requiredDocs = [
+      'KTP_PEMOHON_ASLI',
+      'KTP_PEMOHON_FOTOCOPY',
+      'KTP_PASANGAN_WALI_ASLI',
+      'KTP_PASANGAN_WALI_FOTOCOPY',
+      'KK_ASLI',
+      'KK_FOTOCOPY',
+    ];
+
+    if (formData.maritalStatus === 'Menikah') {
+      requiredDocs.push('BUKU_NIKAH');
+    }
+
+    const uploadedCategories = formData.uploadedFiles.map(file => file.category);
+    const missingDocs = requiredDocs.filter(doc => !uploadedCategories.includes(doc));
+
+    if (missingDocs.length > 0) {
+      alert(`Dokumen berikut wajib diunggah:\n- ${missingDocs.join('\n- ')}`);
+      return;
+    }
+
+
     try {
       const response = await fetch('/api/applications', {
         method: 'POST',
@@ -165,7 +194,7 @@ export default function NewApplicationPage() {
 
       if (response.ok) {
         alert('Pengajuan berhasil dikirim! Terima kasih. ID Pengajuan: ' + result.applicationId)
-        router.push('/')
+        router.push(`/client/application/sub-analysis?applicationId=${result.applicationId}`)
       } else {
         alert('Terjadi kesalahan: ' + result.error)
       }
@@ -245,8 +274,8 @@ export default function NewApplicationPage() {
             <option value="">Pilih status pernikahan</option>
             <option value="Belum Menikah">Belum Menikah</option>
             <option value="Menikah">Menikah</option>
-            <option value="Cerai">Cerai</option>
-            <option value="Janda/Duda">Janda/Duda</option>
+            <option value="Cerai Hidup">Cerai Hidup</option>
+            <option value="Cerai Mati">Cerai Mati</option>
           </select>
         </div>
 
@@ -356,54 +385,38 @@ export default function NewApplicationPage() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email *
-          </label>
-          <Input
-            type="email"
-            value={formData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-            placeholder="Masukkan alamat email"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nomor Telepon *
-          </label>
-          <Input
-            value={formData.phoneNumber}
-            onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-            placeholder="Masukkan nomor telepon"
-            required
-          />
-        </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Kontak Darurat *
+              Email *
             </label>
             <Input
-              value={formData.emergencyContact}
-              onChange={(e) => handleInputChange('emergencyContact', e.target.value)}
-              placeholder="Nama kontak darurat"
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              placeholder="Masukkan alamat email"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nomor Telepon Pribadi *
+            </label>
+            <Input
+              value={formData.phoneNumber}
+              onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+              placeholder="Masukkan nomor telepon"
               required
             />
           </div>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nomor Telepon Darurat *
-          </label>
-          <Input
-            value={formData.emergencyPhone}
-            onChange={(e) => handleInputChange('emergencyPhone', e.target.value)}
-            placeholder="Nomor telepon darurat"
-            required
-          />
+        
+        <h4 className="text-md font-semibold text-gray-800 pt-4">5 Kontak Darurat yang Bisa Dihubungi</h4>
+        <div className="grid md:grid-cols-2 gap-4">
+          <Input value={formData.contact1} onChange={(e) => handleInputChange('contact1', e.target.value)} placeholder="Kontak 1 (Nama & Nomor HP)"/>
+          <Input value={formData.contact2} onChange={(e) => handleInputChange('contact2', e.target.value)} placeholder="Kontak 2 (Nama & Nomor HP)"/>
+          <Input value={formData.contact3} onChange={(e) => handleInputChange('contact3', e.target.value)} placeholder="Kontak 3 (Nama & Nomor HP)"/>
+          <Input value={formData.contact4} onChange={(e) => handleInputChange('contact4', e.target.value)} placeholder="Kontak 4 (Nama & Nomor HP)"/>
+          <Input value={formData.contact5} onChange={(e) => handleInputChange('contact5', e.target.value)} placeholder="Kontak 5 (Nama & Nomor HP)"/>
         </div>
       </div>
     </div>
@@ -438,13 +451,13 @@ export default function NewApplicationPage() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Lama Usaha (bulan)
+            Lama Usaha (tahun)
           </label>
           <Input
             type="number"
             value={formData.businessDuration}
             onChange={(e) => handleInputChange('businessDuration', e.target.value)}
-            placeholder="Masukkan lama usaha dalam bulan"
+            placeholder="Masukkan lama usaha dalam tahun"
           />
         </div>
 
@@ -498,13 +511,16 @@ export default function NewApplicationPage() {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Jangka Waktu (bulan) *
           </label>
-          <Input
-            type="number"
+          <select
             value={formData.loanTerm}
             onChange={(e) => handleInputChange('loanTerm', e.target.value)}
-            placeholder="Masukkan jangka waktu"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
-          />
+          >
+            {[6, 12, 18, 24, 30, 36, 42, 48, 54, 60].map(term => (
+              <option key={term} value={term}>{term} bulan</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -539,267 +555,52 @@ export default function NewApplicationPage() {
 
   const renderStep5 = () => (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900">Checklist Data Calon Pembiayaan</h3>
-      <p className="text-sm text-gray-600">Centang dokumen yang Anda miliki dan siap untuk diserahkan:</p>
+      <h3 className="text-lg font-semibold text-gray-900">Upload Dokumen Pendukung</h3>
+      <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+        <p className="font-bold">Perhatian!</p>
+        <p>Pastikan semua foto dan dokumen yang diunggah harus jelas dan terbaca.</p>
+      </div>
       
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Dokumen Identitas */}
-        <div className="space-y-3">
-          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Identitas</h4>
-          <div className="space-y-2">
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={formData.checklist.ktpOriginal}
-                  onChange={(e) => handleChecklistChange('ktpOriginal', e.target.checked)}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm">KTP Asli</span>
-              </label>
-              <div className="ml-6">
-                <input
-                  type="file"
-                  accept="image/*,.pdf"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) handleFileUpload(file, 'KTP_ASLI')
-                  }}
-                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  disabled={uploading}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={formData.checklist.ktpCopy}
-                  onChange={(e) => handleChecklistChange('ktpCopy', e.target.checked)}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm">Fotocopy KTP</span>
-              </label>
-              <div className="ml-6">
-                <input
-                  type="file"
-                  accept="image/*,.pdf"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) handleFileUpload(file, 'KTP_COPY')
-                  }}
-                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  disabled={uploading}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={formData.checklist.kkOriginal}
-                  onChange={(e) => handleChecklistChange('kkOriginal', e.target.checked)}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm">Kartu Keluarga Asli</span>
-              </label>
-              <div className="ml-6">
-                <input
-                  type="file"
-                  accept="image/*,.pdf"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) handleFileUpload(file, 'KK_ASLI')
-                  }}
-                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  disabled={uploading}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={formData.checklist.kkCopy}
-                  onChange={(e) => handleChecklistChange('kkCopy', e.target.checked)}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm">Fotocopy Kartu Keluarga</span>
-              </label>
-              <div className="ml-6">
-                <input
-                  type="file"
-                  accept="image/*,.pdf"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) handleFileUpload(file, 'KK_COPY')
-                  }}
-                  className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  disabled={uploading}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Dokumen Penghasilan */}
-        <div className="space-y-3">
-          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Penghasilan</h4>
-          <div className="space-y-2">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.slipGaji}
-                onChange={(e) => handleChecklistChange('slipGaji', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Slip Gaji</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.suratKeterjaKerja}
-                onChange={(e) => handleChecklistChange('suratKeterjaKerja', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Surat Keterangan Kerja</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.rekKoran}
-                onChange={(e) => handleChecklistChange('rekKoran', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Rekening Koran</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.buktiPenghasilan}
-                onChange={(e) => handleChecklistChange('buktiPenghasilan', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Bukti Penghasilan Lainnya</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Dokumen Usaha */}
-        <div className="space-y-3">
-          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Usaha</h4>
-          <div className="space-y-2">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.siup}
-                onChange={(e) => handleChecklistChange('siup', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">SIUP</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.tdp}
-                onChange={(e) => handleChecklistChange('tdp', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">TDP</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.buktiTempatUsaha}
-                onChange={(e) => handleChecklistChange('buktiTempatUsaha', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Bukti Tempat Usaha</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.fotoUsaha}
-                onChange={(e) => handleChecklistChange('fotoUsaha', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Foto Usaha</span>
-            </label>
-          </div>
+      <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
+        {/* Dokumen Wajib */}
+        <div className="space-y-4 p-4 border border-red-200 bg-red-50 rounded-lg">
+          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Identitas Wajib</h4>
+          <DocumentUpload label="KTP Pemohon (Asli)" category="KTP_PEMOHON_ASLI" onFileUpload={handleFileUpload} uploading={uploading} required />
+          <DocumentUpload label="KTP Pemohon (Fotokopi)" category="KTP_PEMOHON_FOTOCOPY" onFileUpload={handleFileUpload} uploading={uploading} required />
+          <DocumentUpload label="KTP Suami/Istri/Wali (Asli)" category="KTP_PASANGAN_WALI_ASLI" onFileUpload={handleFileUpload} uploading={uploading} required />
+          <DocumentUpload label="KTP Suami/Istri/Wali (Fotokopi)" category="KTP_PASANGAN_WALI_FOTOCOPY" onFileUpload={handleFileUpload} uploading={uploading} required />
+          <DocumentUpload label="Kartu Keluarga (Asli)" category="KK_ASLI" onFileUpload={handleFileUpload} uploading={uploading} required />
+          <DocumentUpload label="Kartu Keluarga (Fotokopi)" category="KK_FOTOCOPY" onFileUpload={handleFileUpload} uploading={uploading} required />
+          {formData.maritalStatus === 'Menikah' && (
+            <DocumentUpload label="Buku Nikah" category="BUKU_NIKAH" onFileUpload={handleFileUpload} uploading={uploading} required />
+          )}
         </div>
 
         {/* Dokumen Jaminan */}
-        <div className="space-y-3">
-          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Jaminan</h4>
-          <div className="space-y-2">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.sertifikatTanah}
-                onChange={(e) => handleChecklistChange('sertifikatTanah', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Sertifikat Tanah</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.bpkb}
-                onChange={(e) => handleChecklistChange('bpkb', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">BPKB</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.imb}
-                onChange={(e) => handleChecklistChange('imb', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">IMB</span>
-            </label>
+        <div className="space-y-4 p-4 border border-gray-200 rounded-lg">
+          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Jaminan (jika ada)</h4>
+          <div className="p-3 bg-gray-50 rounded-md">
+            <p className="font-semibold text-sm mb-2">Jaminan BPKB Motor</p>
+            <div className="space-y-3">
+              <DocumentUpload label="Foto Motor" category="JAMINAN_FOTO_MOTOR" onFileUpload={handleFileUpload} uploading={uploading} />
+              <DocumentUpload label="BPKB" category="JAMINAN_BPKB" onFileUpload={handleFileUpload} uploading={uploading} />
+              <DocumentUpload label="STNK" category="JAMINAN_STNK" onFileUpload={handleFileUpload} uploading={uploading} />
+              <DocumentUpload label="Foto No. Rangka" category="JAMINAN_NO_RANGKA" onFileUpload={handleFileUpload} uploading={uploading} />
+              <DocumentUpload label="Foto No. Mesin" category="JAMINAN_NO_MESIN" onFileUpload={handleFileUpload} uploading={uploading} />
+            </div>
           </div>
-        </div>
-
-        {/* Dokumen Lainnya */}
-        <div className="space-y-3 md:col-span-2">
-          <h4 className="font-medium text-gray-800 border-b pb-2">Dokumen Lainnya</h4>
-          <div className="grid md:grid-cols-3 gap-2">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.suratNikah}
-                onChange={(e) => handleChecklistChange('suratNikah', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Surat Nikah</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.aktaKelahiran}
-                onChange={(e) => handleChecklistChange('aktaKelahiran', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Akta Kelahiran</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={formData.checklist.referensiBank}
-                onChange={(e) => handleChecklistChange('referensiBank', e.target.checked)}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm">Referensi Bank</span>
-            </label>
+          <div className="p-3 bg-gray-50 rounded-md mt-4">
+            <p className="font-semibold text-sm mb-2">Jaminan Sertifikat Tanah</p>
+            <div className="space-y-3">
+              <DocumentUpload label="Sertifikat Tanah" category="JAMINAN_SERTIFIKAT" onFileUpload={handleFileUpload} uploading={uploading} />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Uploaded Files Display */}
       {formData.uploadedFiles.length > 0 && (
-        <div className="bg-green-50 p-4 rounded-lg">
+        <div className="bg-green-50 p-4 rounded-lg mt-6">
           <h4 className="font-medium text-green-800 mb-3">File yang Sudah Diupload:</h4>
           <div className="space-y-2">
             {formData.uploadedFiles.map((file, index) => (
@@ -807,7 +608,7 @@ export default function NewApplicationPage() {
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-900">{file.originalName}</p>
                   <p className="text-xs text-gray-500">
-                    {file.category.replace('_', ' ')} • {(file.size / 1024).toFixed(1)} KB
+                    {file.category.replace(/_/g, ' ')} • {(file.size / 1024).toFixed(1)} KB
                   </p>
                 </div>
                 <button
@@ -823,17 +624,8 @@ export default function NewApplicationPage() {
         </div>
       )}
 
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <p className="text-sm text-blue-800">
-          <strong>Catatan:</strong> 
-          <br />• Centang dokumen yang Anda miliki
-          <br />• Upload file dokumen dalam format JPG, PNG, atau PDF (max 5MB)
-          <br />• File yang diupload akan disimpan dan dapat dilihat oleh pegawai KSU
-        </p>
-      </div>
-
       {uploading && (
-        <div className="bg-yellow-50 p-4 rounded-lg">
+        <div className="bg-yellow-50 p-4 rounded-lg mt-4">
           <p className="text-sm text-yellow-800">
             <strong>Sedang mengupload file...</strong> Mohon tunggu sebentar.
           </p>
@@ -883,7 +675,7 @@ export default function NewApplicationPage() {
             <span className={currentStep >= 2 ? 'text-blue-600 font-medium' : 'text-gray-500'}>Data Kontak</span>
             <span className={currentStep >= 3 ? 'text-blue-600 font-medium' : 'text-gray-500'}>Data Usaha</span>
             <span className={currentStep >= 4 ? 'text-blue-600 font-medium' : 'text-gray-500'}>Pembiayaan</span>
-            <span className={currentStep >= 5 ? 'text-blue-600 font-medium' : 'text-gray-500'}>Checklist</span>
+            <span className={currentStep >= 5 ? 'text-blue-600 font-medium' : 'text-gray-500'}>Upload Dokumen</span>
           </div>
         </div>
       </div>
@@ -897,7 +689,7 @@ export default function NewApplicationPage() {
               {currentStep === 2 && 'Data Kontak'}
               {currentStep === 3 && 'Data Usaha'}
               {currentStep === 4 && 'Data Pembiayaan'}
-              {currentStep === 5 && 'Checklist Dokumen'}
+              {currentStep === 5 && 'Upload Dokumen'}
             </CardTitle>
             <CardDescription>
               Silakan lengkapi informasi berikut dengan benar
@@ -925,7 +717,7 @@ export default function NewApplicationPage() {
                 </Button>
               ) : (
                 <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700">
-                  Kirim Pengajuan
+                  Kirim Pengajuan & Lanjut Isi Sub-Analisa
                 </Button>
               )}
             </div>

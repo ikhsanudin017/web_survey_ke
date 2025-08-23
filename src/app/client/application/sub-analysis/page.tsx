@@ -1,0 +1,212 @@
+'use client'
+
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+
+function SubAnalysisForm() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const applicationId = searchParams.get('applicationId')
+
+  const [formData, setFormData] = useState({
+    // PEMASUKAN
+    pemasukanSuami: '',
+    pemasukanIstri: '',
+    pemasukanLainnya1: '',
+    pemasukanLainnya2: '',
+    
+    // PENGELUARAN
+    pengeluaranSuami: '',
+    pengeluaranIstri: '',
+    makan: '',
+    listrik: '',
+    sosial: '',
+    tanggunganLain: '',
+
+    // JUMLAH ANAK
+    jumlahAnak: '',
+    pengeluaranSekolah: '',
+    uangSaku: '',
+  })
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const calculateSubtotal = (fields: (keyof typeof formData)[]) => {
+    return fields.reduce((acc, field) => acc + (parseFloat(formData[field]) || 0), 0)
+  }
+
+  const pemasukanSubtotal = calculateSubtotal(['pemasukanSuami', 'pemasukanIstri', 'pemasukanLainnya1', 'pemasukanLainnya2']);
+  const pengeluaranSubtotal = calculateSubtotal(['pengeluaranSuami', 'pengeluaranIstri', 'makan', 'listrik', 'sosial', 'tanggunganLain']);
+  const anakSubtotal = calculateSubtotal(['pengeluaranSekolah', 'uangSaku']);
+  const pendapatanBersih = pemasukanSubtotal - pengeluaranSubtotal - anakSubtotal;
+
+  const handleSubmit = async () => {
+    try {
+      // TODO: Implement API to save sub-analysis data
+      console.log({ applicationId, ...formData, pendapatanBersih })
+      alert('Sub-Analisa berhasil disimpan! Pengajuan Anda akan segera diproses.')
+      router.push('/client/dashboard')
+    } catch (error) {
+      console.error('Error saving sub-analysis:', error)
+      alert('Terjadi kesalahan saat menyimpan data.')
+    }
+  }
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
+    }).format(value)
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+      <div className="container mx-auto px-4 py-8">
+        <Card className="max-w-4xl mx-auto">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">SUB-ANALISA PEMBIAYAAN</CardTitle>
+            <CardDescription className="text-center">
+              Lengkapi data pemasukan dan pengeluaran bulanan Anda.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* PEMASUKAN */}
+              <div className="space-y-4 p-4 border rounded-lg">
+                <h3 className="text-lg font-bold text-gray-900 border-b pb-2">PEMASUKAN TIAP BULAN</h3>
+                <div className="flex items-center">
+                  <label className="w-24">Suami</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.pemasukanSuami} onChange={(e) => handleInputChange('pemasukanSuami', e.target.value)} placeholder="0" />
+                </div>
+                <div className="flex items-center">
+                  <label className="w-24">Istri</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.pemasukanIstri} onChange={(e) => handleInputChange('pemasukanIstri', e.target.value)} placeholder="0" />
+                </div>
+                <div className="flex items-center">
+                  <label className="w-24">Lainnya 1</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.pemasukanLainnya1} onChange={(e) => handleInputChange('pemasukanLainnya1', e.target.value)} placeholder="0" />
+                </div>
+                <div className="flex items-center">
+                  <label className="w-24">Lainnya 2</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.pemasukanLainnya2} onChange={(e) => handleInputChange('pemasukanLainnya2', e.target.value)} placeholder="0" />
+                </div>
+                <div className="flex items-center font-bold border-t pt-2 mt-2">
+                  <label className="w-24">Sub total</label>
+                  <span className="mr-2">Rp.</span>
+                  <span className="flex-1 text-right pr-2">{formatCurrency(pemasukanSubtotal)}</span>
+                </div>
+              </div>
+
+              {/* PENGELUARAN */}
+              <div className="space-y-4 p-4 border rounded-lg">
+                <h3 className="text-lg font-bold text-gray-900 border-b pb-2">PENGELUARAN TIAP BULAN</h3>
+                <div className="flex items-center">
+                  <label className="w-32">Suami</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.pengeluaranSuami} onChange={(e) => handleInputChange('pengeluaranSuami', e.target.value)} placeholder="0" />
+                </div>
+                <div className="flex items-center">
+                  <label className="w-32">Istri</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.pengeluaranIstri} onChange={(e) => handleInputChange('pengeluaranIstri', e.target.value)} placeholder="0" />
+                </div>
+                <div className="flex items-center">
+                  <label className="w-32">Makan</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.makan} onChange={(e) => handleInputChange('makan', e.target.value)} placeholder="0" />
+                </div>
+                <div className="flex items-center">
+                  <label className="w-32">Listrik</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.listrik} onChange={(e) => handleInputChange('listrik', e.target.value)} placeholder="0" />
+                </div>
+                 <div className="flex items-center">
+                  <label className="w-32">Sosial</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.sosial} onChange={(e) => handleInputChange('sosial', e.target.value)} placeholder="0" />
+                </div>
+                 <div className="flex items-center">
+                  <label className="w-32">Tanggungan Lain</label>
+                  <span className="mr-2">Rp.</span>
+                  <Input type="number" value={formData.tanggunganLain} onChange={(e) => handleInputChange('tanggunganLain', e.target.value)} placeholder="0" />
+                </div>
+                <div className="flex items-center font-bold border-t pt-2 mt-2">
+                  <label className="w-32">Sub total</label>
+                  <span className="mr-2">Rp.</span>
+                  <span className="flex-1 text-right pr-2">{formatCurrency(pengeluaranSubtotal)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* PENGELUARAN ANAK */}
+            <div className="space-y-4 p-4 border rounded-lg">
+              <h3 className="text-lg font-bold text-gray-900 border-b pb-2">PENGELUARAN ANAK</h3>
+              <div className="flex items-center">
+                <label className="w-32">Jumlah Anak</label>
+                <Input type="number" value={formData.jumlahAnak} onChange={(e) => handleInputChange('jumlahAnak', e.target.value)} placeholder="0" className="w-20 mr-2"/>
+                <span>Orang</span>
+              </div>
+              <div className="flex items-center">
+                <label className="w-32">Sekolah</label>
+                <span className="mr-2">Rp.</span>
+                <Input type="number" value={formData.pengeluaranSekolah} onChange={(e) => handleInputChange('pengeluaranSekolah', e.target.value)} placeholder="0" />
+              </div>
+              <div className="flex items-center">
+                <label className="w-32">Uang Saku</label>
+                <span className="mr-2">Rp.</span>
+                <Input type="number" value={formData.uangSaku} onChange={(e) => handleInputChange('uangSaku', e.target.value)} placeholder="0" />
+              </div>
+              <div className="flex items-center font-bold border-t pt-2 mt-2">
+                <label className="w-32">Sub total</label>
+                <span className="mr-2">Rp.</span>
+                <span className="flex-1 text-right pr-2">{formatCurrency(anakSubtotal)}</span>
+              </div>
+            </div>
+
+            {/* PENDAPATAN BERSIH */}
+            <div className="space-y-4 bg-green-100 p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <label className="text-xl font-bold text-gray-900">Pendapatan Bersih</label>
+                <div className="text-2xl font-bold text-green-700">
+                  {formatCurrency(pendapatanBersih)}
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-center pt-8">
+              <Button 
+                onClick={handleSubmit}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
+              >
+                Selesai dan Kirim
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
+
+export default function SubAnalysisPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SubAnalysisForm />
+    </Suspense>
+  )
+}

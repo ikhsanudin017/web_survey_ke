@@ -22,8 +22,7 @@ model Employee {
 
   // Relasi ke analisa yang dibuat
   financingAnalyses    FinancingAnalysis[]
-  subFinancingAnalyses SubFinancingAnalysis[]
-
+  
   @@map("employees")
 }
 
@@ -66,8 +65,12 @@ model FinancingApplication {
   // Data Kontak
   homeAddress        String
   phoneNumber        String
-  emergencyContact   String
-  emergencyPhone     String
+  contact1           String?
+  contact2           String?
+  contact3           String?
+  contact4           String?
+  contact5           String?
+
 
   // Data Usaha
   businessName       String?
@@ -91,6 +94,7 @@ model FinancingApplication {
   documents          Document[]
   checklist          ApplicationChecklist?
   financingAnalysis  FinancingAnalysis?
+  subFinancingAnalysis SubFinancingAnalysis?
 
   @@map("financing_applications")
 }
@@ -182,26 +186,36 @@ model FinancingAnalysis {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
-  // Relasi ke Sub Analisa
-  subAnalyses           SubFinancingAnalysis[]
-
   @@map("financing_analyses")
 }
 
 // Model untuk Sub Analisa Pembiayaan
 model SubFinancingAnalysis {
   id                    String   @id @default(cuid())
-  analysisId            String
-  analysis              FinancingAnalysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
-  employeeId            String
-  employee              Employee @relation(fields: [employeeId], references: [id])
+  applicationId         String   @unique
+  application           FinancingApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-  category              String // KARAKTER, KAPASITAS, MODAL, KONDISI, JAMINAN
-  subcategory           String
-  score                 Int // 1-5
-  weight                Decimal
-  weightedScore         Decimal
-  notes                 String?
+  // Pemasukan
+  pemasukanSuami        Decimal
+  pemasukanIstri        Decimal
+  pemasukanLainnya1     Decimal
+  pemasukanLainnya2     Decimal
+
+  // Pengeluaran
+  pengeluaranSuami      Decimal
+  pengeluaranIstri      Decimal
+  makan                 Decimal
+  listrik               Decimal
+  sosial                Decimal
+  tanggunganLain        Decimal
+
+  // Anak
+  jumlahAnak            Int
+  pengeluaranSekolah    Decimal
+  uangSaku              Decimal
+  
+  // Hasil
+  pendapatanBersih      Decimal
 
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt

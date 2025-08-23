@@ -1,0 +1,45 @@
+# Prompt Text - Requirements Sistem Pembiayaan
+
+## Bagian 1: Perhitungan dan Fitur Dasar
+1. Angsuran maksimal perbulan itu 70% dari pendapatan bersih
+2. Platform maksimal itu angsuran maksimal kali jangka pembiayaan
+3. Yang jangka pembiayaan diisi..platform dan angsuran maksimal auto
+4. Isoh di print isoh bentuk PDF
+5. ===========
+6. Portal client
+7. Status pernikahan cerai hidup cerai mati
+8. 5 nomer HP yang bisa dihubungi.Yen isoh share kontak.
+9. Lama usaha (diganti tahun)
+10. Jangka waktu kasin dropdown 6.12.18.24.30.36.42.48.54.60.
+11. Dokumen identitas wajib (Ktp suami ,istri atau wali..kartu keluarga asli.fc kk.).Buku nikah kalau sudah nikah wajib posting yg wajib
+12. Semua dikasih pilihan input foto tapi yang wajib yang diatas
+
+## Bagian 2: Fitur Lanjutan dan Analisa
+13. Client juga ngisi ini
+14. Jaminan dikasih di belakangnya
+15. Jaminan yang dicentang wajib diisi
+16. Jaminan Bpkb,sertifikat tanah.
+17. SIUP,TDP,BUITI TEMPAT USAHA,FOTO USAHA,IMB DIHULANGKAN
+18. Akte kelahiran dan referensi bank hapus
+19. BPKB.(FOTO MONTOR.BPKB.STNK.FOTO NO RANGKA.NO MESIN).
+20. *Harus Jelas dan Terbaca
+21. Tombol hapus edit
+22. Analisa penilaian.Kasih kolom byat Nama yang bilang.Tambahkan checklist jelek
+23. Alamat jenis usaha langsung link dari data client
+24. 5 nomer auto dibawah penilaian (1-5)
+25. Kesimpulan karakter nanti dibuat auto
+26. Sub analisa lebih dulu dari analisa
+27. Kesimpulan karakter nanti dibuat auto
+28. Menyimpulkan dari kapasitas keuangan dan hasil survey
+29. Analisa jaminan itu auto link dari gambar yang diinputkan client.
+30. Faktor potongan pembayaran dihapus
+31. Rumah dropsdown sendiri atau sewa
+32. Kendaraan centang motor mobil dicentang dan ada banyak
+33. Checklist kelengkapan document itu auto ke isi apa yang diisi client
+34. 7..BI Checking
+35. You: 7..BI Checking
+36. Input PDF
+37. You: 7..BI Checking
+38. Ai Layak tidaknya dari hasil inputan
+39. Pengajuan baru,dalam proses,acc ,ditolak,persentase
+40. Foto akad
