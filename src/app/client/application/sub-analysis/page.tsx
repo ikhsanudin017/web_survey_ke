@@ -32,6 +32,8 @@ function SubAnalysisForm() {
     uangSaku: '',
   })
 
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -49,14 +51,39 @@ function SubAnalysisForm() {
   const pendapatanBersih = pemasukanSubtotal - pengeluaranSubtotal - anakSubtotal;
 
   const handleSubmit = async () => {
+    if (!applicationId) {
+      alert('Application ID tidak ditemukan!')
+      return
+    }
+
+    setIsSubmitting(true)
+
     try {
-      // TODO: Implement API to save sub-analysis data
-      console.log({ applicationId, ...formData, pendapatanBersih })
-      alert('Sub-Analisa berhasil disimpan! Pengajuan Anda akan segera diproses.')
-      router.push('/client/dashboard')
+      const response = await fetch('/api/client/application/sub-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          applicationId,
+          ...formData,
+          pendapatanBersih: pendapatanBersih.toString()
+        }),
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        alert(result.message || 'Sub-Analisa berhasil disimpan!')
+        router.push('/client/dashboard')
+      } else {
+        alert('Terjadi kesalahan: ' + (result.error || 'Unknown error'))
+      }
     } catch (error) {
       console.error('Error saving sub-analysis:', error)
       alert('Terjadi kesalahan saat menyimpan data.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -68,6 +95,27 @@ function SubAnalysisForm() {
     }).format(value)
   }
 
+  // Redirect if no applicationId
+  useEffect(() => {
+    if (!applicationId) {
+      alert('Application ID tidak ditemukan. Silakan mulai dari pengajuan baru.')
+      router.push('/client/application/new')
+    }
+  }, [applicationId, router])
+
+  if (!applicationId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Application ID tidak ditemukan.</p>
+          <Button onClick={() => router.push('/client/application/new')}>
+            Buat Pengajuan Baru
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
       <div className="container mx-auto px-4 py-8">
@@ -76,6 +124,8 @@ function SubAnalysisForm() {
             <CardTitle className="text-2xl text-center">SUB-ANALISA PEMBIAYAAN</CardTitle>
             <CardDescription className="text-center">
               Lengkapi data pemasukan dan pengeluaran bulanan Anda.
+              <br />
+              <strong>ID Pengajuan: {applicationId}</strong>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-8">
@@ -191,9 +241,10 @@ function SubAnalysisForm() {
             <div className="flex justify-center pt-8">
               <Button 
                 onClick={handleSubmit}
+                disabled={isSubmitting}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
               >
-                Selesai dan Kirim
+                {isSubmitting ? 'Menyimpan...' : 'Selesai dan Kirim'}
               </Button>
             </div>
           </CardContent>
@@ -205,7 +256,14 @@ function SubAnalysisForm() {
 
 export default function SubAnalysisPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Memuat halaman...</p>
+        </div>
+      </div>
+    }>
       <SubAnalysisForm />
     </Suspense>
   )

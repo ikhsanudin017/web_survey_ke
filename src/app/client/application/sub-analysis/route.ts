@@ -12,6 +12,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Calculate pendapatan bersih
+    const pemasukanSuami = parseFloat(formData.pemasukanSuami) || 0
+    const pemasukanIstri = parseFloat(formData.pemasukanIstri) || 0
+    const pemasukanLainnya1 = parseFloat(formData.pemasukanLainnya1) || 0
+    const pemasukanLainnya2 = parseFloat(formData.pemasukanLainnya2) || 0
+
+    const pengeluaranSuami = parseFloat(formData.pengeluaranSuami) || 0
+    const pengeluaranIstri = parseFloat(formData.pengeluaranIstri) || 0
+    const makan = parseFloat(formData.makan) || 0
+    const listrik = parseFloat(formData.listrik) || 0
+    const sosial = parseFloat(formData.sosial) || 0
+    const tanggunganLain = parseFloat(formData.tanggunganLain) || 0
+
+    const pengeluaranSekolah = parseFloat(formData.pengeluaranSekolah) || 0
+    const uangSaku = parseFloat(formData.uangSaku) || 0
+
+    const totalPemasukan = pemasukanSuami + pemasukanIstri + pemasukanLainnya1 + pemasukanLainnya2
+    const totalPengeluaran = pengeluaranSuami + pengeluaranIstri + makan + listrik + sosial + tanggunganLain
+    const totalAnakPengeluaran = pengeluaranSekolah + uangSaku
+    const pendapatanBersih = totalPemasukan - totalPengeluaran - totalAnakPengeluaran
+
     // Check if sub-analysis for this application already exists
     const existingSubAnalysis = await prisma.subFinancingAnalysis.findUnique({
       where: { applicationId },
@@ -22,20 +43,20 @@ export async function POST(request: NextRequest) {
       const updatedSubAnalysis = await prisma.subFinancingAnalysis.update({
         where: { applicationId },
         data: {
-          pemasukanSuami: parseFloat(formData.pemasukanSuami) || 0,
-          pemasukanIstri: parseFloat(formData.pemasukanIstri) || 0,
-          pemasukanLainnya1: parseFloat(formData.pemasukanLainnya1) || 0,
-          pemasukanLainnya2: parseFloat(formData.pemasukanLainnya2) || 0,
-          pengeluaranSuami: parseFloat(formData.pengeluaranSuami) || 0,
-          pengeluaranIstri: parseFloat(formData.pengeluaranIstri) || 0,
-          makan: parseFloat(formData.makan) || 0,
-          listrik: parseFloat(formData.listrik) || 0,
-          sosial: parseFloat(formData.sosial) || 0,
-          tanggunganLain: parseFloat(formData.tanggunganLain) || 0,
+          pemasukanSuami,
+          pemasukanIstri,
+          pemasukanLainnya1,
+          pemasukanLainnya2,
+          pengeluaranSuami,
+          pengeluaranIstri,
+          makan,
+          listrik,
+          sosial,
+          tanggunganLain,
           jumlahAnak: parseInt(formData.jumlahAnak) || 0,
-          pengeluaranSekolah: parseFloat(formData.pengeluaranSekolah) || 0,
-          uangSaku: parseFloat(formData.uangSaku) || 0,
-          pendapatanBersih: parseFloat(formData.pendapatanBersih) || 0,
+          pengeluaranSekolah,
+          uangSaku,
+          pendapatanBersih,
         },
       });
       return NextResponse.json(
@@ -49,21 +70,21 @@ export async function POST(request: NextRequest) {
       // Create new record
       const subAnalysis = await prisma.subFinancingAnalysis.create({
         data: {
-          applicationId: applicationId,
-          pemasukanSuami: parseFloat(formData.pemasukanSuami) || 0,
-          pemasukanIstri: parseFloat(formData.pemasukanIstri) || 0,
-          pemasukanLainnya1: parseFloat(formData.pemasukanLainnya1) || 0,
-          pemasukanLainnya2: parseFloat(formData.pemasukanLainnya2) || 0,
-          pengeluaranSuami: parseFloat(formData.pengeluaranSuami) || 0,
-          pengeluaranIstri: parseFloat(formData.pengeluaranIstri) || 0,
-          makan: parseFloat(formData.makan) || 0,
-          listrik: parseFloat(formData.listrik) || 0,
-          sosial: parseFloat(formData.sosial) || 0,
-          tanggunganLain: parseFloat(formData.tanggunganLain) || 0,
+          applicationId,
+          pemasukanSuami,
+          pemasukanIstri,
+          pemasukanLainnya1,
+          pemasukanLainnya2,
+          pengeluaranSuami,
+          pengeluaranIstri,
+          makan,
+          listrik,
+          sosial,
+          tanggunganLain,
           jumlahAnak: parseInt(formData.jumlahAnak) || 0,
-          pengeluaranSekolah: parseFloat(formData.pengeluaranSekolah) || 0,
-          uangSaku: parseFloat(formData.uangSaku) || 0,
-          pendapatanBersih: parseFloat(formData.pendapatanBersih) || 0,
+          pengeluaranSekolah,
+          uangSaku,
+          pendapatanBersih,
         }
       })
       return NextResponse.json(
@@ -77,7 +98,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating/updating sub-analysis:", error)
     return NextResponse.json(
-      { error: "Terjadi kesalahan saat menyimpan data sub-analisa" },
+      { error: "Terjadi kesalahan saat menyimpan data sub-analisa: " + (error as Error).message },
       { status: 500 }
     )
   }

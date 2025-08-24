@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 export async function POST(request: NextRequest) {
   try {
     const applicationData = await request.json()
+    console.log('Received application data:', applicationData)
 
     // Create or find client based on email
     let client = await prisma.client.findUnique({
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Create the financing application
     const application = await prisma.financingApplication.create({
       data: {
         clientId: client.id,
@@ -39,12 +41,16 @@ export async function POST(request: NextRequest) {
         spouseIncome: applicationData.spouseIncome ? parseFloat(applicationData.spouseIncome) : null,
         homeAddress: applicationData.homeAddress,
         phoneNumber: applicationData.phoneNumber,
-        emergencyContact: applicationData.emergencyContact,
-        emergencyPhone: applicationData.emergencyPhone,
+        // Map the contact fields correctly
+        contact1: applicationData.contact1 || null,
+        contact2: applicationData.contact2 || null,
+        contact3: applicationData.contact3 || null,
+        contact4: applicationData.contact4 || null,
+        contact5: applicationData.contact5 || null,
         businessName: applicationData.businessName || null,
         businessType: applicationData.businessType || null,
         businessAddress: applicationData.businessAddress || null,
-        businessDuration: applicationData.businessDuration ? parseInt(applicationData.businessDuration) : null,
+        businessDuration: applicationData.businessDuration ? parseInt(applicationData.businessDuration) * 12 : null, // Convert years to months
         businessIncome: applicationData.businessIncome ? parseFloat(applicationData.businessIncome) : null,
         loanAmount: parseFloat(applicationData.loanAmount),
         loanPurpose: applicationData.loanPurpose,
@@ -53,28 +59,28 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Create checklist with data from form
+    // Create checklist with default values
     await prisma.applicationChecklist.create({
       data: {
         applicationId: application.id,
-        ktpOriginal: applicationData.checklist?.ktpOriginal || false,
-        ktpCopy: applicationData.checklist?.ktpCopy || false,
-        kkOriginal: applicationData.checklist?.kkOriginal || false,
-        kkCopy: applicationData.checklist?.kkCopy || false,
-        slipGaji: applicationData.checklist?.slipGaji || false,
-        suratKeterjaKerja: applicationData.checklist?.suratKeterjaKerja || false,
-        rekKoran: applicationData.checklist?.rekKoran || false,
-        buktiPenghasilan: applicationData.checklist?.buktiPenghasilan || false,
-        siup: applicationData.checklist?.siup || false,
-        tdp: applicationData.checklist?.tdp || false,
-        buktiTempatUsaha: applicationData.checklist?.buktiTempatUsaha || false,
-        fotoUsaha: applicationData.checklist?.fotoUsaha || false,
-        sertifikatTanah: applicationData.checklist?.sertifikatTanah || false,
-        bpkb: applicationData.checklist?.bpkb || false,
-        imb: applicationData.checklist?.imb || false,
-        suratNikah: applicationData.checklist?.suratNikah || false,
-        aktaKelahiran: applicationData.checklist?.aktaKelahiran || false,
-        referensiBank: applicationData.checklist?.referensiBank || false
+        ktpOriginal: false,
+        ktpCopy: false,
+        kkOriginal: false,
+        kkCopy: false,
+        slipGaji: false,
+        suratKeterjaKerja: false,
+        rekKoran: false,
+        buktiPenghasilan: false,
+        siup: false,
+        tdp: false,
+        buktiTempatUsaha: false,
+        fotoUsaha: false,
+        sertifikatTanah: false,
+        bpkb: false,
+        imb: false,
+        suratNikah: false,
+        aktaKelahiran: false,
+        referensiBank: false
       }
     })
 
@@ -113,7 +119,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating application:", error)
     return NextResponse.json(
-      { error: "Terjadi kesalahan saat menyimpan data pembiayaan" },
+      { error: "Terjadi kesalahan saat menyimpan data pembiayaan: " + (error as Error).message },
       { status: 500 }
     )
   }

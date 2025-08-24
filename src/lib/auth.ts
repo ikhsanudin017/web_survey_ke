@@ -19,30 +19,35 @@ export const authOptions = {
           return null
         }
 
-        const employee = await prisma.employee.findUnique({
-          where: {
-            email: credentials.email
+        try {
+          const employee = await prisma.employee.findUnique({
+            where: {
+              email: credentials.email
+            }
+          })
+
+          if (!employee) {
+            return null
           }
-        })
 
-        if (!employee) {
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            employee.password
+          )
+
+          if (!isPasswordValid) {
+            return null
+          }
+
+          return {
+            id: employee.id,
+            email: employee.email,
+            name: employee.name,
+            role: "employee"
+          }
+        } catch (error) {
+          console.error("Auth error:", error)
           return null
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          employee.password
-        )
-
-        if (!isPasswordValid) {
-          return null
-        }
-
-        return {
-          id: employee.id,
-          email: employee.email,
-          name: employee.name,
-          role: "employee"
         }
       }
     }),
@@ -58,53 +63,62 @@ export const authOptions = {
           return null
         }
 
-        const client = await prisma.client.findUnique({
-          where: {
-            email: credentials.email
+        try {
+          const client = await prisma.client.findUnique({
+            where: {
+              email: credentials.email
+            }
+          })
+
+          if (!client) {
+            return null
           }
-        })
 
-        if (!client) {
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            client.password
+          )
+
+          if (!isPasswordValid) {
+            return null
+          }
+
+          return {
+            id: client.id,
+            email: client.email,
+            name: client.name,
+            role: "client"
+          }
+        } catch (error) {
+          console.error("Auth error:", error)
           return null
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          client.password
-        )
-
-        if (!isPasswordValid) {
-          return null
-        }
-
-        return {
-          id: client.id,
-          email: client.email,
-          name: client.name,
-          role: "client"
         }
       }
     })
   ],
   session: {
-    strategy: "jwt" as const
+    strategy: "jwt" as const,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
     async jwt({ token, user }: any) {
       if (user) {
         token.role = user.role
+        token.id = user.id
       }
       return token
     },
     async session({ session, token }: any) {
       if (token) {
-        session.user.id = token.sub!
+        session.user.id = token.id
         session.user.role = token.role as string
       }
       return session
     }
   },
   pages: {
-    signIn: "/auth/signin"
-  }
+    signIn: "/auth/signin",
+    error: "/auth/signin"
+  },
+  debug: process.env.NODE_ENV === "development"
 }

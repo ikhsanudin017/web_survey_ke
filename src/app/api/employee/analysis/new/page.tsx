@@ -86,7 +86,7 @@ function AnalysisForm() {
     kesimpulanKarakter: '',
     kapasitasDanKelancaran: '',
 
-    // 3. ANALISA JAMINAN (Tanpa Faktor Potongan)
+    // 3. ANALISA JAMINAN
     jenisJaminan: '',
     nilaiTaksiran: '',
     kondisiJaminan: '',
@@ -102,7 +102,7 @@ function AnalysisForm() {
     isLainnya: false,
     masaBerakhirKontrak: '',
 
-    // 5. CAPITAL (Updated)
+    // 5. CAPITAL
     rumah: 'Sendiri', // Dropdown: Sendiri/Sewa
     kendaraanMotor: 0,
     kendaraanMobil: 0,
@@ -286,7 +286,7 @@ function AnalysisForm() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-center text-gray-900">ANALISA PEMBIAYAAN ENHANCED</h1>
+              <h1 className="text-3xl font-bold text-center text-gray-900">ANALISA PEMBIAYAAN</h1>
               <p className="text-center text-gray-700 font-medium">KOPERASI KIRAP ENTREPRENEURSHIP</p>
             </div>
             <Button 
@@ -304,7 +304,7 @@ function AnalysisForm() {
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-6xl mx-auto">
           <CardHeader>
-            <CardTitle className="text-center">Form Analisa Pembiayaan Enhanced dengan AI</CardTitle>
+            <CardTitle className="text-center">Form Analisa Pembiayaan Enhanced</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
 
@@ -683,7 +683,11 @@ function AnalysisForm() {
             <div className="space-y-4">
               <h3 className="text-lg font-bold text-gray-900">5. CAPITAL</h3>
               <div className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">'use client'
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Rumah:</label>
+                    <select
+                      value={form'use client'
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -771,7 +775,7 @@ function AnalysisForm() {
     kesimpulanKarakter: '',
     kapasitasDanKelancaran: '',
 
-    // 3. ANALISA JAMINAN (Tanpa Faktor Potongan)
+    // 3. ANALISA JAMINAN
     jenisJaminan: '',
     nilaiTaksiran: '',
     kondisiJaminan: '',
@@ -787,7 +791,7 @@ function AnalysisForm() {
     isLainnya: false,
     masaBerakhirKontrak: '',
 
-    // 5. CAPITAL (Updated)
+    // 5. CAPITAL
     rumah: 'Sendiri', // Dropdown: Sendiri/Sewa
     kendaraanMotor: 0,
     kendaraanMobil: 0,
@@ -971,7 +975,7 @@ function AnalysisForm() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-center text-gray-900">ANALISA PEMBIAYAAN ENHANCED</h1>
+              <h1 className="text-3xl font-bold text-center text-gray-900">ANALISA PEMBIAYAAN</h1>
               <p className="text-center text-gray-700 font-medium">KOPERASI KIRAP ENTREPRENEURSHIP</p>
             </div>
             <Button 
@@ -989,7 +993,7 @@ function AnalysisForm() {
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-6xl mx-auto">
           <CardHeader>
-            <CardTitle className="text-center">Form Analisa Pembiayaan Enhanced dengan AI</CardTitle>
+            <CardTitle className="text-center">Form Analisa Pembiayaan Enhanced</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
 
@@ -1034,199 +1038,7 @@ function AnalysisForm() {
             {/* Data Pemohon (Auto-filled) */}
             <div className="space-y-4 bg-green-50 p-4 rounded-lg">
               <h3 className="text-lg font-bold text-gray-900">Data Pemohon (Auto-filled dari Database)</h3>
-                                <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Rumah:</label>
-                      <select
-                        value={formData.rumah}
-                        onChange={(e) => handleInputChange('rumah', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="Sendiri">Sendiri</option>
-                        <option value="Sewa">Sewa</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Lainnya:</label>
-                      <Input
-                        value={formData.lainnya}
-                        onChange={(e) => handleInputChange('lainnya', e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="font-medium text-gray-800 mb-2">Kendaraan:</h4>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm">Motor:</span>
-                        <Input
-                          type="number"
-                          min="0"
-                          value={formData.kendaraanMotor}
-                          onChange={(e) => handleInputChange('kendaraanMotor', parseInt(e.target.value) || 0)}
-                          className="w-20"
-                        />
-                        <span className="text-sm text-gray-600">unit</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm">Mobil:</span>
-                        <Input
-                          type="number"
-                          min="0"
-                          value={formData.kendaraanMobil}
-                          onChange={(e) => handleInputChange('kendaraanMobil', parseInt(e.target.value) || 0)}
-                          className="w-20"
-                        />
-                        <span className="text-sm text-gray-600">unit</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 6. CHECKLIST KELENGKAPAN DOKUMEN (Auto-filled) */}
-              <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-bold text-gray-900">6. CHECKLIST KELENGKAPAN DOKUMEN (Auto-filled dari Upload Client)</h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={formData.fcKtpPemohon}
-                        readOnly
-                        className="mr-2"
-                      />
-                      <span>FC KTP Pemohon</span>
-                      <span className={`ml-auto px-2 py-1 text-xs rounded ${formData.fcKtpPemohon ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {formData.fcKtpPemohon ? 'Ada' : 'Tidak Ada'}
-                      </span>
-                    </label>
-                    
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={formData.fcKtpSuamiIstri}
-                        readOnly
-                        className="mr-2"
-                      />
-                      <span>FC KTP Suami/Istri</span>
-                      <span className={`ml-auto px-2 py-1 text-xs rounded ${formData.fcKtpSuamiIstri ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {formData.fcKtpSuamiIstri ? 'Ada' : 'Tidak Ada'}
-                      </span>
-                    </label>
-
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={formData.fcSlipGaji}
-                        readOnly
-                        className="mr-2"
-                      />
-                      <span>FC Slip Gaji</span>
-                      <span className={`ml-auto px-2 py-1 text-xs rounded ${formData.fcSlipGaji ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {formData.fcSlipGaji ? 'Ada' : 'Tidak Ada'}
-                      </span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* 7. KESIMPULAN AKHIR */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-gray-900">7. KESIMPULAN AKHIR</h3>
-                <div className="flex items-center space-x-8">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="kesimpulan"
-                      value="Layak"
-                      checked={formData.kesimpulanAkhir === 'Layak'}
-                      onChange={(e) => handleInputChange('kesimpulanAkhir', e.target.value)}
-                      className="mr-2"
-                    />
-                    <span>Layak</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="kesimpulan"
-                      value="Tidak Layak"
-                      checked={formData.kesimpulanAkhir === 'Tidak Layak'}
-                      onChange={(e) => handleInputChange('kesimpulanAkhir', e.target.value)}
-                      className="mr-2"
-                    />
-                    <span>Tidak Layak</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Signature Section */}
-              <div className="space-y-6 pt-8 border-t">
-                <div className="grid md:grid-cols-3 gap-8 text-center">
-                  <div>
-                    <p className="mb-4">Petugas Survei</p>
-                    <div className="h-16 border-b border-gray-400 mb-2"></div>
-                    <Input
-                      value={formData.petugasSurvei}
-                      onChange={(e) => handleInputChange('petugasSurvei', e.target.value)}
-                      placeholder="Nama Petugas Survei"
-                      className="text-center"
-                    />
-                  </div>
-                  <div>
-                    <p className="mb-4">Pengurus</p>
-                    <div className="h-16 border-b border-gray-400 mb-2"></div>
-                    <Input
-                      value={formData.pengurus}
-                      onChange={(e) => handleInputChange('pengurus', e.target.value)}
-                      placeholder="Nama Pengurus"
-                      className="text-center"
-                    />
-                  </div>
-                  <div>
-                    <p className="mb-4">Approver</p>
-                    <div className="h-16 border-b border-gray-400 mb-2"></div>
-                    <Input
-                      value={formData.approver}
-                      onChange={(e) => handleInputChange('approver', e.target.value)}
-                      placeholder="Nama Approver"
-                      className="text-center"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex justify-center pt-8">
-                <Button 
-                  onClick={handleSubmit}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
-                >
-                  Simpan Analisa Pembiayaan Enhanced
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    )
-  }
-
-  export default function NewAnalysisPage() {
-    return (
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Memuat halaman...</p>
-          </div>
-        </div>
-      }>
-        <AnalysisForm />
-      </Suspense>
-    )
-  }
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Nama:</label>
                   <Input
@@ -1561,3 +1373,195 @@ function AnalysisForm() {
               <h3 className="text-lg font-bold text-gray-900">5. CAPITAL</h3>
               <div className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Rumah:</label>
+                    <select
+                      value={formData.rumah}
+                      onChange={(e) => handleInputChange('rumah', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="Sendiri">Sendiri</option>
+                      <option value="Sewa">Sewa</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Lainnya:</label>
+                    <Input
+                      value={formData.lainnya}
+                      onChange={(e) => handleInputChange('lainnya', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-medium text-gray-800 mb-2">Kendaraan:</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm">Motor:</span>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={formData.kendaraanMotor}
+                        onChange={(e) => handleInputChange('kendaraanMotor', parseInt(e.target.value) || 0)}
+                        className="w-20"
+                      />
+                      <span className="text-sm text-gray-600">unit</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm">Mobil:</span>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={formData.kendaraanMobil}
+                        onChange={(e) => handleInputChange('kendaraanMobil', parseInt(e.target.value) || 0)}
+                        className="w-20"
+                      />
+                      <span className="text-sm text-gray-600">unit</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 6. CHECKLIST KELENGKAPAN DOKUMEN (Auto-filled) */}
+            <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+              <h3 className="text-lg font-bold text-gray-900">6. CHECKLIST KELENGKAPAN DOKUMEN (Auto-filled dari Upload Client)</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.fcKtpPemohon}
+                      readOnly
+                      className="mr-2"
+                    />
+                    <span>FC KTP Pemohon</span>
+                    <span className={`ml-auto px-2 py-1 text-xs rounded ${formData.fcKtpPemohon ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {formData.fcKtpPemohon ? 'Ada' : 'Tidak Ada'}
+                    </span>
+                  </label>
+                  
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.fcKtpSuamiIstri}
+                      readOnly
+                      className="mr-2"
+                    />
+                    <span>FC KTP Suami/Istri</span>
+                    <span className={`ml-auto px-2 py-1 text-xs rounded ${formData.fcKtpSuamiIstri ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {formData.fcKtpSuamiIstri ? 'Ada' : 'Tidak Ada'}
+                    </span>
+                  </label>
+
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.fcSlipGaji}
+                      readOnly
+                      className="mr-2"
+                    />
+                    <span>FC Slip Gaji</span>
+                    <span className={`ml-auto px-2 py-1 text-xs rounded ${formData.fcSlipGaji ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {formData.fcSlipGaji ? 'Ada' : 'Tidak Ada'}
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* 7. KESIMPULAN AKHIR */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-gray-900">7. KESIMPULAN AKHIR</h3>
+              <div className="flex items-center space-x-8">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="kesimpulan"
+                    value="Layak"
+                    checked={formData.kesimpulanAkhir === 'Layak'}
+                    onChange={(e) => handleInputChange('kesimpulanAkhir', e.target.value)}
+                    className="mr-2"
+                  />
+                  <span>Layak</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="kesimpulan"
+                    value="Tidak Layak"
+                    checked={formData.kesimpulanAkhir === 'Tidak Layak'}
+                    onChange={(e) => handleInputChange('kesimpulanAkhir', e.target.value)}
+                    className="mr-2"
+                  />
+                  <span>Tidak Layak</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Signature Section */}
+            <div className="space-y-6 pt-8 border-t">
+              <div className="grid md:grid-cols-3 gap-8 text-center">
+                <div>
+                  <p className="mb-4">Petugas Survei</p>
+                  <div className="h-16 border-b border-gray-400 mb-2"></div>
+                  <Input
+                    value={formData.petugasSurvei}
+                    onChange={(e) => handleInputChange('petugasSurvei', e.target.value)}
+                    placeholder="Nama Petugas Survei"
+                    className="text-center"
+                  />
+                </div>
+                <div>
+                  <p className="mb-4">Pengurus</p>
+                  <div className="h-16 border-b border-gray-400 mb-2"></div>
+                  <Input
+                    value={formData.pengurus}
+                    onChange={(e) => handleInputChange('pengurus', e.target.value)}
+                    placeholder="Nama Pengurus"
+                    className="text-center"
+                  />
+                </div>
+                <div>
+                  <p className="mb-4">Approver</p>
+                  <div className="h-16 border-b border-gray-400 mb-2"></div>
+                  <Input
+                    value={formData.approver}
+                    onChange={(e) => handleInputChange('approver', e.target.value)}
+                    placeholder="Nama Approver"
+                    className="text-center"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-center pt-8">
+              <Button 
+                onClick={handleSubmit}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
+              >
+                Simpan Analisa Pembiayaan
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
+
+export default function NewAnalysisPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Memuat halaman...</p>
+        </div>
+      </div>
+    }>
+      <AnalysisForm />
+    </Suspense>
+  )
+}
