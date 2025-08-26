@@ -43,14 +43,7 @@ export async function POST(request: NextRequest) {
       data: {
         applicationId,
         employeeId: session.user.id,
-        riskLevel: analysisResult.riskLevel,
-        riskScore: analysisResult.riskScore,
-        approvalLikelihood: analysisResult.approvalLikelihood,
-        debtToIncomeRatio: analysisResult.debtToIncomeRatio,
-        characterScore: analysisResult.characterScore,
-        recommendations: analysisResult.recommendations,
-        keyConcerns: analysisResult.keyConcerns,
-        analysisData: JSON.stringify(analysisData),
+        
         status: 'COMPLETED'
       }
     });
@@ -60,7 +53,7 @@ export async function POST(request: NextRequest) {
       where: { id: applicationId },
       data: { 
         status: 'ANALYZED',
-        riskLevel: analysisResult.riskLevel
+        
       }
     });
 
