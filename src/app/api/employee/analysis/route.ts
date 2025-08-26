@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const analysisResult = AIAnalysisEngine.analyzeApplication(analysisData);
 
     // Create analysis record
-    const analysis = await prisma.analysis.create({
+    const analysis = await prisma.financingAnalysis.create({
       data: {
         applicationId,
         employeeId: session.user.id,
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const analyses = await prisma.analysis.findMany({
+    const analyses = await prisma.financingAnalysis.findMany({
       where: { applicationId },
       orderBy: { createdAt: 'desc' },
       include: {
