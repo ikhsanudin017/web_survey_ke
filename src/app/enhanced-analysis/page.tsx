@@ -217,11 +217,9 @@ export default function EnhancedAnalysisPage() {
 
           <div className="bg-white rounded-lg shadow-lg p-6">
             <EnhancedForm
-              step={currentStep}
-              data={analysisData[getStepKey(currentStep)] || {}}
+              defaultValues={analysisData[getStepKey(currentStep)] || {}}
               onSubmit={handleStepComplete}
               isLoading={isLoading}
-              applicationId={applicationId}
             />
           </div>
 
