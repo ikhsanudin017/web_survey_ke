@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProgressIndicator, ProgressStep } from '@/components/ProgressIndicator';
-import { EnhancedForm } from '@/components/EnhancedForm';
+import { EnhancedForm, FormFieldConfig } from '@/components/EnhancedForm';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -15,6 +15,13 @@ import {
   FinancialAnalysis,
   AIAnalysisResult 
 } from '@/types/enhanced-analysis';
+import {
+  Step1CharacterSchema,
+  Step2DocumentSchema,
+  Step3CollateralSchema,
+  Step4FinancialSchema,
+  Step5DecisionSchema
+} from '@/lib/validations/unified-enhanced-analysis';
 
 export default function EnhancedAnalysisPage() {
   const router = useRouter();
@@ -196,6 +203,76 @@ export default function EnhancedAnalysisPage() {
     return descriptions[step];
   };
 
+  const getStepConfig = (step: AnalysisStep) => {
+    switch (step) {
+      case 1:
+        return {
+          schema: Step1CharacterSchema,
+          fields: [
+            { name: 'honestyRating', label: 'Kejujuran (1-5)', type: 'number', required: true },
+            { name: 'responsibilityRating', label: 'Tanggung jawab (1-5)', type: 'number', required: true },
+            { name: 'financialDisciplineRating', label: 'Disiplin keuangan (1-5)', type: 'number', required: true },
+            { name: 'workCommitmentRating', label: 'Komitmen kerja (1-5)', type: 'number', required: true },
+            { name: 'communicationRating', label: 'Komunikasi (1-5)', type: 'number', required: true },
+            { name: 'evaluatorName', label: 'Nama Evaluator', type: 'text', required: true },
+            { name: 'evaluationDate', label: 'Tanggal Evaluasi', type: 'date', required: true },
+            { name: 'characterNotes', label: 'Catatan Karakter', type: 'textarea' },
+          ] as FormFieldConfig<typeof Step1CharacterSchema>[],
+        };
+      case 2:
+        return {
+          schema: Step2DocumentSchema,
+          fields: [
+            { name: 'documentTypes', label: 'Jenis Dokumen', type: 'text', required: true }, // This should be a multi-select or checkbox group
+            { name: 'documentStatus', label: 'Status Dokumen', type: 'text', required: true }, // This should be a select
+            { name: 'documentConfidence', label: 'Keyakinan Dokumen', type: 'number', required: true },
+            { name: 'missingDocuments', label: 'Dokumen Hilang', type: 'textarea' },
+          ] as FormFieldConfig<typeof Step2DocumentSchema>[],
+        };
+      case 3:
+        return {
+          schema: Step3CollateralSchema,
+          fields: [
+            { name: 'collateralType', label: 'Jenis Jaminan', type: 'select', required: true, options: [{ value: 'PROPERTY', label: 'Properti' }, { value: 'VEHICLE', label: 'Kendaraan' }, { value: 'DEPOSIT', label: 'Deposit' }, { value: 'GUARANTEE', label: 'Jaminan' }, { value: 'OTHER', label: 'Lainnya' }] },
+            { name: 'estimatedValue', label: 'Nilai Estimasi', type: 'number', required: true },
+            { name: 'marketValue', label: 'Nilai Pasar', type: 'number', required: true },
+            { name: 'loanToValueRatio', label: 'Rasio LTV', type: 'number', required: true },
+            { name: 'collateralVerificationStatus', label: 'Status Verifikasi Jaminan', type: 'select', required: true, options: [{ value: 'VERIFIED', label: 'Terverifikasi' }, { value: 'UNVERIFIED', label: 'Belum Terverifikasi' }, { value: 'DISPUTED', label: 'Sengketa' }] },
+            { name: 'legalStatus', label: 'Status Hukum', type: 'select', required: true, options: [{ value: 'CLEAR', label: 'Jelas' }, { value: 'ENCUMBERED', label: 'Dibebani' }, { value: 'DISPUTED', label: 'Sengketa' }] },
+            { name: 'collateralDocuments', label: 'Dokumen Jaminan', type: 'text' }, // This should be a complex field
+          ] as FormFieldConfig<typeof Step3CollateralSchema>[],
+        };
+      case 4:
+        return {
+          schema: Step4FinancialSchema,
+          fields: [
+            { name: 'monthlyIncome', label: 'Penghasilan Bulanan', type: 'number', required: true },
+            { name: 'monthlyExpenses', label: 'Pengeluaran Bulanan', type: 'number', required: true },
+            { name: 'disposableIncome', label: 'Pendapatan Bersih', type: 'number', required: true },
+            { name: 'debtServiceRatio', label: 'Rasio Pelayanan Utang', type: 'number', required: true },
+            { name: 'existingDebts', label: 'Utang yang Ada', type: 'textarea' }, // This should be a complex field
+            { name: 'creditScore', label: 'Skor Kredit', type: 'number' },
+          ] as FormFieldConfig<typeof Step4FinancialSchema>[],
+        };
+      case 5:
+        return {
+          schema: Step5DecisionSchema,
+          fields: [
+            { name: 'finalDecision', label: 'Keputusan Akhir', type: 'select', required: true, options: [{ value: 'APPROVED', label: 'Disetujui' }, { value: 'REJECTED', label: 'Ditolak' }, { value: 'PENDING', label: 'Menunggu' }, { value: 'CONDITIONAL', label: 'Bersyarat' }] },
+            { name: 'approvedAmount', label: 'Jumlah Disetujui', type: 'number' },
+            { name: 'approvedTerm', label: 'Jangka Waktu Disetujui (bulan)', type: 'number' },
+            { name: 'interestRate', label: 'Suku Bunga (%)', type: 'number' },
+            { name: 'conditions', label: 'Kondisi', type: 'textarea' },
+            { name: 'rejectionReasons', label: 'Alasan Penolakan', type: 'textarea' },
+            { name: 'decisionMaker', label: 'Pembuat Keputusan', type: 'text', required: true },
+            { name: 'decisionNotes', label: 'Catatan Keputusan', type: 'textarea' },
+          ] as FormFieldConfig<typeof Step5DecisionSchema>[],
+        };
+      default:
+        return { schema: z.object({}), fields: [] };
+    }
+  };
+
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
@@ -217,9 +294,10 @@ export default function EnhancedAnalysisPage() {
 
           <div className="bg-white rounded-lg shadow-lg p-6">
             <EnhancedForm
+              schema={getStepConfig(currentStep).schema}
+              fields={getStepConfig(currentStep).fields}
               defaultValues={analysisData[getStepKey(currentStep)] || {}}
               onSubmit={handleStepComplete}
-              
             />
           </div>
 
