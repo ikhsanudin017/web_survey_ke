@@ -61,11 +61,7 @@ export async function POST(request: NextRequest) {
       success: true,
       analysis: {
         id: analysis.id,
-        riskLevel: analysis.riskLevel,
-        riskScore: analysis.riskScore,
-        approvalLikelihood: analysis.approvalLikelihood,
-        recommendations: analysis.recommendations,
-        keyConcerns: analysis.keyConcerns
+        
       }
     });
 
