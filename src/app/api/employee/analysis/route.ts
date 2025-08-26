@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         applicationId,
         employeeId: session.user.id,
         
-        status: 'COMPLETED'
+        
       }
     });
 
