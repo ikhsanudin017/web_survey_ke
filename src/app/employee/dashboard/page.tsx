@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+import * as XLSX from 'xlsx'
 
 interface Employee {
   id: string
@@ -13,6 +16,8 @@ interface Employee {
 export default function EmployeeDashboard() {
   const [currentEmployee, setCurrentEmployee] = useState<Employee | null>(null)
   const [applications, setApplications] = useState([])
+  const [analyses, setAnalyses] = useState([])
+  const [subAnalyses, setSubAnalyses] = useState([])
   const [stats, setStats] = useState({
     pending: 0,
     inProgress: 0,
@@ -22,7 +27,6 @@ export default function EmployeeDashboard() {
   const router = useRouter()
 
   useEffect(() => {
-    // Cek apakah pegawai sudah login
     const employeeData = localStorage.getItem('currentEmployee')
     if (!employeeData) {
       router.push('/employee/login')
@@ -30,26 +34,40 @@ export default function EmployeeDashboard() {
     }
 
     setCurrentEmployee(JSON.parse(employeeData))
-    fetchApplications()
+    fetchData()
   }, [router])
 
-  const fetchApplications = async () => {
+  const fetchData = async () => {
     try {
-      const response = await fetch('/api/applications')
-      const result = await response.json()
-      
-      if (response.ok) {
-        setApplications(result.applications)
-        
-        // Hitung statistik
-        const pending = result.applications.filter((app: { status: string }) => app.status === 'PENDING').length
-        const inProgress = result.applications.filter((app: { financingAnalysis: unknown }) => app.financingAnalysis).length
-        const completed = result.applications.filter((app: { status: string }) => app.status === 'APPROVED' || app.status === 'REJECTED').length
-        
+      const [applicationsRes, subAnalysesRes] = await Promise.all([
+        fetch('/api/applications'),
+        fetch('/api/employee/sub-analysis'),
+      ])
+
+      const applicationsResult = await applicationsRes.json()
+      const subAnalysesResult = await subAnalysesRes.json()
+
+      if (applicationsRes.ok) {
+        setApplications(applicationsResult.applications)
+        const pending = applicationsResult.applications.filter((app: { status: string }) => app.status === 'PENDING').length
+        const inProgress = applicationsResult.applications.filter((app: { financingAnalysis: unknown }) => app.financingAnalysis).length
+        const completed = applicationsResult.applications.filter((app: { status: string }) => app.status === 'APPROVED' || app.status === 'REJECTED').length
         setStats({ pending, inProgress, completed })
+
+        const analysesPromises = applicationsResult.applications.map((app: { id: string }) =>
+          fetch(`/api/employee/analysis?applicationId=${app.id}`)
+        )
+        const analysesResults = await Promise.all(analysesPromises)
+        const analysesJson = await Promise.all(analysesResults.map(res => res.json()))
+        setAnalyses(analysesJson.flatMap(res => res.analyses))
       }
+
+      if (subAnalysesRes.ok) {
+        setSubAnalyses(subAnalysesResult.subAnalyses)
+      }
+
     } catch (error) {
-      console.error('Error fetching applications:', error)
+      console.error('Error fetching data:', error)
     } finally {
       setLoading(false)
     }
@@ -58,6 +76,99 @@ export default function EmployeeDashboard() {
   const handleLogout = () => {
     localStorage.removeItem('currentEmployee')
     router.push('/')
+  }
+
+  const handleDeleteApplication = async (applicationId: string) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus pengajuan ini?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/applications/${applicationId}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        alert('Pengajuan berhasil dihapus!')
+        fetchData() // Refresh the list
+      } else {
+        alert('Gagal menghapus pengajuan!')
+      }
+    } catch (error) {
+      console.error('Error deleting application:', error)
+      alert('Terjadi kesalahan saat menghapus pengajuan!')
+    }
+  }
+
+  const handleExportPdf = () => {
+    const doc = new jsPDF()
+    doc.text('Laporan Pengajuan Pembiayaan', 14, 16)
+
+    // Applications Table
+    doc.text('Pengajuan Pembiayaan', 14, 30)
+    const applicationData = applications.map((app: any) => [
+      app.fullName,
+      app.loanAmount,
+      app.loanTerm,
+      app.status,
+      new Date(app.submittedAt).toLocaleDateString('id-ID'),
+    ])
+    autoTable(doc, {
+      startY: 35,
+      head: [['Nama', 'Jumlah Pinjaman', 'Jangka Waktu', 'Status', 'Tanggal Pengajuan']],
+      body: applicationData,
+    })
+
+    // Sub-Analyses Table
+    doc.addPage()
+    doc.text('Sub Analisis Pembiayaan', 14, 16)
+    const subAnalysisData = subAnalyses.map((sub: any) => [
+      sub?.application?.fullName || '',
+      sub.pendapatanBersih,
+      sub.angsuranMaksimal,
+      sub.plafonMaksimal,
+    ])
+    autoTable(doc, {
+      startY: 25,
+      head: [['Nama', 'Pendapatan Bersih', 'Angsuran Maksimal', 'Plafon Maksimal']],
+      body: subAnalysisData,
+    })
+
+    // Analyses Table
+    doc.addPage()
+    doc.text('Analisis Pembiayaan', 14, 16)
+    const analysisData = analyses.map((analysis: any) => [
+      analysis?.applicationId || '',
+      analysis.riskLevel,
+      analysis.riskScore,
+      analysis.approvalLikelihood,
+      analysis?.employee?.name || '',
+    ])
+    autoTable(doc, {
+      startY: 25,
+      head: [['ID Aplikasi', 'Tingkat Risiko', 'Skor Risiko', 'Kemungkinan Disetujui', 'Analis']],
+      body: analysisData,
+    })
+
+    doc.save(`laporan-pembiayaan-${new Date().toISOString().split('T')[0]}.pdf`)
+  }
+
+  const handleExportExcel = () => {
+    const wb = XLSX.utils.book_new()
+
+    // Applications Sheet
+    const ws1 = XLSX.utils.json_to_sheet(applications)
+    XLSX.utils.book_append_sheet(wb, ws1, 'Pengajuan Pembiayaan')
+
+    // Sub-Analyses Sheet
+    const ws2 = XLSX.utils.json_to_sheet(subAnalyses)
+    XLSX.utils.book_append_sheet(wb, ws2, 'Sub Analisis')
+
+    // Analyses Sheet
+    const ws3 = XLSX.utils.json_to_sheet(analyses)
+    XLSX.utils.book_append_sheet(wb, ws3, 'Analisis Pembiayaan')
+
+    XLSX.writeFile(wb, `laporan-pembiayaan-${new Date().toISOString().split('T')[0]}.xlsx`)
   }
 
   if (loading) {
@@ -78,33 +189,51 @@ export default function EmployeeDashboard() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Dashboard Pegawai</h1>
+              <img src="/logo ksu ke.png" alt="KSU KE Logo" className="h-10" />
               <p className="text-gray-700 mt-1">
                 Selamat datang, <span className="font-semibold text-emerald-700">{currentEmployee?.name}</span>
               </p>
             </div>
-            <Button 
-              onClick={handleLogout} 
-              variant="outline"
-              className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-            >
-              Logout
-            </Button>
+            <div className="flex space-x-2">
+              <Button 
+                onClick={handleExportPdf}
+                variant="outline"
+                className="border-blue-200 text-blue-700 hover:bg-blue-50"
+              >
+                📄 Export PDF
+              </Button>
+              <Button 
+                onClick={handleExportExcel}
+                variant="outline"
+                className="border-green-200 text-green-700 hover:bg-green-50"
+              >
+                📊 Export Excel
+              </Button>
+              <Button 
+                onClick={handleLogout} 
+                variant="outline"
+                className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+              >
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="container mx-auto px-4 py-8">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {/* Stats Cards */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Enhanced Stats Cards */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Pengajuan Baru</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-blue-600">{stats.pending}</div>
-              <p className="text-gray-600">Menunggu analisa</p>
+              <p className="text-gray-600">
+                {applications.length > 0 ? `${((stats.pending / applications.length) * 100).toFixed(1)}%` : '0%'} dari total
+              </p>
             </CardContent>
           </Card>
 
@@ -114,17 +243,37 @@ export default function EmployeeDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-yellow-600">{stats.inProgress}</div>
-              <p className="text-gray-600">Sedang dianalisa</p>
+              <p className="text-gray-600">
+                {applications.length > 0 ? `${((stats.inProgress / applications.length) * 100).toFixed(1)}%` : '0%'} dari total
+              </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Selesai</CardTitle>
+              <CardTitle className="text-lg">Disetujui</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-green-600">{stats.completed}</div>
-              <p className="text-gray-600">Analisa selesai</p>
+              <div className="text-3xl font-bold text-green-600">
+                {applications.filter((app: any) => app.status === 'APPROVED').length}
+              </div>
+              <p className="text-gray-600">
+                {applications.length > 0 ? `${((applications.filter((app: any) => app.status === 'APPROVED').length / applications.length) * 100).toFixed(1)}%` : '0%'} dari total
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Ditolak</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-red-600">
+                {applications.filter((app: any) => app.status === 'REJECTED').length}
+              </div>
+              <p className="text-gray-600">
+                {applications.length > 0 ? `${((applications.filter((app: any) => app.status === 'REJECTED').length / applications.length) * 100).toFixed(1)}%` : '0%'} dari total
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -220,13 +369,32 @@ export default function EmployeeDashboard() {
                           {app.status === 'PENDING' ? 'Menunggu' :
                            app.status === 'APPROVED' ? 'Disetujui' : 'Ditolak'}
                         </span>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => router.push(`/employee/applications/${app.id}`)}
-                        >
-                          Detail
-                        </Button>
+                        <div className="flex space-x-1">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => router.push(`/employee/applications/${app.id}`)}
+                            className="text-xs"
+                          >
+                            Detail
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => router.push(`/employee/applications/${app.id}/edit`)}
+                            className="text-xs text-blue-600 hover:text-blue-700"
+                          >
+                            Edit
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleDeleteApplication(app.id)}
+                            className="text-xs text-red-600 hover:text-red-700"
+                          >
+                            Hapus
+                          </Button>
+                        </div>
                       </div>
                     </div>
                     

@@ -1,13 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
 export default function NewSubAnalysisPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const applicationId = searchParams.get('applicationId')
+
   const [formData, setFormData] = useState({
     // PEMASUKAN
     suami: '',
@@ -84,12 +87,51 @@ export default function NewSubAnalysisPage() {
     return pemasukan - pengeluaran - anak
   }
 
+  const calculateAngsuranMaksimal = (pendapatanBersih: number) => {
+    return pendapatanBersih * 0.7; // 70% dari pendapatan bersih
+  };
+
+  const calculatePlafonMaksimal = (angsuranMaksimal: number, jangkaPembiayaan: number) => {
+    return angsuranMaksimal * jangkaPembiayaan;
+  };
+
+  // Auto-calculate derived values
+  useEffect(() => {
+    const pendapatanBersih = calculatePendapatanBersih();
+    const angsuranMaksimal = calculateAngsuranMaksimal(pendapatanBersih);
+    const jangkaPembiayaan = parseFloat(formData.jangkaPembiayaan) || 0;
+    const plafonMaksimal = calculatePlafonMaksimal(angsuranMaksimal, jangkaPembiayaan);
+
+    setFormData(prev => ({
+      ...prev,
+      pendapatanBersih: pendapatanBersih.toString(),
+      angsuranMaksimal: angsuranMaksimal.toString(),
+      plafonMaksimal: plafonMaksimal.toString(),
+    }));
+  }, [formData.suami, formData.istri, formData.lainnya1, formData.lainnya2, formData.lainnya3, formData.suamiPengeluaran, formData.istriPengeluaran, formData.makan, formData.listrik, formData.sosial, formData.tanggunganLain, formData.sekolah, formData.uangSaku, formData.jangkaPembiayaan]);
+
   const handleSubmit = async () => {
     try {
-      // TODO: Implement API call to save sub analysis
-      console.log('Sub Analysis data:', formData)
-      alert('Sub analisa pembiayaan berhasil disimpan!')
-      router.push('/employee/dashboard')
+      if (!applicationId) {
+        alert('Application ID not found in URL');
+        return;
+      }
+
+      const response = await fetch('/api/employee/sub-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ applicationId, ...formData }),
+      });
+
+      if (response.ok) {
+        alert('Sub analisa pembiayaan berhasil disimpan!');
+        router.push('/employee/dashboard');
+      } else {
+        const errorData = await response.json();
+        alert(`Terjadi kesalahan: ${errorData.error}`);
+      }
     } catch (error) {
       console.error('Error saving sub analysis:', error)
       alert('Terjadi kesalahan saat menyimpan sub analisa')
@@ -421,6 +463,7 @@ export default function NewSubAnalysisPage() {
                     onChange={(e) => handleInputChange('plafonMaksimal', e.target.value)}
                     className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
                     placeholder="0"
+                    readOnly
                   />
                 </div>
                 <span className="text-sm text-gray-600 w-16">Rp.</span>
@@ -435,6 +478,7 @@ export default function NewSubAnalysisPage() {
                     onChange={(e) => handleInputChange('angsuranMaksimal', e.target.value)}
                     className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
                     placeholder="0"
+                    readOnly
                   />
                 </div>
                 <span className="text-sm text-gray-600 w-16">Rp.</span>

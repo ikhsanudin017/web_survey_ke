@@ -30,9 +30,17 @@ function SubAnalysisForm() {
     jumlahAnak: '',
     pengeluaranSekolah: '',
     uangSaku: '',
+
+    // ANALISA KAPASITAS
+    jangkaPembiayaan: '',
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const [pemasukanSubtotal, setPemasukanSubtotal] = useState(0);
+  const [pengeluaranSubtotal, setPengeluaranSubtotal] = useState(0);
+  const [anakSubtotal, setAnakSubtotal] = useState(0);
+  const [pendapatanBersih, setPendapatanBersih] = useState(0);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -41,14 +49,21 @@ function SubAnalysisForm() {
     }))
   }
 
-  const calculateSubtotal = (fields: (keyof typeof formData)[]) => {
-    return fields.reduce((acc, field) => acc + (parseFloat(formData[field]) || 0), 0)
-  }
+  useEffect(() => {
+    const calculateSubtotal = (fields: (keyof typeof formData)[]) => {
+      return fields.reduce((acc, field) => acc + (parseFloat(formData[field]) || 0), 0);
+    };
 
-  const pemasukanSubtotal = calculateSubtotal(['pemasukanSuami', 'pemasukanIstri', 'pemasukanLainnya1', 'pemasukanLainnya2']);
-  const pengeluaranSubtotal = calculateSubtotal(['pengeluaranSuami', 'pengeluaranIstri', 'makan', 'listrik', 'sosial', 'tanggunganLain']);
-  const anakSubtotal = calculateSubtotal(['pengeluaranSekolah', 'uangSaku']);
-  const pendapatanBersih = pemasukanSubtotal - pengeluaranSubtotal - anakSubtotal;
+    const newPemasukanSubtotal = calculateSubtotal(['pemasukanSuami', 'pemasukanIstri', 'pemasukanLainnya1', 'pemasukanLainnya2']);
+    const newPengeluaranSubtotal = calculateSubtotal(['pengeluaranSuami', 'pengeluaranIstri', 'makan', 'listrik', 'sosial', 'tanggunganLain']);
+    const newAnakSubtotal = calculateSubtotal(['pengeluaranSekolah', 'uangSaku']);
+    const newPendapatanBersih = newPemasukanSubtotal - newPengeluaranSubtotal - newAnakSubtotal;
+
+    setPemasukanSubtotal(newPemasukanSubtotal);
+    setPengeluaranSubtotal(newPengeluaranSubtotal);
+    setAnakSubtotal(newAnakSubtotal);
+    setPendapatanBersih(newPendapatanBersih);
+  }, [formData]);
 
   const handleSubmit = async () => {
     if (!applicationId) {
@@ -66,22 +81,35 @@ function SubAnalysisForm() {
         },
         body: JSON.stringify({
           applicationId,
-          ...formData,
-          pendapatanBersih: pendapatanBersih.toString()
-        }),
+          pemasukanSuami: parseFloat(formData.pemasukanSuami) || 0,
+          pemasukanIstri: parseFloat(formData.pemasukanIstri) || 0,
+          pemasukanLainnya1: parseFloat(formData.pemasukanLainnya1) || 0,
+          pemasukanLainnya2: parseFloat(formData.pemasukanLainnya2) || 0,
+          pengeluaranSuami: parseFloat(formData.pengeluaranSuami) || 0,
+          pengeluaranIstri: parseFloat(formData.pengeluaranIstri) || 0,
+          makan: parseFloat(formData.makan) || 0,
+          listrik: parseFloat(formData.listrik) || 0,
+          sosial: parseFloat(formData.sosial) || 0,
+          tanggunganLain: parseFloat(formData.tanggunganLain) || 0,
+          jumlahAnak: parseInt(formData.jumlahAnak) || 0,
+          pengeluaranSekolah: parseFloat(formData.pengeluaranSekolah) || 0,
+          uangSaku: parseFloat(formData.uangSaku) || 0,
+          jangkaPembiayaan: parseInt(formData.jangkaPembiayaan) || 0,
+        })
       })
 
       const result = await response.json()
 
       if (response.ok) {
         alert(result.message || 'Sub-Analisa berhasil disimpan!')
-        router.push('/client/dashboard')
+        router.push('/')
       } else {
+        console.error("Error from server:", result);
         alert('Terjadi kesalahan: ' + (result.error || 'Unknown error'))
       }
     } catch (error) {
-      console.error('Error saving sub-analysis:', error)
-      alert('Terjadi kesalahan saat menyimpan data.')
+      console.error('Error saving sub-analysis:', error);
+      alert('Terjadi kesalahan saat menyimpan data: ' + (error as Error).message);
     } finally {
       setIsSubmitting(false)
     }

@@ -1,132 +1,128 @@
-import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+import { AIAnalysisEngine } from '@/lib/ai-analysis';
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.json()
-
-    if (!formData.applicationId) {
-      return NextResponse.json(
-        { error: "Application ID tidak ditemukan" },
-        { status: 400 }
-      )
+    const session = await getServerSession(authOptions);
+    
+    if (!session || session.user.role !== 'EMPLOYEE') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if analysis already exists for this application
-    const existingAnalysis = await prisma.financingAnalysis.findUnique({
-      where: { applicationId: formData.applicationId },
+    const body = await request.json();
+    const { applicationId, analysisData } = body;
+
+    if (!applicationId || !analysisData) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    // Get the application
+    const application = await prisma.application.findUnique({
+      where: { id: applicationId },
+      include: { client: true }
     });
 
-    const analysisData = {
-      applicationId: formData.applicationId,
-      employeeId: formData.employeeId,
-      
-      // Data dari Application (auto-filled)
-      nama: formData.nama,
-      alamat: formData.alamat,
-      jenisUsaha: formData.jenisUsaha,
-      pengajuan: formData.pengajuan,
-      jangkaWaktu: formData.jangkaWaktu,
-
-      // 1. KARAKTER
-      agama: formData.agama,
-      pengalaman: formData.pengalaman,
-      hubMasyarakat: formData.hubMasyarakat,
-      karakterAngsuranLannya: formData.karakterAngsuranLannya,
-      kelSurveyLannya: formData.kelSurveyLannya,
-
-      // Rating Karakter dengan penilai
-      karakter1: formData.karakter1 ? parseInt(formData.karakter1) : null,
-      karakter1Penilai: formData.karakter1Penilai,
-      karakter2: formData.karakter2 ? parseInt(formData.karakter2) : null,
-      karakter2Penilai: formData.karakter2Penilai,
-      karakter3: formData.karakter3 ? parseInt(formData.karakter3) : null,
-      karakter3Penilai: formData.karakter3Penilai,
-      karakter4: formData.karakter4 ? parseInt(formData.karakter4) : null,
-      karakter4Penilai: formData.karakter4Penilai,
-      karakter5: formData.karakter5 ? parseInt(formData.karakter5) : null,
-      karakter5Penilai: formData.karakter5Penilai,
-
-      // Checklist "Jelek"
-      karakterJelek1: formData.karakter1Jelek || false,
-      karakterJelek2: formData.karakter2Jelek || false,
-      karakterJelek3: formData.karakter3Jelek || false,
-      karakterJelek4: formData.karakter4Jelek || false,
-      karakterJelek5: formData.karakter5Jelek || false,
-
-      // 2. KESIMPULAN KARAKTER (AI Generated)
-      kesimpulanKarakter: formData.kesimpulanKarakter,
-      kapasitasDanKelancaran: formData.kapasitasDanKelancaran,
-
-      // 3. ANALISA JAMINAN
-      jenisJaminan: formData.jenisJaminan,
-      nilaiTaksiran: formData.nilaiTaksiran ? parseFloat(formData.nilaiTaksiran) : null,
-      kondisiJaminan: formData.kondisiJaminan,
-      nilaiJaminanSetelahPotongan: formData.nilaiJaminanSetelahPotongan ? parseFloat(formData.nilaiJaminanSetelahPotongan) : null,
-      validInvalid: formData.validInvalid,
-
-      // 4. KONDISI
-      isKaryawan: formData.isKaryawan || false,
-      isWiraswasta: formData.isWiraswasta || false,
-      isPNSPolri: formData.isPNSPolri || false,
-      isTetap: formData.isTetap || false,
-      isKontrak: formData.isKontrak || false,
-      isLainnya: formData.isLainnya || false,
-      masaBerakhirKontrak: formData.masaBerakhirKontrak,
-
-      // 5. CAPITAL
-      rumah: formData.rumah,
-      kendaraanMotor: formData.kendaraanMotor || 0,
-      kendaraanMobil: formData.kendaraanMobil || 0,
-      lainnya: formData.lainnya,
-
-      // 6. CHECKLIST KELENGKAPAN DOKUMEN
-      fcKtpPemohon: formData.fcKtpPemohon || false,
-      fcKtpSuamiIstri: formData.fcKtpSuamiIstri || false,
-      fcSlipGaji: formData.fcSlipGaji || false,
-
-      // 7. KESIMPULAN AKHIR
-      kesimpulanAkhir: formData.kesimpulanAkhir,
-
-      // Signature fields
-      petugasSurvei: formData.petugasSurvei,
-      pengurus: formData.pengurus,
-      approver: formData.approver
-    };
-
-    if (existingAnalysis) {
-      // Update existing analysis
-      const updatedAnalysis = await prisma.financingAnalysis.update({
-        where: { applicationId: formData.applicationId },
-        data: analysisData
-      });
-
+    if (!application) {
       return NextResponse.json(
-        {
-          message: "Analisa pembiayaan berhasil diperbarui!",
-          analysisId: updatedAnalysis.id
-        },
-        { status: 200 }
-      );
-    } else {
-      // Create new analysis
-      const analysis = await prisma.financingAnalysis.create({
-        data: analysisData
-      });
-
-      return NextResponse.json(
-        {
-          message: "Analisa pembiayaan berhasil disimpan!",
-          analysisId: analysis.id
-        },
-        { status: 201 }
+        { error: 'Application not found' },
+        { status: 404 }
       );
     }
+
+    // Perform AI analysis
+    const analysisResult = AIAnalysisEngine.analyzeApplication(analysisData);
+
+    // Create analysis record
+    const analysis = await prisma.analysis.create({
+      data: {
+        applicationId,
+        employeeId: session.user.id,
+        riskLevel: analysisResult.riskLevel,
+        riskScore: analysisResult.riskScore,
+        approvalLikelihood: analysisResult.approvalLikelihood,
+        debtToIncomeRatio: analysisResult.debtToIncomeRatio,
+        characterScore: analysisResult.characterScore,
+        recommendations: analysisResult.recommendations,
+        keyConcerns: analysisResult.keyConcerns,
+        analysisData: JSON.stringify(analysisData),
+        status: 'COMPLETED'
+      }
+    });
+
+    // Update application status
+    await prisma.application.update({
+      where: { id: applicationId },
+      data: { 
+        status: 'ANALYZED',
+        riskLevel: analysisResult.riskLevel
+      }
+    });
+
+    return NextResponse.json({
+      success: true,
+      analysis: {
+        id: analysis.id,
+        riskLevel: analysis.riskLevel,
+        riskScore: analysis.riskScore,
+        approvalLikelihood: analysis.approvalLikelihood,
+        recommendations: analysis.recommendations,
+        keyConcerns: analysis.keyConcerns
+      }
+    });
+
   } catch (error) {
-    console.error("Error creating/updating analysis:", error)
+    console.error('Analysis creation error:', error);
     return NextResponse.json(
-      { error: "Terjadi kesalahan saat menyimpan analisa: " + (error as Error).message },
+      { error: 'Internal server error' },
       { status: 500 }
-    )
+    );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session || session.user.role !== 'EMPLOYEE') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const applicationId = searchParams.get('applicationId');
+
+    if (!applicationId) {
+      return NextResponse.json(
+        { error: 'Missing applicationId parameter' },
+        { status: 400 }
+      );
+    }
+
+    const analyses = await prisma.analysis.findMany({
+      where: { applicationId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        employee: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
+      }
+    });
+
+    return NextResponse.json({ analyses });
+
+  } catch (error) {
+    console.error('Analysis fetch error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

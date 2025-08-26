@@ -272,8 +272,8 @@ export default function NewApplicationPage() {
             required
           >
             <option value="">Pilih status pernikahan</option>
-            <option value="Belum Menikah">Belum Menikah</option>
             <option value="Menikah">Menikah</option>
+            <option value="Belum Menikah">Belum Menikah</option>
             <option value="Cerai Hidup">Cerai Hidup</option>
             <option value="Cerai Mati">Cerai Mati</option>
           </select>
@@ -411,12 +411,55 @@ export default function NewApplicationPage() {
         </div>
         
         <h4 className="text-md font-semibold text-gray-800 pt-4">5 Kontak Darurat yang Bisa Dihubungi</h4>
-        <div className="grid md:grid-cols-2 gap-4">
-          <Input value={formData.contact1} onChange={(e) => handleInputChange('contact1', e.target.value)} placeholder="Kontak 1 (Nama & Nomor HP)"/>
-          <Input value={formData.contact2} onChange={(e) => handleInputChange('contact2', e.target.value)} placeholder="Kontak 2 (Nama & Nomor HP)"/>
-          <Input value={formData.contact3} onChange={(e) => handleInputChange('contact3', e.target.value)} placeholder="Kontak 3 (Nama & Nomor HP)"/>
-          <Input value={formData.contact4} onChange={(e) => handleInputChange('contact4', e.target.value)} placeholder="Kontak 4 (Nama & Nomor HP)"/>
-          <Input value={formData.contact5} onChange={(e) => handleInputChange('contact5', e.target.value)} placeholder="Kontak 5 (Nama & Nomor HP)"/>
+        <p className="text-sm text-gray-600 mb-3">
+          Pastikan kontak yang dapat dihubungi dan bersedia memberikan referensi tentang Anda
+        </p>
+        <div className="grid md:grid-cols-1 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Kontak 1 *</label>
+            <Input 
+              value={formData.contact1} 
+              onChange={(e) => handleInputChange('contact1', e.target.value)} 
+              placeholder="Nama Lengkap - Hubungan - Nomor HP (contoh: John Doe - Saudara - 08123456789)"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Kontak 2 *</label>
+            <Input 
+              value={formData.contact2} 
+              onChange={(e) => handleInputChange('contact2', e.target.value)} 
+              placeholder="Nama Lengkap - Hubungan - Nomor HP"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Kontak 3 *</label>
+            <Input 
+              value={formData.contact3} 
+              onChange={(e) => handleInputChange('contact3', e.target.value)} 
+              placeholder="Nama Lengkap - Hubungan - Nomor HP"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Kontak 4 *</label>
+            <Input 
+              value={formData.contact4} 
+              onChange={(e) => handleInputChange('contact4', e.target.value)} 
+              placeholder="Nama Lengkap - Hubungan - Nomor HP"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Kontak 5 *</label>
+            <Input 
+              value={formData.contact5} 
+              onChange={(e) => handleInputChange('contact5', e.target.value)} 
+              placeholder="Nama Lengkap - Hubungan - Nomor HP"
+              required
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -458,6 +501,8 @@ export default function NewApplicationPage() {
             value={formData.businessDuration}
             onChange={(e) => handleInputChange('businessDuration', e.target.value)}
             placeholder="Masukkan lama usaha dalam tahun"
+            min="0"
+            step="0.5"
           />
         </div>
 

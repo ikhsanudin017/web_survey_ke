@@ -1,10 +1,9 @@
-# Prompt Text - Requirements Sistem Pembiayaan
+pada sub analis pegawai
+- Angsuran maksimal perbulan itu 70% dari pendapatan bersih
+- Platform maksimal itu angsuran maksimal kali jangka pembiayaan
+- Yang jangka pembiayaan diisi pegawai..
+halaman sub analisis pegawai dan client bedakan yaa
 
-## Bagian 1: Perhitungan dan Fitur Dasar
-1. Angsuran maksimal perbulan itu 70% dari pendapatan bersih
-2. Platform maksimal itu angsuran maksimal kali jangka pembiayaan
-3. Yang jangka pembiayaan diisi..platform dan angsuran maksimal auto
-4. Isoh di print isoh bentuk PDF
 ===========Portal client(Pengajuan Pembiayaan)
 - Ubah Dropdown Status pernikahan Menjadi Menikah,Belum Menikah,Cerai Hidup,Cerai Mati
 - Untuk 5 nomer HP yang bisa dihubungi.Kalau Bisa share kontak.
@@ -13,16 +12,7 @@
 -pada checklist Dokumen identitas wajib (Ktp suami asli dan fotocopy,istri atau waliasli dan fotocopy..kartu keluarga asli dan fotocopy).Buku nikah kalau sudah nikah wajib posting yg wajib
 - Semua yang sudah ada dikasih pilihan input foto tapi yang wajib yang diatas
 
-## Bagian 2: Fitur Lanjutan dan Analisa
-13. Client juga ngisi ini
-14. Jaminan dikasih di belakangnya
-15. Jaminan yang dicentang wajib diisi
-16. Jaminan Bpkb,sertifikat tanah.
-17. SIUP,TDP,BUITI TEMPAT USAHA,FOTO USAHA,IMB DIHULANGKAN
-18. Akte kelahiran dan referensi bank hapus
-19. BPKB.(FOTO MONTOR.BPKB.STNK.FOTO NO RANGKA.NO MESIN).
-20. *Harus Jelas dan Terbaca
-21. Tombol hapus edit
+
 
 Pada ANALISA PEMBIAYAAN penilaian.Penilaian (1-5): Kasih kolom buat Nama yang bilang/nilai.Tambahkan checklist jelek
 untuk nama,Alamat, jenis usaha,pengajuan,jangka waktu itu nanti langsung ambildatabse langsung link dari data client
@@ -33,6 +23,8 @@ untuk nama,Alamat, jenis usaha,pengajuan,jangka waktu itu nanti langsung ambilda
 - Rumah dropsdown sendiri atau sewa
 - Kendaraan centang motor mobil dicentang dan ada banyaknya berapa
 - Checklist kelengkapan document itu auto ke isi apa yang diisi client,,angsung ambildatabse langsung link dari data client
-- tambahkan BI Checking Input PDF dan Ai nanti scan Layak tidaknya dari hasil inputan BI checking
-39. Pengajuan baru,dalam proses,acc ,ditolak,persentase
-40. Foto akad
+- tambahkan BI Checking Input PDF dibawah ceklist kelengkapan dokument dan Ai nanti scan Layak tidaknya dari hasil inputan BI checking
+- pada dashboard nanti ada tulisan jumlah/persentase  Pengajuan baru,dalam proses,acc ,ditolak,persentase
+- Tombol hapus edit delete detail pada pengajuan di dashboard pegawai 
+
+di dashboard pegawai nanti secara keseluruhan bisa di print ataupun export bentuk PDF

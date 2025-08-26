@@ -30,15 +30,15 @@ export async function POST(request: NextRequest) {
         clientId: client.id,
         fullName: applicationData.fullName,
         birthPlace: applicationData.birthPlace,
-        birthDate: new Date(applicationData.birthDate),
+        birthDate: new Date(applicationData.birthDate || new Date()),
         gender: applicationData.gender,
         maritalStatus: applicationData.maritalStatus,
         education: applicationData.education,
         occupation: applicationData.occupation,
-        monthlyIncome: parseFloat(applicationData.monthlyIncome),
+        monthlyIncome: parseFloat(applicationData.monthlyIncome) || 0,
         spouseName: applicationData.spouseName || null,
         spouseOccupation: applicationData.spouseOccupation || null,
-        spouseIncome: applicationData.spouseIncome ? parseFloat(applicationData.spouseIncome) : null,
+        spouseIncome: applicationData.spouseIncome ? parseFloat(applicationData.spouseIncome) || 0 : null,
         homeAddress: applicationData.homeAddress,
         phoneNumber: applicationData.phoneNumber,
         // Map the contact fields correctly
@@ -50,13 +50,14 @@ export async function POST(request: NextRequest) {
         businessName: applicationData.businessName || null,
         businessType: applicationData.businessType || null,
         businessAddress: applicationData.businessAddress || null,
-        businessDuration: applicationData.businessDuration ? parseInt(applicationData.businessDuration) * 12 : null, // Convert years to months
-        businessIncome: applicationData.businessIncome ? parseFloat(applicationData.businessIncome) : null,
-        loanAmount: parseFloat(applicationData.loanAmount),
+        businessDuration: applicationData.businessDuration ? (parseInt(applicationData.businessDuration) || 0) * 12 : null, // Convert years to months
+        businessIncome: applicationData.businessIncome ? parseFloat(applicationData.businessIncome) || 0 : null,
+        loanAmount: parseFloat(applicationData.loanAmount) || 0,
         loanPurpose: applicationData.loanPurpose,
-        loanTerm: parseInt(applicationData.loanTerm),
+        loanTerm: parseInt(applicationData.loanTerm) || 0,
         collateral: applicationData.collateral || null
       }
+
     })
 
     // Create checklist with default values

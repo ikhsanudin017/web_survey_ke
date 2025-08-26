@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-primary: #00704A; /* Emerald Green */
+  --color-secondary: #B8860B; /* Gold/Brass */
+  --color-accent: #008080; /* Teal */
+  --color-neutral-light: #F8F8F8; /* Off-white */
+  --color-neutral-medium: #6C757D; /* Soft Gray */
+  --color-neutral-dark: #212529; /* Dark Charcoal */
+
+  --background: var(--color-neutral-light);
+  --foreground: var(--color-neutral-dark);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Assuming Inter and Roboto are available or will be imported */
+  --font-sans: var(--font-inter), var(--font-roboto), sans-serif;
+  --font-mono: monospace; /* Keep default monospace for now */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-neutral-dark);
+    --foreground: var(--color-neutral-light);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+/* Basic responsive typography */
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+h3 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+p {
+  font-size: 1rem;
+  color: var(--color-foreground);
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 3.5rem;
+  }
+  h2 {
+    font-size: 2.5rem;
+  }
+  h3 {
+    font-size: 2rem;
+  }
 }
