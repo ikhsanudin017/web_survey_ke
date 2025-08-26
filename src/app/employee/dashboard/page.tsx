@@ -13,10 +13,21 @@ interface Employee {
   name: string
 }
 
+interface Analysis {
+  applicationId: string;
+  riskLevel: string;
+  riskScore: number;
+  approvalLikelihood: number;
+  employee: {
+    name: string;
+    email: string;
+  };
+}
+
 export default function EmployeeDashboard() {
   const [currentEmployee, setCurrentEmployee] = useState<Employee | null>(null)
   const [applications, setApplications] = useState([])
-  const [analyses, setAnalyses] = useState([])
+  const [analyses, setAnalyses] = useState<Analysis[]>([])
   const [subAnalyses, setSubAnalyses] = useState([])
   const [stats, setStats] = useState({
     pending: 0,
