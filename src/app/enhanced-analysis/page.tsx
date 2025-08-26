@@ -6,6 +6,7 @@ import { ProgressIndicator, ProgressStep } from '@/components/ProgressIndicator'
 import { EnhancedForm, FormFieldConfig } from '@/components/EnhancedForm';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useToast } from '@/hooks/use-toast';
+import { z } from 'zod';
 import { 
   EnhancedAnalysisData, 
   AnalysisStep, 
