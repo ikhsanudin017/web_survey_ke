@@ -144,6 +144,25 @@ export default function EnhancedAnalysisPage() {
     }
   };
 
+  const getSteps = (): ProgressStep[] => {
+    const steps: ProgressStep[] = [];
+    for (let i = 1; i <= 5; i++) {
+      let status: 'completed' | 'current' | 'pending' | 'error' = 'pending';
+      if (i < currentStep) {
+        status = 'completed';
+      } else if (i === currentStep) {
+        status = 'current';
+      }
+      steps.push({
+        id: `step-${i}`,
+        title: getStepTitle(i as AnalysisStep),
+        description: getStepDescription(i as AnalysisStep),
+        status: status,
+      });
+    }
+    return steps;
+  };
+
   const getStepKey = (step: AnalysisStep): keyof EnhancedAnalysisData => {
     const keys = {
       1: 'characterAssessment',
@@ -192,10 +211,7 @@ export default function EnhancedAnalysisPage() {
 
           <div className="mb-8">
             <ProgressIndicator 
-              currentStep={currentStep} 
-              totalSteps={5}
-              stepTitle={getStepTitle(currentStep)}
-              stepDescription={getStepDescription(currentStep)}
+              steps={getSteps()}
             />
           </div>
 
