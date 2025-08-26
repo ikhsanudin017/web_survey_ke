@@ -70,7 +70,6 @@ export async function POST(request: NextRequest) {
         rumah: analysisData.capital?.ownCapital || null,
         kendaraanMotor: analysisData.capital?.motorVehicleCount ? parseInt(analysisData.capital.motorVehicleCount) : 0,
         kendaraanMobil: analysisData.capital?.carVehicleCount ? parseInt(analysisData.capital.carVehicleCount) : 0,
-        lainnya: `Modal Pinjaman: ${analysisData.capital?.loanCapital || 'N/A'}, Rasio Modal: ${analysisData.capital?.capitalRatio || 'N/A'}`,
         
         // Analisa Jaminan
         jenisJaminan: analysisData.collateral?.collateralType || null,
@@ -78,10 +77,11 @@ export async function POST(request: NextRequest) {
         kondisiJaminan: analysisData.collateral?.collateralCondition || null,
         nilaiJaminanSetelahPotongan: analysisData.collateral?.collateralRatio ? parseFloat(analysisData.collateral.collateralRatio) : null,
         
-        // Kesimpulan - Store recommendation notes in lainnya field instead
+        // Kesimpulan
         kesimpulanAkhir: analysisData.conclusion?.recommendation || "Layak",
-        // Store detailed analysis notes in an existing field like lainnya or create a combined string
-        lainnya: analysisData.lainnya || `Notes: Recommended Amount: ${analysisData.conclusion?.recommendedAmount || 'N/A'}, Recommended Term: ${analysisData.conclusion?.recommendedTerm || 'N/A'}, Notes: ${analysisData.conclusion?.notes || 'N/A'}`,
+        
+        // Combined notes in lainnya field (capital info + recommendation notes)
+        lainnya: `Modal - Pinjaman: ${analysisData.capital?.loanCapital || 'N/A'}, Rasio Modal: ${analysisData.capital?.capitalRatio || 'N/A'} | Rekomendasi - Amount: ${analysisData.conclusion?.recommendedAmount || 'N/A'}, Term: ${analysisData.conclusion?.recommendedTerm || 'N/A'}, Notes: ${analysisData.conclusion?.notes || 'N/A'}`,
       }
     })
 
