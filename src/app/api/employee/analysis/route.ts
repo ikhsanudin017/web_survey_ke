@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the application
-    const application = await prisma.application.findUnique({
+    const application = await prisma.financingApplication.findUnique({
       where: { id: applicationId },
       include: { client: true }
     });
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Update application status
-    await prisma.application.update({
+    await prisma.financingApplication.update({
       where: { id: applicationId },
       data: { 
         status: 'ANALYZED',
