@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ProgressIndicator } from '@/components/ProgressIndicator';
+import { ProgressIndicator, ProgressStep } from '@/components/ProgressIndicator';
 import { EnhancedForm } from '@/components/EnhancedForm';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useToast } from '@/hooks/use-toast';
