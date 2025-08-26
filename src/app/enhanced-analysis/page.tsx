@@ -219,7 +219,7 @@ export default function EnhancedAnalysisPage() {
             <EnhancedForm
               defaultValues={analysisData[getStepKey(currentStep)] || {}}
               onSubmit={handleStepComplete}
-              isLoading={isLoading}
+              
             />
           </div>
 
