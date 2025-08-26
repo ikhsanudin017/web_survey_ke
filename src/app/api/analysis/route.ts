@@ -59,38 +59,30 @@ export async function POST(request: NextRequest) {
         employeeId: employee.id,
         
         // Analisa Karakter
-        karakterPemohon: analysisData.character?.applicantCharacter || null,
-        reputasiUsaha: analysisData.character?.businessReputation || null,
-        pengalamanUsaha: analysisData.character?.businessExperience || null,
-        hubunganDenganBank: analysisData.character?.bankRelationship || null,
+        agama: analysisData.character?.applicantCharacter || null,
+        pengalaman: analysisData.character?.businessExperience || null,
+        hubMasyarakat: analysisData.character?.businessReputation || null,
         
         // Analisa Kapasitas
-        kemampuanBayar: analysisData.capacity?.paymentAbility || null,
-        cashFlow: analysisData.capacity?.cashFlow || null,
-        proyeksiUsaha: analysisData.capacity?.businessProjection || null,
-        rasioHutang: analysisData.capacity?.debtRatio ? parseFloat(analysisData.capacity.debtRatio) : null,
+        kapasitasDanKelancaran: `Kemampuan Bayar: ${analysisData.capacity?.paymentAbility || 'N/A'}, Cash Flow: ${analysisData.capacity?.cashFlow || 'N/A'}, Proyeksi Usaha: ${analysisData.capacity?.businessProjection || 'N/A'}, Rasio Hutang: ${analysisData.capacity?.debtRatio || 'N/A'}`,
         
         // Analisa Modal
-        modalSendiri: analysisData.capital?.ownCapital ? parseFloat(analysisData.capital.ownCapital) : null,
-        modalPinjaman: analysisData.capital?.loanCapital ? parseFloat(analysisData.capital.loanCapital) : null,
-        rasioModal: analysisData.capital?.capitalRatio ? parseFloat(analysisData.capital.capitalRatio) : null,
+        rumah: analysisData.capital?.ownCapital || null,
+        kendaraanMotor: analysisData.capital?.motorVehicleCount ? parseInt(analysisData.capital.motorVehicleCount) : 0,
+        kendaraanMobil: analysisData.capital?.carVehicleCount ? parseInt(analysisData.capital.carVehicleCount) : 0,
+        lainnya: `Modal Pinjaman: ${analysisData.capital?.loanCapital || 'N/A'}, Rasio Modal: ${analysisData.capital?.capitalRatio || 'N/A'}`,
         
-        // Analisa Kondisi
-        kondisiEkonomi: analysisData.conditions?.economicCondition || null,
-        kondisiIndustri: analysisData.conditions?.industryCondition || null,
-        risikoUsaha: analysisData.conditions?.businessRisk || null,
+        
         
         // Analisa Jaminan
         jenisJaminan: analysisData.collateral?.collateralType || null,
-        nilaiJaminan: analysisData.collateral?.collateralValue ? parseFloat(analysisData.collateral.collateralValue) : null,
+        nilaiTaksiran: analysisData.collateral?.collateralValue ? parseFloat(analysisData.collateral.collateralValue) : null,
         kondisiJaminan: analysisData.collateral?.collateralCondition || null,
-        rasioJaminan: analysisData.collateral?.collateralRatio ? parseFloat(analysisData.collateral.collateralRatio) : null,
+        nilaiJaminanSetelahPotongan: analysisData.collateral?.collateralRatio ? parseFloat(analysisData.collateral.collateralRatio) : null,
         
         // Kesimpulan
-        recommendation: analysisData.conclusion?.recommendation || null,
-        recommendedAmount: analysisData.conclusion?.recommendedAmount ? parseFloat(analysisData.conclusion.recommendedAmount) : null,
-        recommendedTerm: analysisData.conclusion?.recommendedTerm ? parseInt(analysisData.conclusion.recommendedTerm) : null,
-        notes: analysisData.conclusion?.notes || null
+        kesimpulanAkhir: analysisData.conclusion?.recommendation || "Layak",
+        analysisNotes: `Recommended Amount: ${analysisData.conclusion?.recommendedAmount || 'N/A'}, Recommended Term: ${analysisData.conclusion?.recommendedTerm || 'N/A'}, Notes: ${analysisData.conclusion?.notes || 'N/A'}`,
       }
     })
 

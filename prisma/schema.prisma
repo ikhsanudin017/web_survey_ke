@@ -133,7 +133,7 @@ model ApplicationChecklist {
   aktaKelahiran         Boolean @default(false)
   referensiBank         Boolean @default(false)
 
-  notes                 String?
+  analysisNotes         String?
   completedAt           DateTime?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
