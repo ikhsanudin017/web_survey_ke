@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create the financing analysis
+    // Create the financing analysis - FIXED: removed analysisNotes field
     const analysis = await prisma.financingAnalysis.create({
       data: {
         applicationId: analysisData.applicationId,
@@ -72,17 +72,16 @@ export async function POST(request: NextRequest) {
         kendaraanMobil: analysisData.capital?.carVehicleCount ? parseInt(analysisData.capital.carVehicleCount) : 0,
         lainnya: `Modal Pinjaman: ${analysisData.capital?.loanCapital || 'N/A'}, Rasio Modal: ${analysisData.capital?.capitalRatio || 'N/A'}`,
         
-        
-        
         // Analisa Jaminan
         jenisJaminan: analysisData.collateral?.collateralType || null,
         nilaiTaksiran: analysisData.collateral?.collateralValue ? parseFloat(analysisData.collateral.collateralValue) : null,
         kondisiJaminan: analysisData.collateral?.collateralCondition || null,
         nilaiJaminanSetelahPotongan: analysisData.collateral?.collateralRatio ? parseFloat(analysisData.collateral.collateralRatio) : null,
         
-        // Kesimpulan
+        // Kesimpulan - Store recommendation notes in lainnya field instead
         kesimpulanAkhir: analysisData.conclusion?.recommendation || "Layak",
-        analysisNotes: `Recommended Amount: ${analysisData.conclusion?.recommendedAmount || 'N/A'}, Recommended Term: ${analysisData.conclusion?.recommendedTerm || 'N/A'}, Notes: ${analysisData.conclusion?.notes || 'N/A'}`,
+        // Store detailed analysis notes in an existing field like lainnya or create a combined string
+        lainnya: analysisData.lainnya || `Notes: Recommended Amount: ${analysisData.conclusion?.recommendedAmount || 'N/A'}, Recommended Term: ${analysisData.conclusion?.recommendedTerm || 'N/A'}, Notes: ${analysisData.conclusion?.notes || 'N/A'}`,
       }
     })
 
