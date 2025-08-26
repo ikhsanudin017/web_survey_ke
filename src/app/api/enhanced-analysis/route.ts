@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { SaveAnalysisRequestSchema } from '@/lib/validations/unified-enhanced-analysis';
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import { z } from 'zod';
 
 export async function POST(request: NextRequest) {

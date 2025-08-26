@@ -184,3 +184,6 @@ export function ApplicationForm() {
           </form>
         </div>
       </div>
+    </FormProvider>
+  );
+}
