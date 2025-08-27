@@ -11,7 +11,7 @@ interface Step {
   id: string;
   title: string;
   description: string;
-  content: ReactNode;
+ content: React.ReactNode | ((props: { formData: any; updateFormData: (field: string, value: any) => void; }) => React.ReactNode);
   icon?: ReactNode;
   validation?: () => boolean;
   onEnter?: () => void;

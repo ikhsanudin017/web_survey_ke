@@ -1,187 +1,1014 @@
-[10:51:58.866] Running build in Washington, D.C., USA (East) – iad1
-[10:51:58.866] Build machine configuration: 2 cores, 8 GB
-[10:51:58.893] Cloning github.com/ikhsanudin017/web_survey_ke (Branch: master, Commit: b8be55e)
-[10:51:58.915] Skipping build cache, deployment was triggered without cache.
-[10:51:59.493] Cloning completed: 600.000ms
-[10:51:59.857] Running "vercel build"
-[10:52:00.245] Vercel CLI 46.0.3
-[10:52:00.573] Installing dependencies...
-[10:52:24.920] 
-[10:52:24.921] > web-survey-ksu@0.1.0 postinstall
-[10:52:24.922] > prisma generate
-[10:52:24.922] 
-[10:52:26.504] Prisma schema loaded from prisma/schema.prisma
-[10:52:26.865] 
-[10:52:26.866] ✔ Generated Prisma Client (v6.14.0) to ./node_modules/@prisma/client in 179ms
-[10:52:26.866] 
-[10:52:26.866] Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
-[10:52:26.866] 
-[10:52:26.867] Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
-[10:52:26.867] 
-[10:52:26.893] 
-[10:52:26.894] added 504 packages in 26s
-[10:52:26.894] 
-[10:52:26.894] 157 packages are looking for funding
-[10:52:26.895]   run `npm fund` for details
-[10:52:26.939] Detected Next.js version: 15.5.0
-[10:52:26.945] Running "npm run build"
-[10:52:27.060] 
-[10:52:27.060] > web-survey-ksu@0.1.0 build
-[10:52:27.060] > prisma generate && next build
-[10:52:27.060] 
-[10:52:28.584] Prisma schema loaded from prisma/schema.prisma
-[10:52:28.933] 
-[10:52:28.934] ✔ Generated Prisma Client (v6.14.0) to ./node_modules/@prisma/client in 173ms
-[10:52:28.934] 
-[10:52:28.935] Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
-[10:52:28.935] 
-[10:52:28.935] Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
-[10:52:28.935] 
-[10:52:29.761] Attention: Next.js now collects completely anonymous telemetry regarding usage.
-[10:52:29.762] This information is used to shape Next.js' roadmap and prioritize features.
-[10:52:29.762] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-[10:52:29.762] https://nextjs.org/telemetry
-[10:52:29.762] 
-[10:52:29.816]    ▲ Next.js 15.5.0
-[10:52:29.817] 
-[10:52:29.915]    Creating an optimized production build ...
-[10:52:47.096] 
-[10:52:47.096] 
-[10:52:47.097] Retrying 1/3...
-[10:52:47.097] 
-[10:52:47.097] 
-[10:52:47.097] Retrying 1/3...
-[10:52:47.098] 
-[10:52:47.098] 
-[10:52:47.099] Retrying 1/3...
-[10:52:47.099] 
-[10:52:47.099] 
-[10:52:47.100] Retrying 1/3...
-[10:52:53.839]  ✓ Compiled successfully in 21.3s
-[10:52:53.845]    Linting and checking validity of types ...
-[10:53:01.993] 
-[10:53:01.993] ./src/app/api/applications/[id]/route.ts
-[10:53:01.994] 60:13  Warning: 'uploadedFiles' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:01.994] 
-[10:53:01.995] ./src/app/api/auth/[...nextauth]/route.ts
-[10:53:01.999] 1:10  Warning: 'NextRequest' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:01.999] 
-[10:53:02.000] ./src/app/api/employee/analysis/route.ts
-[10:53:02.000] 39:11  Warning: 'analysisResult' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.000] 
-[10:53:02.004] ./src/app/api/employee/bi-checking/new/page.tsx
-[10:53:02.004] 7:10  Warning: 'Input' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.004] 
-[10:53:02.004] ./src/app/api/enhanced-analysis/ai-analyze/route.ts
-[10:53:02.005] 34:11  Warning: 'context' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.005] 108:9  Warning: 'prompt' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.005] 
-[10:53:02.005] ./src/app/employee/analysis/new/page.tsx
-[10:53:02.005] 151:15  Warning: 'hasKK' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.005] 
-[10:53:02.005] ./src/app/employee/applications/[id]/edit/page.tsx
-[10:53:02.005] 101:6  Warning: React Hook useEffect has a missing dependency: 'fetchApplicationData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-[10:53:02.005] 
-[10:53:02.006] ./src/app/employee/dashboard/page.tsx
-[10:53:02.006] 203:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-[10:53:02.006] 
-[10:53:02.006] ./src/app/employee/sub-analysis/new/page.tsx
-[10:53:02.006] 111:6  Warning: React Hook useEffect has a missing dependency: 'calculatePendapatanBersih'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-[10:53:02.009] 
-[10:53:02.009] ./src/app/enhanced-analysis/page.tsx
-[10:53:02.009] 31:10  Warning: 'isLoading' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.009] 
-[10:53:02.009] ./src/components/ApplicationForm.tsx
-[10:53:02.009] 34:10  Warning: 'savedData' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.010] 110:14  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.010] 
-[10:53:02.010] ./src/components/EnhancedForm.tsx
-[10:53:02.010] 5:33  Warning: 'UseFormReturn' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.010] 15:34  Warning: 'T' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.011] 63:10  Warning: 'currentSection' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.014] 63:26  Warning: 'setCurrentSection' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.014] 74:73  Warning: 'reset' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.015] 99:16  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.015] 126:18  Warning: 'index' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.015] 
-[10:53:02.015] ./src/components/ProgressIndicator.tsx
-[10:53:02.015] 6:10  Warning: 'useRouter' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.015] 30:9  Warning: 'currentStepIndex' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.015] 
-[10:53:02.015] ./src/components/application/FormActions.tsx
-[10:53:02.015] 13:3  Warning: 'currentStep' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.016] 14:3  Warning: 'totalSteps' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.016] 15:3  Warning: 'onNext' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.018] 16:3  Warning: 'onPrevious' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.018] 17:3  Warning: 'isSubmitting' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.018] 
-[10:53:02.018] ./src/components/application/FormProgress.tsx
-[10:53:02.018] 9:40  Warning: 'steps' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.018] 9:47  Warning: 'currentStep' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.019] 9:60  Warning: 'onStepClick' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.019] 
-[10:53:02.019] ./src/components/enhanced-form/EnhancedFormContainer.tsx
-[10:53:02.019] 3:20  Warning: 'useEffect' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.019] 26:10  Warning: 'currentStep' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.019] 141:14  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.019] 
-[10:53:02.019] ./src/components/enhanced-form/FormActions.tsx
-[10:53:02.019] 44:16  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.019] 63:16  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.020] 96:18  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.020] 
-[10:53:02.020] ./src/components/financing-analysis/FinancingAnalysisForm.tsx
-[10:53:02.020] 89:16  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.020] 127:14  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.020] 
-[10:53:02.020] ./src/hooks/use-toast.ts
-[10:53:02.020] 18:7  Warning: 'actionTypes' is assigned a value but only used as a type.  @typescript-eslint/no-unused-vars
-[10:53:02.020] 
-[10:53:02.020] ./src/hooks/useAsyncValidation.ts
-[10:53:02.020] 96:6  Warning: React Hook useEffect has a missing dependency: 'validateAsync'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-[10:53:02.021] 
-[10:53:02.021] ./src/hooks/useDebouncedValidation.ts
-[10:53:02.021] 27:9  Warning: 'validationRef' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.030] 31:31  Warning: React Hook useCallback received a function whose dependencies are unknown. Pass an inline function instead.  react-hooks/exhaustive-deps
-[10:53:02.030] 
-[10:53:02.030] ./src/hooks/useEnhancedForm.ts
-[10:53:02.030] 111:6  Warning: React Hook useCallback has a missing dependency: 'asyncValidation'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-[10:53:02.031] 129:6  Warning: React Hook useEffect has a missing dependency: 'validationState'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-[10:53:02.031] 138:6  Warning: React Hook useEffect has a missing dependency: 'formProgress'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
-[10:53:02.031] 
-[10:53:02.039] ./src/hooks/useValidationState.ts
-[10:53:02.039] 29:5  Warning: 'validateOnSubmit' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.040] 
-[10:53:02.040] ./src/lib/api/enhanced-analysis.ts
-[10:53:02.040] 9:3  Warning: 'AnalysisWebhookPayload' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.040] 
-[10:53:02.041] ./src/lib/auth.ts
-[10:53:02.041] 1:1  Warning: Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any').
-[10:53:02.041] 
-[10:53:02.041] ./src/lib/validation-enhanced.ts
-[10:53:02.041] 1:10  Warning: 'z' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.041] 
-[10:53:02.041] ./src/lib/validations/unified-enhanced-analysis.ts
-[10:53:02.041] 4:10  Warning: 'CharacterAssessmentValidationSchema' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.041] 5:10  Warning: 'BatchDocumentAnalysisSchema' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.041] 6:10  Warning: 'CollateralAnalysisSchema' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.042] 7:10  Warning: 'FinancialCapacitySchema' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.042] 8:10  Warning: 'AIConclusionSchema' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.042] 9:10  Warning: 'FinalDecisionSchema' is defined but never used.  @typescript-eslint/no-unused-vars
-[10:53:02.042] 
-[10:53:02.042] info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
-[10:53:08.313] Failed to compile.
-[10:53:08.314] 
-[10:53:08.314] ./src/components/enhanced-form/EnhancedFormContainer.tsx:198:13
-[10:53:08.314] Type error: Type '(data: any) => Promise<void>' is not assignable to type '() => Promise<void>'.
-[10:53:08.314]   Target signature provides too few arguments. Expected 1 or more, but got 0.
-[10:53:08.315] 
-[10:53:08.315] [0m [90m 196 |[39m           
-[10:53:08.315]  [90m 197 |[39m           [33m<[39m[33mFormActions[39m
-[10:53:08.315] [31m[1m>[22m[39m[90m 198 |[39m             onSave[33m=[39m{handleSaveDraft}
-[10:53:08.315]  [90m     |[39m             [31m[1m^[22m[39m
-[10:53:08.315]  [90m 199 |[39m             onSubmit[33m=[39m{handleSubmit}
-[10:53:08.315]  [90m 200 |[39m             onReset[33m=[39m{handleReset}
-[10:53:08.316]  [90m 201 |[39m             onExport[33m=[39m{handleExport}[0m
-[10:53:08.342] Next.js build worker exited with code: 1 and signal: null
-[10:53:08.363] Error: Command "npm run build" exited with 1
+
+                 @typescript-eslint/no-explicit-any
+  72:102  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:16   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  73:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  73:59   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:77   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:103  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  74:84   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  78:22   warning  '_' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  78:46   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+
+D:\PROJECT\web_survey_ksuke\.next\types\app\employee\dashboard\page.ts
+   7:30   error    Prefer using the primitive `object` as a type name, rather than the upper-cased `Object`
+
+
+                 @typescript-eslint/no-wrapper-object-types
+   7:39   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+   7:71   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  13:12   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  14:12   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  15:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  24:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  25:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  26:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  27:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  51:72   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  51:88   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  56:26   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  66:51   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:37   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:42   warning  '_M' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  70:84   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  72:15   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  72:25   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  72:67   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:76   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:102  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:16   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  73:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  73:59   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:77   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:103  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  74:84   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  78:22   warning  '_' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  78:46   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+
+D:\PROJECT\web_survey_ksuke\.next\types\app\employee\login\page.ts
+   7:30   error    Prefer using the primitive `object` as a type name, rather than the upper-cased `Object`
+
+
+                 @typescript-eslint/no-wrapper-object-types
+   7:39   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+   7:71   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  13:12   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  14:12   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  15:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  24:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  25:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  26:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  27:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  51:72   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  51:88   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  56:26   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  66:51   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:37   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:42   warning  '_M' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  70:84   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  72:15   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  72:25   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  72:67   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:76   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:102  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:16   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  73:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  73:59   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:77   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:103  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  74:84   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  78:22   warning  '_' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  78:46   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+
+D:\PROJECT\web_survey_ksuke\.next\types\app\employee\sub-analysis\new\page.ts
+   7:30   error    Prefer using the primitive `object` as a type name, rather than the upper-cased `Object`
+
+
+                 @typescript-eslint/no-wrapper-object-types
+   7:39   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+   7:71   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  13:12   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  14:12   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  15:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  24:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  25:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  26:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  27:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  51:72   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  51:88   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  56:26   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  66:51   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:37   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:42   warning  '_M' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  70:84   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  72:15   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  72:25   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  72:67   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:76   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:102  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:16   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  73:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  73:59   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:77   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:103  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  74:84   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  78:22   warning  '_' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  78:46   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+
+D:\PROJECT\web_survey_ksuke\.next\types\app\enhanced-analysis\page.ts
+   7:30   error    Prefer using the primitive `object` as a type name, rather than the upper-cased `Object`
+
+
+                 @typescript-eslint/no-wrapper-object-types
+   7:39   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+   7:71   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  13:12   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  14:12   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  15:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  24:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  25:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  26:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  27:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  51:72   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  51:88   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  56:26   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  66:51   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:37   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:42   warning  '_M' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  70:84   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  72:15   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  72:25   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  72:67   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:76   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:102  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:16   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  73:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  73:59   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:77   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:103  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  74:84   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  78:22   warning  '_' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  78:46   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+
+D:\PROJECT\web_survey_ksuke\.next\types\app\layout.ts
+   7:30   error    Prefer using the primitive `object` as a type name, rather than the upper-cased `Object`
+
+
+                 @typescript-eslint/no-wrapper-object-types
+   7:39   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+   7:71   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  13:12   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  14:12   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  15:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  24:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  25:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  26:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  27:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  51:72   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  51:88   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  56:26   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  66:51   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:37   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:42   warning  '_M' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  70:84   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  72:15   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  72:25   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  72:67   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:76   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:102  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:16   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  73:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  73:59   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:77   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:103  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  74:84   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  78:22   warning  '_' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  78:46   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+
+D:\PROJECT\web_survey_ksuke\.next\types\app\page.ts
+   7:30   error    Prefer using the primitive `object` as a type name, rather than the upper-cased `Object`
+
+
+                 @typescript-eslint/no-wrapper-object-types
+   7:39   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+   7:71   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  13:12   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  14:12   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  15:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  24:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  25:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  26:14   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  27:22   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  51:72   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  51:88   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  56:26   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  66:51   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:37   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  69:42   warning  '_M' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  70:84   error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  72:15   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  72:25   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  72:67   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:76   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  72:102  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:16   warning  'T' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  73:26   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  73:59   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:77   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  73:103  error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+  74:84   error    The `Function` type accepts any function-like value.
+Prefer explicitly defining any function parameters and return type
+
+                                                                        @typescript-eslint/no-unsafe-function-type
+  78:22   warning  '_' is defined but never used
+
+
+                 @typescript-eslint/no-unused-vars
+  78:46   error    Unexpected any. Specify a different type
+
+
+                 @typescript-eslint/no-explicit-any
+
+D:\PROJECT\web_survey_ksuke\.next\types\routes.d.ts
+  14:8   error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  15:20  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  16:24  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  19:32  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  20:34  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  21:23  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  22:43  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  23:31  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  24:29  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  25:32  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  26:36  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  27:30  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  28:33  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  29:29  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  30:40  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  31:18  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  32:21  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  33:19  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  34:30  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  35:39  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  36:29  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  39:26  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  40:22  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  41:33  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  42:25  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.      
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+
+D:\PROJECT\web_survey_ksuke\.next\types\validator.ts
+  10:71   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  10:126  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  11:74   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  11:83   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  13:51   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  15:16   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  15:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  17:51   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  19:16   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  19:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  20:14   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:14   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  26:74   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  26:83   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  28:51   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  30:16   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  30:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  32:51   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:16   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  35:14   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  36:14   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\PROJECT\web_survey_ksuke\next-env.d.ts
+  3:1  error  Do not use a triple slash reference for ./.next/types/routes.d.ts, use `import` style instead  @typescript-eslint/triple-slash-reference
+
+D:\PROJECT\web_survey_ksuke\src\app\api\applications\[id]\route.ts
+  60:13  warning  'uploadedFiles' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\app\api\auth\[...nextauth]\route.ts
+  1:10  warning  'NextRequest' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\app\api\employee\analysis\route.ts
+  39:11  warning  'analysisResult' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\app\api\enhanced-analysis\ai-analyze\route.ts
+   34:11  warning  'context' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  108:9   warning  'prompt' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\app\employee\analysis\new\page.tsx
+  151:15  warning  'hasKK' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\app\employee\applications\[id]\edit\page.tsx
+  101:6  warning  React Hook useEffect has a missing dependency: 'fetchApplicationData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\PROJECT\web_survey_ksuke\src\app\employee\dashboard\page.tsx
+  203:15  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` 
+or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\PROJECT\web_survey_ksuke\src\app\employee\sub-analysis\new\page.tsx
+  111:6  warning  React Hook useEffect has a missing dependency: 'calculatePendapatanBersih'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\PROJECT\web_survey_ksuke\src\app\enhanced-analysis\page.tsx
+  31:10  warning  'isLoading' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\components\ApplicationForm.tsx
+   34:10  warning  'savedData' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  110:14  warning  'error' is defined but never used               @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\components\EnhancedForm.tsx
+    5:33  warning  'UseFormReturn' is defined but never used               @typescript-eslint/no-unused-vars
+   15:34  warning  'T' is defined but never used                           @typescript-eslint/no-unused-vars
+   63:10  warning  'currentSection' is assigned a value but never used     @typescript-eslint/no-unused-vars
+   63:26  warning  'setCurrentSection' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   74:73  warning  'reset' is assigned a value but never used              @typescript-eslint/no-unused-vars
+   99:16  warning  'error' is defined but never used                       @typescript-eslint/no-unused-vars
+  126:18  warning  'index' is defined but never used                       @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\components\ProgressIndicator.tsx
+   6:10  warning  'useRouter' is defined but never used                  @typescript-eslint/no-unused-vars
+  30:9   warning  'currentStepIndex' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\components\application\FormActions.tsx
+  13:3  warning  'currentStep' is defined but never used   @typescript-eslint/no-unused-vars
+  14:3  warning  'totalSteps' is defined but never used    @typescript-eslint/no-unused-vars
+  15:3  warning  'onNext' is defined but never used        @typescript-eslint/no-unused-vars
+  16:3  warning  'onPrevious' is defined but never used    @typescript-eslint/no-unused-vars
+  17:3  warning  'isSubmitting' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\components\application\FormProgress.tsx
+  9:40  warning  'steps' is defined but never used        @typescript-eslint/no-unused-vars
+  9:47  warning  'currentStep' is defined but never used  @typescript-eslint/no-unused-vars
+  9:60  warning  'onStepClick' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\components\enhanced-form\EnhancedFormContainer.tsx
+    3:20  warning  'useEffect' is defined but never used             @typescript-eslint/no-unused-vars
+   26:10  warning  'currentStep' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  141:14  warning  'error' is defined but never used                 @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\components\enhanced-form\FormActions.tsx
+  44:16  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  63:16  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  96:18  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\components\financing-analysis\FinancingAnalysisForm.tsx
+   89:16  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  127:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\components\ui\calendar.tsx
+  4:10  warning  'ChevronLeft' is defined but never used   @typescript-eslint/no-unused-vars
+  4:23  warning  'ChevronRight' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\hooks\use-toast.ts
+  18:7  warning  'actionTypes' is assigned a value but only used as a type  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\hooks\useAsyncValidation.ts
+  96:6  warning  React Hook useEffect has a missing dependency: 'validateAsync'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\PROJECT\web_survey_ksuke\src\hooks\useDebouncedValidation.ts
+  27:9   warning  'validationRef' is assigned a value but never used                                                          @typescript-eslint/no-unused-vars
+  31:31  warning  React Hook useCallback received a function whose dependencies are unknown. Pass an inline function instead  react-hooks/exhaustive-deps
+
+D:\PROJECT\web_survey_ksuke\src\hooks\useEnhancedForm.ts
+  111:6  warning  React Hook useCallback has a missing dependency: 'asyncValidation'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  129:6  warning  React Hook useEffect has a missing dependency: 'validationState'. Either include it or remove the dependency 
+array    react-hooks/exhaustive-deps
+  138:6  warning  React Hook useEffect has a missing dependency: 'formProgress'. Either include it or remove the dependency array       react-hooks/exhaustive-deps
+
+D:\PROJECT\web_survey_ksuke\src\hooks\useValidationState.ts
+  29:5  warning  'validateOnSubmit' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\lib\api\enhanced-analysis.ts
+  9:3  warning  'AnalysisWebhookPayload' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\lib\auth.ts
+  1:1  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+
+D:\PROJECT\web_survey_ksuke\src\lib\validation-enhanced.ts
+  1:10  warning  'z' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\PROJECT\web_survey_ksuke\src\lib\validations\unified-enhanced-analysis.ts
+  4:10  warning  'CharacterAssessmentValidationSchema' is defined but never used  @typescript-eslint/no-unused-vars
+  5:10  warning  'BatchDocumentAnalysisSchema' is defined but never used          @typescript-eslint/no-unused-vars
+  6:10  warning  'CollateralAnalysisSchema' is defined but never used             @typescript-eslint/no-unused-vars
+  7:10  warning  'FinancialCapacitySchema' is defined but never used              @typescript-eslint/no-unused-vars
+  8:10  warning  'AIConclusionSchema' is defined but never used                   @typescript-eslint/no-unused-vars
+  9:10  warning  'FinalDecisionSchema' is defined but never used                  @typescript-eslint/no-unused-vars
+
+✖ 12929 problems (1368 errors, 11561 warnings)
+  30 errors and 1 warning potentially fixable with the `--fix` option.errror ini fix it
