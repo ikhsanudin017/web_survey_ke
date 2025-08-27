@@ -85,10 +85,12 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    const uploadedFiles = applicationData.documentUpload?.documents || []
+
     // Save uploaded files to database
-    if (applicationData.uploadedFiles && applicationData.uploadedFiles.length > 0) {
+    if (uploadedFiles.length > 0) {
       await Promise.all(
-        applicationData.uploadedFiles.map((file: {
+        uploadedFiles.map((file: {
           filename: string;
           originalName: string;
           size: number;
@@ -98,7 +100,7 @@ export async function POST(request: NextRequest) {
           prisma.document.create({
             data: {
               applicationId: application.id,
-              fileName: file.filename,
+              fileName: file.filename, // Make sure this matches the property from upload API
               originalName: file.originalName,
               fileType: file.originalName.split('.').pop() || 'unknown',
               fileSize: file.size,
@@ -132,7 +134,9 @@ export async function GET() {
       include: {
         client: true,
         checklist: true,
-        documents: true
+        documents: true,
+        financingAnalysis: true, // Tambahkan ini
+        subFinancingAnalysis: true // Tambahkan ini
       },
       orderBy: { submittedAt: "desc" }
     })

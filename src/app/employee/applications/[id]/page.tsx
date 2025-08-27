@@ -1,383 +1,283 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { useRouter, useParams } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
-interface Application {
-  id: string
-  fullName: string
-  birthPlace: string
-  birthDate: string
-  gender: string
-  maritalStatus: string
-  education: string
-  occupation: string
-  monthlyIncome: number
-  spouseName?: string
-  spouseOccupation?: string
-  spouseIncome?: number
-  homeAddress: string
-  phoneNumber: string
-  emergencyContact: string
-  emergencyPhone: string
-  businessName?: string
-  businessType?: string
-  businessAddress?: string
-  businessDuration?: number
-  businessIncome?: number
-  loanAmount: number
-  loanPurpose: string
-  loanTerm: number
-  collateral?: string
-  status: string
-  submittedAt: string
-  documents?: Array<{
-    id: string
-    originalName: string
-    category: string
-    fileUrl: string
-  }>
-  checklist?: {
-    ktpOriginal: boolean
-    ktpCopy: boolean
-    kkOriginal: boolean
-    kkCopy: boolean
-    slipGaji: boolean
-    suratKeterjaKerja: boolean
-    rekKoran: boolean
-    buktiPenghasilan: boolean
-    siup: boolean
-    tdp: boolean
-    buktiTempatUsaha: boolean
-    fotoUsaha: boolean
-    sertifikatTanah: boolean
-    bpkb: boolean
-    imb: boolean
-    suratNikah: boolean
-    aktaKelahiran: boolean
-    referensiBank: boolean
-  }
+interface ApplicationDetail {
+  id: string;
+  fullName: string;
+  loanAmount: number;
+  status: string;
+  birthPlace: string;
+  birthDate: string;
+  gender: string;
+  maritalStatus: string;
+  education: string;
+  occupation: string;
+  monthlyIncome: number;
+  spouseName?: string;
+  spouseOccupation?: string;
+  spouseIncome?: number;
+  homeAddress: string;
+  phoneNumber: string;
+  contact1?: string;
+  contact2?: string;
+  contact3?: string;
+  contact4?: string;
+  contact5?: string;
+  businessName?: string;
+  businessType?: string;
+  businessAddress?: string;
+  businessDuration?: number; // in months
+  businessIncome?: number;
+  loanPurpose: string;
+  loanTerm: number;
+  collateral?: string;
+  submittedAt: string;
+  client: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  documents: Array<{
+    id: string;
+    fileName: string;
+    originalName: string;
+    fileUrl: string;
+    category: string;
+  }>;
+  subFinancingAnalysis?: {
+    suami: number;
+    istri: number;
+    lainnya1: number;
+    lainnya2: number;
+    lainnya3: number;
+    suamiPengeluaran: number;
+    istriPengeluaran: number;
+    makan: number;
+    listrik: number;
+    sosial: number;
+    tanggunganLain: number;
+    jumlahAnak: number;
+    sekolah: number;
+    uangSaku: number;
+    pendapatanBersih: number;
+    jangkaPembiayaan: number;
+    angsuranMaksimal: number;
+    plafonMaksimal: number;
+  };
 }
 
-export default function ApplicationDetailPage() {
-  const [application, setApplication] = useState<Application | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
-  const params = useParams()
-  const applicationId = params.id as string
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(value);
+};
 
-  const fetchApplicationDetail = useCallback(async () => {
-    try {
-      const response = await fetch(`/api/applications/${applicationId}`)
-      const result = await response.json()
-      
-      if (response.ok) {
-        setApplication(result.application)
-      } else {
-        console.error('Error fetching application:', result.error)
-      }
-    } catch (error) {
-      console.error('Error fetching application:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [applicationId])
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('id-ID', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+export default function ApplicationDetailPage() {
+  const { id } = useParams();
+  const router = useRouter();
+  const [application, setApplication] = useState<ApplicationDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchApplicationDetail()
-  }, [fetchApplicationDetail])
+    if (id) {
+      const fetchApplication = async () => {
+        try {
+          const res = await fetch(`/api/applications/${id}`);
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || 'Failed to fetch application details');
+          }
+          const data = await res.json();
+          setApplication(data);
+        } catch (err) {
+          setError((err as Error).message);
+          toast.error((err as Error).message);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchApplication();
+    }
+  }, [id]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Memuat detail pengajuan...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+          <p className="mt-4 text-gray-600">Memuat detail aplikasi...</p>
         </div>
       </div>
-    )
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-red-50">
+        <Card className="w-full max-w-md p-6 text-center">
+          <CardTitle className="text-red-700">Error</CardTitle>
+          <CardDescription className="mt-2">{error}</CardDescription>
+          <Button onClick={() => router.back()} className="mt-4">Kembali</Button>
+        </Card>
+      </div>
+    );
   }
 
   if (!application) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600">Pengajuan tidak ditemukan</p>
-          <Button onClick={() => router.push('/employee/dashboard')} className="mt-4">
-            Kembali ke Dashboard
-          </Button>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md p-6 text-center">
+          <CardTitle>Aplikasi Tidak Ditemukan</CardTitle>
+          <CardDescription className="mt-2">Detail aplikasi tidak dapat dimuat.</CardDescription>
+          <Button onClick={() => router.back()} className="mt-4">Kembali</Button>
+        </Card>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm shadow-lg border-b border-emerald-100">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Detail Aplikasi Pembiayaan</h1>
+        <Button onClick={() => router.back()} variant="outline">Kembali</Button>
+      </div>
+
+      <Card className="max-w-4xl mx-auto shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-2xl">{application.fullName}</CardTitle>
+          <CardDescription>ID Aplikasi: {application.id}</CardDescription>
+          <Badge className="mt-2 w-fit">{application.status}</Badge>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Personal Data */}
+          <div className="border-b pb-4">
+            <h2 className="text-xl font-semibold mb-3">Data Pribadi</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <p><strong>Email Klien:</strong> {application.client.email}</p>
+              <p><strong>Telepon Klien:</strong> {application.client.phone}</p>
+              <p><strong>Tempat Lahir:</strong> {application.birthPlace}</p>
+              <p><strong>Tanggal Lahir:</strong> {formatDate(application.birthDate)}</p>
+              <p><strong>Jenis Kelamin:</strong> {application.gender}</p>
+              <p><strong>Status Pernikahan:</strong> {application.maritalStatus}</p>
+              <p><strong>Pendidikan Terakhir:</strong> {application.education}</p>
+              <p><strong>Pekerjaan:</strong> {application.occupation}</p>
+              <p><strong>Penghasilan Bulanan:</strong> {formatCurrency(application.monthlyIncome)}</p>
+              <p><strong>Alamat Rumah:</strong> {application.homeAddress}</p>
+              {application.spouseName && <p><strong>Nama Pasangan:</strong> {application.spouseName}</p>}
+              {application.spouseOccupation && <p><strong>Pekerjaan Pasangan:</strong> {application.spouseOccupation}</p>}
+              {application.spouseIncome && <p><strong>Penghasilan Pasangan:</strong> {formatCurrency(application.spouseIncome)}</p></p>
+            </div>
+          </div>
+
+          {/* Business Data */}
+          {application.businessName && (
+            <div className="border-b pb-4">
+              <h2 className="text-xl font-semibold mb-3">Data Usaha</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <p><strong>Nama Usaha:</strong> {application.businessName}</p>
+                <p><strong>Jenis Usaha:</strong> {application.businessType}</p>
+                <p><strong>Alamat Usaha:</strong> {application.businessAddress}</p>
+                <p><strong>Lama Usaha:</strong> {application.businessDuration ? `${application.businessDuration / 12} Tahun` : 'N/A'}</p>
+                <p><strong>Penghasilan Usaha:</strong> {application.businessIncome ? formatCurrency(application.businessIncome) : 'N/A'}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Financing Data */}
+          <div className="border-b pb-4">
+            <h2 className="text-xl font-semibold mb-3">Data Pembiayaan</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <p><strong>Jumlah Pinjaman:</strong> {formatCurrency(application.loanAmount)}</p>
+              <p><strong>Tujuan Pinjaman:</strong> {application.loanPurpose}</p>
+              <p><strong>Jangka Waktu Pinjaman:</strong> {application.loanTerm} Bulan</p>
+              <p><strong>Jaminan:</strong> {application.collateral || 'Tidak Ada'}</p>
+            </div>
+          </div>
+
+          {/* Sub-Financing Analysis Data */}
+          {application.subFinancingAnalysis && (
+            <div className="border-b pb-4">
+              <h2 className="text-xl font-semibold mb-3">Data Sub-Analisa Pembiayaan</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <p><strong>Pemasukan Suami:</strong> {formatCurrency(application.subFinancingAnalysis.suami)}</p>
+                <p><strong>Pemasukan Istri:</strong> {formatCurrency(application.subFinancingAnalysis.istri)}</p>
+                <p><strong>Pemasukan Lainnya 1:</strong> {formatCurrency(application.subFinancingAnalysis.lainnya1)}</p>
+                <p><strong>Pemasukan Lainnya 2:</strong> {formatCurrency(application.subFinancingAnalysis.lainnya2)}</p>
+                <p><strong>Pemasukan Lainnya 3:</strong> {formatCurrency(application.subFinancingAnalysis.lainnya3)}</p>
+                <p><strong>Pengeluaran Suami:</strong> {formatCurrency(application.subFinancingAnalysis.suamiPengeluaran)}</p>
+                <p><strong>Pengeluaran Istri:</strong> {formatCurrency(application.subFinancingAnalysis.istriPengeluaran)}</p>
+                <p><strong>Pengeluaran Makan:</strong> {formatCurrency(application.subFinancingAnalysis.makan)}</p>
+                <p><strong>Pengeluaran Listrik:</strong> {formatCurrency(application.subFinancingAnalysis.listrik)}</p>
+                <p><strong>Pengeluaran Sosial:</strong> {formatCurrency(application.subFinancingAnalysis.sosial)}</p>
+                <p><strong>Pengeluaran Tanggungan Lain:</strong> {formatCurrency(application.subFinancingAnalysis.tanggunganLain)}</p>
+                <p><strong>Jumlah Anak:</strong> {application.subFinancingAnalysis.jumlahAnak}</p>
+                <p><strong>Pengeluaran Sekolah:</strong> {formatCurrency(application.subFinancingAnalysis.sekolah)}</p>
+                <p><strong>Pengeluaran Uang Saku:</strong> {formatCurrency(application.subFinancingAnalysis.uangSaku)}</p>
+                <p><strong>Pendapatan Bersih:</strong> {formatCurrency(application.subFinancingAnalysis.pendapatanBersih)}</p>
+                <p><strong>Jangka Pembiayaan (Bulan):</strong> {application.subFinancingAnalysis.jangkaPembiayaan}</p>
+                <p><strong>Angsuran Maksimal:</strong> {formatCurrency(application.subFinancingAnalysis.angsuranMaksimal)}</p>
+                <p><strong>Plafon Maksimal:</strong> {formatCurrency(application.subFinancingAnalysis.plafonMaksimal)}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Documents */}
+          {application.documents && application.documents.length > 0 && (
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                Detail Pengajuan Pembiayaan
-              </h1>
-              <p className="text-gray-700 mt-1">
-                Pengajuan dari {application.fullName}
-              </p>
+              <h2 className="text-xl font-semibold mb-3">Dokumen Terunggah</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {application.documents.map(doc => (
+                  <Card key={doc.id} className="p-3">
+                    <p className="font-medium">{doc.originalName}</p>
+                    <p className="text-sm text-gray-600">Kategori: {doc.category}</p>
+                    <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">Lihat Dokumen</a>
+                  </Card>
+                ))}
+              </div>
             </div>
-            <div className="flex space-x-2">
-              <Button 
-                onClick={() => router.push(`/employee/analysis/new?applicationId=${application.id}`)}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                Buat Analisa
-              </Button>
-              <Button 
-                onClick={() => router.push(`/employee/sub-analysis/new?applicationId=${application.id}`)}
-                className="bg-purple-600 hover:bg-purple-700"
-              >
-                Buat Sub Analisa
-              </Button>
-              <Button 
-                onClick={() => router.push('/employee/dashboard')} 
-                variant="outline"
-                className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-              >
-                Kembali
-              </Button>
-            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex justify-end space-x-4 pt-4">
+            <Button onClick={() => router.push(`/employee/applications/${id}/edit`)}>Edit Aplikasi</Button>
+            <Button variant="destructive" onClick={async () => {
+              if (confirm('Are you sure you want to delete this application?')) {
+                try {
+                  const res = await fetch(`/api/applications/${application.id}`, {
+                    method: 'DELETE',
+                  });
+                  if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.error || 'Failed to delete application');
+                  }
+                  toast.success('Application deleted successfully!');
+                  router.push('/employee/dashboard'); // Redirect to dashboard after successful deletion
+                } catch (err) {
+                  toast.error((err as Error).message);
+                }
+              }
+            }}>Hapus Aplikasi</Button>
           </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Main Info */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Data Pribadi */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Data Pribadi</CardTitle>
-              </CardHeader>
-              <CardContent className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Nama Lengkap</label>
-                  <p className="font-medium">{application.fullName}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Tempat Lahir</label>
-                  <p className="font-medium">{application.birthPlace}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Tanggal Lahir</label>
-                  <p className="font-medium">{new Date(application.birthDate).toLocaleDateString('id-ID')}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Jenis Kelamin</label>
-                  <p className="font-medium">{application.gender}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Status Pernikahan</label>
-                  <p className="font-medium">{application.maritalStatus}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Pendidikan</label>
-                  <p className="font-medium">{application.education}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Pekerjaan</label>
-                  <p className="font-medium">{application.occupation}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Penghasilan Bulanan</label>
-                  <p className="font-medium">Rp {new Intl.NumberFormat('id-ID').format(application.monthlyIncome)}</p>
-                </div>
-                {application.spouseName && (
-                  <>
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Nama Pasangan</label>
-                      <p className="font-medium">{application.spouseName}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Pekerjaan Pasangan</label>
-                      <p className="font-medium">{application.spouseOccupation}</p>
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Data Kontak */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Data Kontak</CardTitle>
-              </CardHeader>
-              <CardContent className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Alamat Rumah</label>
-                  <p className="font-medium">{application.homeAddress}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Nomor Telepon</label>
-                  <p className="font-medium">{application.phoneNumber}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Kontak Darurat</label>
-                  <p className="font-medium">{application.emergencyContact}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Telepon Darurat</label>
-                  <p className="font-medium">{application.emergencyPhone}</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Data Usaha */}
-            {application.businessName && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Data Usaha</CardTitle>
-                </CardHeader>
-                <CardContent className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Nama Usaha</label>
-                    <p className="font-medium">{application.businessName}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Jenis Usaha</label>
-                    <p className="font-medium">{application.businessType}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Alamat Usaha</label>
-                    <p className="font-medium">{application.businessAddress}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Lama Usaha</label>
-                    <p className="font-medium">{application.businessDuration} bulan</p>
-                  </div>
-                  {application.businessIncome && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Penghasilan Usaha</label>
-                      <p className="font-medium">Rp {new Intl.NumberFormat('id-ID').format(application.businessIncome)}</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Data Pembiayaan */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Data Pembiayaan</CardTitle>
-              </CardHeader>
-              <CardContent className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Jumlah Pinjaman</label>
-                  <p className="font-medium text-green-600 text-lg">Rp {new Intl.NumberFormat('id-ID').format(application.loanAmount)}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Jangka Waktu</label>
-                  <p className="font-medium">{application.loanTerm} bulan</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Tujuan Pinjaman</label>
-                  <p className="font-medium">{application.loanPurpose}</p>
-                </div>
-                {application.collateral && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Jaminan</label>
-                    <p className="font-medium">{application.collateral}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Status */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Status Pengajuan</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center">
-                  <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                    application.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                    application.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {application.status === 'PENDING' ? 'Menunggu' :
-                     application.status === 'APPROVED' ? 'Disetujui' : 'Ditolak'}
-                  </span>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Diajukan: {new Date(application.submittedAt).toLocaleDateString('id-ID')}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Dokumen */}
-            {application.documents && application.documents.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Dokumen Terupload</CardTitle>
-                  <CardDescription>
-                    {application.documents.length} dokumen
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {application.documents.map((doc, index) => (
-                      <a
-                        key={index}
-                        href={doc.fileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center p-2 border rounded hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{doc.originalName}</p>
-                          <p className="text-xs text-gray-500">{doc.category}</p>
-                        </div>
-                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                      </a>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Checklist */}
-            {application.checklist && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Checklist Dokumen</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-sm">
-                    {Object.entries(application.checklist).map(([key, value]) => (
-                      <div key={key} className="flex items-center justify-between">
-                        <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {value ? 'Ada' : 'Tidak Ada'}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }

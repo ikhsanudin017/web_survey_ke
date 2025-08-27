@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       case 3:
         prompt = `Analyze collateral assessment:
           Collateral details: ${application.collateral}
-          Financing analysis: ${JSON.stringify(application.financingAnalysis?.jenisJaminan)} ${JSON.stringify(application.financingAnalysis?.nilaiTaksiran)}
+          Financing analysis: ${JSON.stringify(application.financingAnalysis?.jaminan_jenis)} ${JSON.stringify(application.financingAnalysis?.jaminan_nilaiTaksiran)}
           
           Provide collateral valuation and risk assessment. Focus on:
           1. Collateral type and value
@@ -174,9 +174,9 @@ export async function POST(request: NextRequest) {
       await prisma.financingAnalysis.update({
         where: { id: application.financingAnalysis.id },
         data: {
-          ...(step === 1 && { kesimpulanKarakter: aiAnalysis.summary }),
+          ...(step === 1 && { karakter_kesimpulan: aiAnalysis.summary }),
           ...(step === 5 && { 
-            kesimpulanAkhir: aiAnalysis.recommendation === 'APPROVE' ? 'Layak' : 'Tidak Layak'
+            kesimpulan_rekomendasi: aiAnalysis.recommendation === 'APPROVE' ? 'Layak' : 'Tidak Layak'
           })
         }
       });

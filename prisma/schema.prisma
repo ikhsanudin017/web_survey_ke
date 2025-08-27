@@ -51,6 +51,7 @@ model FinancingApplication {
 
   // Data Pribadi
   fullName           String
+  nickname           String?
   birthPlace         String
   birthDate          DateTime
   gender             String
@@ -61,6 +62,8 @@ model FinancingApplication {
   spouseName         String?
   spouseOccupation   String?
   spouseIncome       Decimal?
+  heirName           String?
+  heirRelationship   String?
 
   // Data Kontak
   homeAddress        String
@@ -144,8 +147,8 @@ model ApplicationChecklist {
 // Model untuk Analisa Pembiayaan (diisi oleh Pegawai)
 model FinancingAnalysis {
   id                    String   @id @default(cuid())
-  applicationId         String?  @unique
-  application           FinancingApplication? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId         String   @unique
+  application           FinancingApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   employeeId            String
   employee              Employee @relation(fields: [employeeId], references: [id])
 
@@ -157,64 +160,56 @@ model FinancingAnalysis {
   jangkaWaktu           String?
 
   // 1. KARAKTER
-  agama                 String?
-  pengalaman            String?
-  hubMasyarakat         String?
-  karakterAngsuranLannya String?
-  kelSurveyLannya       String?
+  karakter_agama              String?
+  karakter_pengalaman         String?
+  karakter_hubMasyarakat      String?
+  karakter_angsuranLainnya    String?
+  karakter_surveyLainnya      String?
+  karakter_surveyRating1      String? // Baik, Cukup, Kurang, Jelek
+  karakter_surveyRating2      String?
+  karakter_surveyRating3      String?
+  karakter_surveyRating4      String?
+  karakter_surveyRating5      String?
+  karakter_rating1            String? // Baik, Cukup, Kurang, Jelek
+  karakter_rating2            String?
+  karakter_rating3            String?
+  karakter_rating4            String?
+  karakter_rating5            String?
+  karakter_kesimpulan         String?
 
-  // Rating Karakter (1-5) dengan nama penilai
-  karakter1             Int? // Skala 1-5
-  karakter1Penilai      String?
-  karakter2             Int?
-  karakter2Penilai      String?
-  karakter3             Int?
-  karakter3Penilai      String?
-  karakter4             Int?
-  karakter4Penilai      String?
-  karakter5             Int?
-  karakter5Penilai      String?
-
-  // Checklist "Jelek" untuk penilaian
-  karakterJelek1        Boolean @default(false)
-  karakterJelek2        Boolean @default(false)
-  karakterJelek3        Boolean @default(false)
-  karakterJelek4        Boolean @default(false)
-  karakterJelek5        Boolean @default(false)
-
-  // 2. KESIMPULAN KARAKTER (AI Generated)
-  kesimpulanKarakter    String?
-  kapasitasDanKelancaran String?
+  // 2. KAPASITAS DAN KEUANGAN
+  kapasitas_plafonMaksimal    Decimal?
+  kapasitas_angsuranMaksimal  Decimal?
 
   // 3. ANALISA JAMINAN
-  jenisJaminan          String?
-  nilaiTaksiran         Decimal?
-  kondisiJaminan        String?
-  nilaiJaminanSetelahPotongan Decimal?
-  validInvalid          String? // "Valid" atau "Invalid"
+  jaminan_jenis               String?
+  jaminan_nilaiTaksiran       Decimal?
+  jaminan_kondisi             String?
+  jaminan_plafonPokok         Decimal?
+  jaminan_keabsahan           String? // Valid, Invalid
 
   // 4. KONDISI
-  isKaryawan            Boolean @default(false)
-  isWiraswasta          Boolean @default(false)
-  isPNSPolri            Boolean @default(false)
-  isTetap               Boolean @default(false)
-  isKontrak             Boolean @default(false)
-  isLainnya             Boolean @default(false)
-  masaBerakhirKontrak   String?
+  kondisi_pekerjaan           String? // Karyawan, Wiraswasta, PNS/Polri, Laennya
+  kondisi_pekerjaanLainnya    String?
+  kondisi_jenisKontrak        String? // Tetap, Kontrak
+  kondisi_masaBerakhirKontrak String?
+  kondisi_kesimpulanUmum      String?
 
   // 5. CAPITAL
-  rumah                 String? // "Sendiri" atau "Sewa"
-  kendaraanMotor        Int @default(0)
-  kendaraanMobil        Int @default(0)
-  lainnya               String?
+  capital_rumah               String?
+  capital_kendaraan           String?
+  capital_hartaLainnya        String?
 
-  // 6. CHECKLIST KELENGKAPAN DOKUMEN (Auto-filled from client data)
-  fcKtpPemohon          Boolean @default(false)
-  fcKtpSuamiIstri       Boolean @default(false)
-  fcSlipGaji            Boolean @default(false)
+  // 6. CEKLIST KELENGKAPAN DOKUMEN
+  ceklist_fcKtpPemohon        Boolean  @default(false)
+  ceklist_fcKk                Boolean  @default(false)
+  ceklist_fcKtpSuamiIstri     Boolean  @default(false)
+  ceklist_fcSlipGaji          Boolean  @default(false)
+  ceklist_fcAgunan            Boolean  @default(false)
 
-  // 7. KESIMPULAN AKHIR
-  kesimpulanAkhir       String @default("Layak") // Layak atau Tidak Layak
+  // 7. KESIMPULAN AKHIR CATATAN KHUSUS
+  kesimpulan_catatanKhusus    String?
+  kesimpulan_rekomendasi      String   @default("Layak") // Layak, Tidak Layak
 
   // Signature fields
   petugasSurvei         String?

@@ -23,6 +23,8 @@ export const personalDataSchema = z.object({
     .min(3, 'Nama lengkap minimal 3 karakter')
     .regex(/^[a-zA-Z\s]+$/, 'Nama hanya boleh berisi huruf dan spasi'),
   
+  nickname: z.string().min(2, 'Nama panggilan minimal 2 karakter').optional(),
+
   birthDate: dateSchema,
   
   maritalStatus: z.enum(['Menikah', 'Belum Menikah', 'Cerai Hidup', 'Cerai Mati']),
@@ -36,6 +38,10 @@ export const personalDataSchema = z.object({
     .transform(val => val ? parseFloat(val.replace(/[^0-9.-]+/g, '')) : 0)
     .pipe(z.number().min(0).max(100000000, 'Penghasilan maksimal Rp 100.000.000'))
     .optional(),
+
+  heirName: z.string().min(3, 'Nama ahli waris minimal 3 karakter').optional(),
+
+  heirRelationship: z.string().min(3, 'Hubungan/Pekerjaan minimal 3 karakter').optional(),
 });
 
 // Step 2: Contact Data Schema

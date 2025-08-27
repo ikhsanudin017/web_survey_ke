@@ -1,18 +1,33 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const subAnalyses = await prisma.subFinancingAnalysis.findMany({
-      include: {
-        application: {
-          select: {
-            fullName: true,
+    const { searchParams } = new URL(request.url);
+    const applicationId = searchParams.get('applicationId');
+
+    if (applicationId) {
+      const subAnalysis = await prisma.subFinancingAnalysis.findUnique({
+        where: { applicationId },
+      });
+      if (subAnalysis) {
+        return NextResponse.json(subAnalysis);
+      } else {
+        return NextResponse.json({ message: "Sub-analysis not found for this application." }, { status: 404 });
+      }
+    } else {
+      // If no applicationId, return all (or handle as error if not intended)
+      const subAnalyses = await prisma.subFinancingAnalysis.findMany({
+        include: {
+          application: {
+            select: {
+              fullName: true,
+            }
           }
         }
-      }
-    });
-    return NextResponse.json({ subAnalyses });
+      });
+      return NextResponse.json(subAnalyses); // Return array directly
+    }
   } catch (error) {
     console.error("Error fetching sub-analyses:", error);
     return NextResponse.json(
@@ -36,25 +51,26 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Calculate pendapatan bersih
-    const pemasukanSuami = parseFloat(formData.pemasukanSuami) || 0
-    const pemasukanIstri = parseFloat(formData.pemasukanIstri) || 0
-    const pemasukanLainnya1 = parseFloat(formData.pemasukanLainnya1) || 0
-    const pemasukanLainnya2 = parseFloat(formData.pemasukanLainnya2) || 0
+    // Calculate pendapatan bersih - Adjusted to frontend field names
+    const suami = parseFloat(formData.suami) || 0
+    const istri = parseFloat(formData.istri) || 0
+    const lainnya1 = parseFloat(formData.lainnya1) || 0
+    const lainnya2 = parseFloat(formData.lainnya2) || 0
+    const lainnya3 = parseFloat(formData.lainnya3) || 0 // Added this field
 
-    const pengeluaranSuami = parseFloat(formData.pengeluaranSuami) || 0
-    const pengeluaranIstri = parseFloat(formData.pengeluaranIstri) || 0
+    const suamiPengeluaran = parseFloat(formData.suamiPengeluaran) || 0
+    const istriPengeluaran = parseFloat(formData.istriPengeluaran) || 0
     const makan = parseFloat(formData.makan) || 0
     const listrik = parseFloat(formData.listrik) || 0
     const sosial = parseFloat(formData.sosial) || 0
     const tanggunganLain = parseFloat(formData.tanggunganLain) || 0
 
-    const pengeluaranSekolah = parseFloat(formData.pengeluaranSekolah) || 0
+    const sekolah = parseFloat(formData.sekolah) || 0
     const uangSaku = parseFloat(formData.uangSaku) || 0
 
-    const totalPemasukan = pemasukanSuami + pemasukanIstri + pemasukanLainnya1 + pemasukanLainnya2
-    const totalPengeluaran = pengeluaranSuami + pengeluaranIstri + makan + listrik + sosial + tanggunganLain
-    const totalAnakPengeluaran = pengeluaranSekolah + uangSaku
+    const totalPemasukan = suami + istri + lainnya1 + lainnya2 + lainnya3
+    const totalPengeluaran = suamiPengeluaran + istriPengeluaran + makan + listrik + sosial + tanggunganLain
+    const totalAnakPengeluaran = sekolah + uangSaku
     const pendapatanBersih = totalPemasukan - totalPengeluaran - totalAnakPengeluaran
     const jangkaPembiayaan = parseInt(formData.jangkaPembiayaan) || 0
     
@@ -65,18 +81,19 @@ export async function POST(request: NextRequest) {
     const plafonMaksimal = angsuranMaksimal * jangkaPembiayaan
 
     const dataToStore = {
-      pemasukanSuami,
-      pemasukanIstri,
-      pemasukanLainnya1,
-      pemasukanLainnya2,
-      pengeluaranSuami,
-      pengeluaranIstri,
+            suami,
+      istri,
+      lainnya1,
+      lainnya2,
+      lainnya3,
+      suamiPengeluaran,
+      istriPengeluaran,
       makan,
       listrik,
       sosial,
       tanggunganLain,
       jumlahAnak: parseInt(formData.jumlahAnak) || 0,
-      pengeluaranSekolah,
+      sekolah,
       uangSaku,
       pendapatanBersih,
       jangkaPembiayaan,

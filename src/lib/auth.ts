@@ -50,6 +50,64 @@ export const authOptions = {
           return null
         }
       }
+    }),
+    CredentialsProvider({
+      name: "employee",
+      id: "employee",
+      credentials: {
+        name: { label: "Name", type: "text" }, // Changed from email to name
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        // Changed from credentials?.email to credentials?.name
+        if (!credentials?.name || !credentials?.password) {
+          return null
+        }
+
+        try {
+          const employee = await prisma.employee.findFirst({ // Changed to findFirst
+            where: {
+              name: credentials.name
+            }
+          })
+
+          if (!employee) {
+            return null
+          }
+
+          // Optional: Check if multiple employees have the same name (if name is not unique in schema)
+          const duplicateEmployees = await prisma.employee.findMany({
+            where: {
+              name: credentials.name
+            }
+          });
+
+          if (duplicateEmployees.length > 1) {
+            console.error("Auth attempt: Multiple employees found with the same name. Please ensure names are unique for login:", credentials.name);
+            return null; // Prevent login if name is not unique
+          }
+
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            employee.password
+          )
+
+          if (!isPasswordValid) {
+            return null
+          }
+
+          return {
+            id: employee.id,
+            email: employee.email,
+            name: employee.name,
+            role: "employee",
+            position: employee.position
+          }
+        } catch (error) {
+          console.error("Employee auth error:", error)
+          return null
+        }
+      }
     })
   ],
   session: {

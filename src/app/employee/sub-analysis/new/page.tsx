@@ -6,6 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
+// Helper function to format numbers with dots
+const formatNumber = (value: string | number) => {
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(num)) return '0';
+  return new Intl.NumberFormat('id-ID').format(num);
+};
+
 function SubAnalysisForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -46,6 +53,51 @@ function SubAnalysisForm() {
     // ANGSURAN MAKSIMAL
     angsuranMaksimal: ''
   })
+
+  // Fetch existing sub-analysis data if applicationId is present
+  useEffect(() => {
+    if (applicationId) {
+      const fetchSubAnalysis = async () => {
+        try {
+          const response = await fetch(`/api/employee/sub-analysis?applicationId=${applicationId}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data) {
+              // Assuming the API returns the data in a format that matches formData
+              setFormData(prev => ({
+                ...prev,
+                ...data, // Merge fetched data into formData
+                // Ensure numbers are stored as strings if that's what the form expects
+                suami: data.suami?.toString() || '',
+                istri: data.istri?.toString() || '',
+                lainnya1: data.lainnya1?.toString() || '',
+                lainnya2: data.lainnya2?.toString() || '',
+                lainnya3: data.lainnya3?.toString() || '',
+                suamiPengeluaran: data.suamiPengeluaran?.toString() || '',
+                istriPengeluaran: data.istriPengeluaran?.toString() || '',
+                makan: data.makan?.toString() || '',
+                listrik: data.listrik?.toString() || '',
+                sosial: data.sosial?.toString() || '',
+                tanggunganLain: data.tanggunganLain?.toString() || '',
+                jumlahAnak: data.jumlahAnak?.toString() || '',
+                sekolah: data.sekolah?.toString() || '',
+                uangSaku: data.uangSaku?.toString() || '',
+                jangkaPembiayaan: data.jangkaPembiayaan?.toString() || '',
+                // Derived fields might not be sent from backend, or might be sent.
+                // If sent, they will be overwritten by local calculations.
+                // If not sent, they will remain empty and be calculated.
+              }));
+            }
+          } else {
+            console.error('Failed to fetch existing sub-analysis:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error fetching sub-analysis:', error);
+        }
+      };
+      fetchSubAnalysis();
+    }
+  }, [applicationId]); // Dependency array includes applicationId
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -108,6 +160,7 @@ function SubAnalysisForm() {
       angsuranMaksimal: angsuranMaksimal.toString(),
       plafonMaksimal: plafonMaksimal.toString(),
     }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.suami, formData.istri, formData.lainnya1, formData.lainnya2, formData.lainnya3, formData.suamiPengeluaran, formData.istriPengeluaran, formData.makan, formData.listrik, formData.sosial, formData.tanggunganLain, formData.sekolah, formData.uangSaku, formData.jangkaPembiayaan]);
 
   const handleSubmit = async () => {
@@ -458,10 +511,10 @@ function SubAnalysisForm() {
                 <label className="text-lg font-bold text-gray-900">PLAFON MAKSIMAL</label>
                 <div className="flex-1 mx-4">
                   <Input
-                    type="number"
-                    value={formData.plafonMaksimal}
+                    type="text"
+                    value={formatNumber(formData.plafonMaksimal)}
                     onChange={(e) => handleInputChange('plafonMaksimal', e.target.value)}
-                    className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                    className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0 text-right font-bold"
                     placeholder="0"
                     readOnly
                   />
@@ -473,10 +526,10 @@ function SubAnalysisForm() {
                 <label className="text-lg font-bold text-gray-900">Angsuran Maksimal per bulan</label>
                 <div className="flex-1 mx-4">
                   <Input
-                    type="number"
-                    value={formData.angsuranMaksimal}
+                    type="text"
+                    value={formatNumber(formData.angsuranMaksimal)}
                     onChange={(e) => handleInputChange('angsuranMaksimal', e.target.value)}
-                    className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0"
+                    className="border-b border-gray-400 rounded-none border-t-0 border-l-0 border-r-0 text-right font-bold"
                     placeholder="0"
                     readOnly
                   />

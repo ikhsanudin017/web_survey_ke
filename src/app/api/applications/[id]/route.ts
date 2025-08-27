@@ -1,105 +1,107 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
-const prisma = new PrismaClient()
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params
+// GET a single application by ID
+export async function GET(request: Request, context: any) {
   try {
-    const applicationId = id
+    const { params } = context;
+    const { id } = params;
 
     const application = await prisma.financingApplication.findUnique({
-      where: {
-        id: applicationId
-      },
+      where: { id },
       include: {
-        client: {
-          select: {
-            name: true,
-            email: true,
-            phone: true
-          }
-        },
+        client: true,
         documents: true,
-        checklist: true,
-        financingAnalysis: true
-      }
-    })
+        subFinancingAnalysis: true,
+      },
+    });
 
     if (!application) {
-      return NextResponse.json(
-        { error: 'Pengajuan tidak ditemukan' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
 
-    return NextResponse.json({
-      success: true,
-      application
-    })
-
+    return NextResponse.json(application);
   } catch (error) {
-    console.error('Error fetching application detail:', error)
-    return NextResponse.json(
-      { error: 'Terjadi kesalahan saat mengambil detail pengajuan' },
-      { status: 500 }
-    )
+    console.error(`Error fetching application:`, error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params
+// DELETE an application by ID
+export async function DELETE(request: Request, context: any) {
   try {
-    const body = await request.json()
-    const { uploadedFiles, ...restOfBody } = body
+    const { params } = context;
+    const { id } = params;
+
+    await prisma.financingApplication.delete({
+      where: { id },
+    });
+    return NextResponse.json({ message: 'Application deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error(`Error deleting application:`, error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+// PUT (Update) an application by ID
+export async function PUT(request: Request, context: any) {
+  try {
+    const { params } = context;
+    const { id } = params;
+    const updatedData = await request.json();
 
     const application = await prisma.financingApplication.update({
       where: { id },
       data: {
-        ...restOfBody,
-        loanAmount: parseFloat(restOfBody.loanAmount),
-        monthlyIncome: parseFloat(restOfBody.monthlyIncome),
-        spouseIncome: parseFloat(restOfBody.spouseIncome) || 0,
-        businessIncome: parseFloat(restOfBody.businessIncome) || 0,
-        businessDuration: parseFloat(restOfBody.businessDuration) || 0,
-        loanTerm: parseInt(restOfBody.loanTerm),
-        birthDate: new Date(restOfBody.birthDate),
+        // Update fields based on your FinancingApplication schema
+        // Example fields (you'll need to map all relevant fields from updatedData)
+        fullName: updatedData.fullName,
+        birthPlace: updatedData.birthPlace,
+        birthDate: new Date(updatedData.birthDate),
+        gender: updatedData.gender,
+        maritalStatus: updatedData.maritalStatus,
+        education: updatedData.education,
+        occupation: updatedData.occupation,
+        monthlyIncome: parseFloat(updatedData.monthlyIncome),
+        spouseName: updatedData.spouseName || null,
+        spouseOccupation: updatedData.spouseOccupation || null,
+        spouseIncome: updatedData.spouseIncome ? parseFloat(updatedData.spouseIncome) : null,
+        homeAddress: updatedData.homeAddress,
+        phoneNumber: updatedData.phoneNumber,
+        contact1: updatedData.contact1 || null,
+        contact2: updatedData.contact2 || null,
+        contact3: updatedData.contact3 || null,
+        contact4: updatedData.contact4 || null,
+        contact5: updatedData.contact5 || null,
+        businessName: updatedData.businessName || null,
+        businessType: updatedData.businessType || null,
+        businessAddress: updatedData.businessAddress || null,
+        businessDuration: updatedData.businessDuration ? (parseInt(updatedData.businessDuration) * 12) : null, // Convert years to months
+        businessIncome: updatedData.businessIncome ? parseFloat(updatedData.businessIncome) : null,
+        loanAmount: parseFloat(updatedData.loanAmount),
+        loanPurpose: updatedData.loanPurpose,
+        loanTerm: parseInt(updatedData.loanTerm),
+        collateral: updatedData.collateral || null,
+        // status: updatedData.status, // Consider if status should be updated via this form
       },
-    })
+    });
 
-    return NextResponse.json({
-      success: true,
-      application,
-    })
+    // Optionally update related client data if needed
+    if (updatedData.client) {
+      await prisma.client.update({
+        where: { id: application.clientId },
+        data: {
+          name: updatedData.client.name,
+          email: updatedData.client.email,
+          phone: updatedData.client.phone,
+          address: updatedData.homeAddress, // Assuming homeAddress is client's address
+        },
+      });
+    }
+
+    return NextResponse.json(application);
   } catch (error) {
-    console.error('Error updating application:', error)
-    return NextResponse.json(
-      { error: 'Terjadi kesalahan saat memperbarui pengajuan' },
-      { status: 500 }
-    )
+    console.error(`Error updating application:`, error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params
-  try {
-    await prisma.financingApplication.delete({ where: { id } })
-    return NextResponse.json({ success: true, message: 'Pengajuan berhasil dihapus' })
-  } catch (error) {
-    console.error('Error deleting application:', error)
-    return NextResponse.json(
-      { error: 'Terjadi kesalahan saat menghapus pengajuan' },
-      { status: 500 }
-    )
-  }
-}
-
