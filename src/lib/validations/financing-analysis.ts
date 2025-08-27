@@ -24,10 +24,6 @@ export const financingAnalysisSchema = z.object({
       score: z.number().min(1).max(5),
       assessedBy: z.string().min(1, "Nama penilai wajib diisi"),
     }),
-    characterAssessment: z.object({
-      score: z.number().min(1).max(5),
-      assessedBy: z.string().min(1, "Nama penilai wajib diisi"),
-    }),
     completeness: z.object({
       score: z.number().min(1).max(5),
       assessedBy: z.string().min(1, "Nama penilai wajib diisi"),
@@ -61,12 +57,11 @@ export const financingAnalysisSchema = z.object({
   
   // Document checklist (auto-populated)
   documentChecklist: z.object({
-    ktp: z.boolean(),
-    npwp: z.boolean(),
-    siup: z.boolean(),
-    tdp: z.boolean(),
-    financialStatements: z.boolean(),
-    collateralDocuments: z.boolean(),
+    fcKtpPemohon: z.boolean(),
+    fcKk: z.boolean(),
+    fcKtpSuamiIstriAhliWaris: z.boolean(),
+    fcSlipGaji: z.boolean(),
+    fcAgunan: z.boolean(),
   }),
   
   // Kesimpulan karakter (AI generated)
@@ -74,6 +69,18 @@ export const financingAnalysisSchema = z.object({
     summary: z.string(),
     recommendation: z.enum(['layak', 'tidak_layak', 'pertimbangan']),
     averageScore: z.number(),
+  }),
+  characterSurvey: z.object({
+    religion: z.string(),
+    experience: z.string(),
+    communityRelations: z.string(),
+    loanCharacter: z.string(),
+    surveyNotes: z.string(),
+    input1: z.string(),
+    input2: z.string(),
+    input3: z.string(),
+    input4: z.string(),
+    input5: z.string(),
   }),
 });
 

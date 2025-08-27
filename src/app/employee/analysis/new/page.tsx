@@ -344,6 +344,8 @@ function AnalysisForm() {
                 ))}
             </div>
 
+            
+
             {/* Client Contact Numbers */}
             {clientContacts.length > 0 && (
                 <div className="md:col-span-2 space-y-2">
@@ -460,10 +462,23 @@ function AnalysisForm() {
         </FormSection>
 
         {/* Signature */}
+         {/* Signature */}
          <FormSection title="Tanda Tangan">
-            <div><Label>Petugas Survei</Label><Input value={formData.petugasSurvei} onChange={e => handleInputChange('petugasSurvei', e.target.value)} /></div>
-            <div><Label>Pengurus</Label><Input value={formData.pengurus} onChange={e => handleInputChange('pengurus', e.target.value)} /></div>
-            <div><Label>Approver</Label><Input value={formData.approver} onChange={e => handleInputChange('approver', e.target.value)} /></div>
+            <div className="flex flex-col items-center">
+                <Label className="mb-4">Petugas Survei</Label>
+                <div className="w-full border-b border-gray-300 h-8"></div> {/* Signature line */}
+                <span className="text-sm text-gray-500">(..................)</span>
+            </div>
+            <div className="flex flex-col items-center">
+                <Label className="mb-4">Pengurus</Label>
+                <div className="w-full border-b border-gray-300 h-8"></div> {/* Signature line */}
+                <span className="text-sm text-gray-500">(..................)</span>
+            </div>
+            <div className="flex flex-col items-center md:col-span-2"> {/* Span 2 columns for Approver */}
+                <Label className="mb-4">Approver</Label>
+                <div className="w-full border-b border-gray-300 h-8"></div> {/* Signature line */}
+                <span className="text-sm text-gray-500">(..................)</span>
+            </div>
         </FormSection>
 
       </main>

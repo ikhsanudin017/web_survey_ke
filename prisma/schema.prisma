@@ -22,6 +22,8 @@ model Employee {
 
   // Relasi ke analisa yang dibuat
   financingAnalyses    FinancingAnalysis[]
+  // Relasi ke riwayat perubahan status aplikasi
+  statusChanges ApplicationStatusHistory[]
   
   @@map("employees")
 }
@@ -99,7 +101,24 @@ model FinancingApplication {
   subFinancingAnalysis SubFinancingAnalysis?
   biChecking         BiChecking?
 
+  // Relasi ke riwayat status aplikasi
+  statusHistories ApplicationStatusHistory[]
+
   @@map("financing_applications")
+}
+
+// Model for Application Status History
+model ApplicationStatusHistory {
+  id            String   @id @default(cuid())
+  applicationId String
+  application   FinancingApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  status        String
+  note          String?
+  changedBy     String
+  employee      Employee @relation(fields: [changedBy], references: [id])
+  changedAt     DateTime @default(now())
+
+  @@map("application_status_histories")
 }
 
 // Model untuk Checklist Data Calon Pembiayaan
@@ -170,11 +189,6 @@ model FinancingAnalysis {
   karakter_surveyRating3      String?
   karakter_surveyRating4      String?
   karakter_surveyRating5      String?
-  karakter_rating1            String? // Baik, Cukup, Kurang, Jelek
-  karakter_rating2            String?
-  karakter_rating3            String?
-  karakter_rating4            String?
-  karakter_rating5            String?
   karakter_kesimpulan         String?
 
   // 2. KAPASITAS DAN KEUANGAN

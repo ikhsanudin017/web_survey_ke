@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -33,7 +34,6 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
         businessProspects: { score: 3, assessedBy: '' },
         repaymentCapacity: { score: 3, assessedBy: '' },
         collateralValue: { score: 3, assessedBy: '' },
-        characterAssessment: { score: 3, assessedBy: '' },
         completeness: { score: 3, assessedBy: '' },
       },
       clientDataChecklist: {
@@ -50,11 +50,29 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
       biChecking: {
         pdfUploaded: false,
       },
-      documentChecklist: {},
+      documentChecklist: {
+        fcKtpPemohon: false,
+        fcKk: false,
+        fcKtpSuamiIstriAhliWaris: false,
+        fcSlipGaji: false,
+        fcAgunan: false,
+      },
       characterConclusion: {
         summary: '',
         recommendation: 'pertimbangan',
         averageScore: 0,
+      },
+      characterSurvey: {
+        religion: '',
+        experience: '',
+        communityRelations: '',
+        loanCharacter: '',
+        surveyNotes: '',
+        input1: '',
+        input2: '',
+        input3: '',
+        input4: '',
+        input5: '',
       },
       ...initialData,
     },
@@ -79,12 +97,11 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
         
         // Auto-check document checklist
         form.setValue('documentChecklist', {
-          ktp: !!data.documents?.ktp,
-          npwp: !!data.documents?.npwp,
-          siup: !!data.documents?.siup,
-          tdp: !!data.documents?.tdp,
-          financialStatements: !!data.documents?.financialStatements,
-          collateralDocuments: !!data.documents?.collateralDocuments,
+          fcKtpPemohon: !!data.documents?.fcKtpPemohon,
+          fcKk: !!data.documents?.fcKk,
+          fcKtpSuamiIstriAhliWaris: !!data.documents?.fcKtpSuamiIstriAhliWaris,
+          fcSlipGaji: !!data.documents?.fcSlipGaji,
+          fcAgunan: !!data.documents?.fcAgunan,
         });
       } catch (error) {
         toast({
@@ -292,6 +309,130 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
         </CardContent>
       </Card>
 
+      {/* Penilaian Karakter Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Penilaian Karakter dari Survey (5 Orang)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="characterSurvey.religion">1. Agama</Label>
+              <RadioGroup name="characterSurvey.religion" className="flex space-x-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="baik" id="religion-baik" />
+                  <Label htmlFor="religion-baik">Baik</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="cukup" id="religion-cukup" />
+                  <Label htmlFor="religion-cukup">Cukup</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="kurang" id="religion-kurang" />
+                  <Label htmlFor="religion-kurang">Kurang</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="jelek" id="religion-jelek" />
+                  <Label htmlFor="religion-jelek">Jelek</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <div>
+              <Label htmlFor="characterSurvey.experience">2. Pengamalan</Label>
+              <RadioGroup name="characterSurvey.experience" className="flex space-x-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="baik" id="experience-baik" />
+                  <Label htmlFor="experience-baik">Baik</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="cukup" id="experience-cukup" />
+                  <Label htmlFor="experience-cukup">Cukup</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="kurang" id="experience-kurang" />
+                  <Label htmlFor="experience-kurang">Kurang</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="jelek" id="experience-jelek" />
+                  <Label htmlFor="experience-jelek">Jelek</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <div>
+              <Label htmlFor="characterSurvey.communityRelations">3. Hub Masyarakat</Label>
+              <RadioGroup name="characterSurvey.communityRelations" className="flex space-x-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="baik" id="communityRelations-baik" />
+                  <Label htmlFor="communityRelations-baik">Baik</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="cukup" id="communityRelations-cukup" />
+                  <Label htmlFor="communityRelations-cukup">Cukup</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="kurang" id="communityRelations-kurang" />
+                  <Label htmlFor="communityRelations-kurang">Kurang</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="jelek" id="communityRelations-jelek" />
+                  <Label htmlFor="communityRelations-jelek">Jelek</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <div>
+              <Label htmlFor="characterSurvey.loanCharacter">4. Karakter Angsuran Lainnya</Label>
+              <RadioGroup name="characterSurvey.loanCharacter" className="flex space-x-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="baik" id="loanCharacter-baik" />
+                  <Label htmlFor="loanCharacter-baik">Baik</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="cukup" id="loanCharacter-cukup" />
+                  <Label htmlFor="loanCharacter-cukup">Cukup</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="kurang" id="loanCharacter-kurang" />
+                  <Label htmlFor="loanCharacter-kurang">Kurang</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="jelek" id="loanCharacter-jelek" />
+                  <Label htmlFor="loanCharacter-jelek">Jelek</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            <div>
+              <Label htmlFor="characterSurvey.surveyNotes">5. Ket. Survey Lainnya</Label>
+              <RadioGroup name="characterSurvey.surveyNotes" className="flex space-x-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="baik" id="surveyNotes-baik" />
+                  <Label htmlFor="surveyNotes-baik">Baik</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="cukup" id="surveyNotes-cukup" />
+                  <Label htmlFor="surveyNotes-cukup">Cukup</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="kurang" id="surveyNotes-kurang" />
+                  <Label htmlFor="surveyNotes-kurang">Kurang</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="jelek" id="surveyNotes-jelek" />
+                  <Label htmlFor="surveyNotes-jelek">Jelek</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+          <div className="mt-4 space-y-2">
+            <Label className="font-semibold">5 Nomer yang diinputkan:</Label>
+            <Input name="characterSurvey.input1" placeholder="1." />
+            <Input name="characterSurvey.input2" placeholder="2." />
+            <Input name="characterSurvey.input3" placeholder="3." />
+            <Input name="characterSurvey.input4" placeholder="4." />
+            <Input name="characterSurvey.input5" placeholder="5." />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Informasi Tambahan */}
       <Card>
         <CardHeader>
@@ -436,6 +577,32 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
         </CardContent>
       </Card>
 
+      {/* Signature Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Tanda Tangan</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-8">
+          <div className="grid grid-cols-2 gap-8">
+            <div className="flex flex-col items-center">
+              <Label className="mb-4">Petugas Survei</Label>
+              <Input className="w-full border-b border-gray-300" />
+              <span className="text-sm text-gray-500">(..................)</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <Label className="mb-4">Pengurus</Label>
+              <Input className="w-full border-b border-gray-300" />
+              <span className="text-sm text-gray-500">(..................)</span>
+            </div>
+          </div>
+          <div className="flex flex-col items-center mt-8">
+            <Label className="mb-4">Approver</Label>
+            <Input className="w-full border-b border-gray-300" />
+            <span className="text-sm text-gray-500">(..................)</span>
+          </div>
+        </CardContent>
+      </Card>
+
       <Button type="submit" className="w-full">
         Simpan Analisa
       </Button>
@@ -456,12 +623,11 @@ function getAssessmentLabel(key: string): string {
 
 function getDocumentLabel(key: string): string {
   const labels: Record<string, string> = {
-    ktp: 'KTP',
-    npwp: 'NPWP',
-    siup: 'SIUP',
-    tdp: 'TDP',
-    financialStatements: 'Laporan Keuangan',
-    collateralDocuments: 'Dokumen Jaminan',
+    fcKtpPemohon: 'FC KTP Pemohon',
+    fcKk: 'FC KK',
+    fcKtpSuamiIstriAhliWaris: 'FC KTP Suami/Istri/Ahli Waris',
+    fcSlipGaji: 'FC Slip Gaji',
+    fcAgunan: 'FC Agunan',
   };
   return labels[key] || key;
 }

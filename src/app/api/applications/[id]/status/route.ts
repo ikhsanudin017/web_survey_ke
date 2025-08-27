@@ -5,8 +5,9 @@ import { prisma } from '@/lib/prisma';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
@@ -14,7 +15,7 @@ export async function PATCH(
     }
 
     const { status, note } = await request.json();
-    const applicationId = params.id;
+    const applicationId = id;
 
     if (!applicationId) {
       return NextResponse.json({ error: 'Application ID is required' }, { status: 400 });
@@ -35,7 +36,6 @@ export async function PATCH(
 
     // Create a status history record (optional - for tracking)
     // You can add this if you want to track status changes
-    /*
     await prisma.applicationStatusHistory.create({
       data: {
         applicationId,
@@ -45,7 +45,6 @@ export async function PATCH(
         changedAt: new Date()
       }
     });
-    */
 
     return NextResponse.json({
       success: true,

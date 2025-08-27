@@ -183,7 +183,7 @@ export default function ApplicationDetailPage() {
               <p><strong>Alamat Rumah:</strong> {application.homeAddress}</p>
               {application.spouseName && <p><strong>Nama Pasangan:</strong> {application.spouseName}</p>}
               {application.spouseOccupation && <p><strong>Pekerjaan Pasangan:</strong> {application.spouseOccupation}</p>}
-              {application.spouseIncome && <p><strong>Penghasilan Pasangan:</strong> {formatCurrency(application.spouseIncome)}</p></p>
+              {application.spouseIncome && <p><strong>Penghasilan Pasangan:</strong> {formatCurrency(application.spouseIncome)}</p>}
             </div>
           </div>
 
