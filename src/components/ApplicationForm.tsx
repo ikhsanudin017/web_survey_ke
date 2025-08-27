@@ -11,13 +11,13 @@ import {
   ApplicationFormData,
   applicationSchema,
 } from '@/lib/validations/application';
-import { PersonalDataStep } from './application/PersonalDataStep';
-import { ContactDataStep } from './application/ContactDataStep';
-import { BusinessDataStep } from './application/BusinessDataStep';
-import { FinancingDataStep } from './application/FinancingDataStep';
-import { DocumentUploadStep } from './application/DocumentUploadStep';
-import { FormProgress } from './application/FormProgress';
-import { FormActions } from './application/FormActions';
+import PersonalDataStep from './application/PersonalDataStep';
+import ContactDataStep from './application/ContactDataStep';
+import BusinessDataStep from './application/BusinessDataStep';
+import FinancingDataStep from './application/FinancingDataStep';
+import DocumentUploadStep from './application/DocumentUploadStep';
+import FormProgress from './application/FormProgress';
+import FormActions from './application/FormActions';
 
 const steps = [
   { id: 1, name: 'Data Pribadi', description: 'Informasi pribadi Anda' },
