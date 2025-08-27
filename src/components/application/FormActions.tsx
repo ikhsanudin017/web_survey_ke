@@ -3,7 +3,8 @@ import React from 'react';
 interface FormActionsProps {
   currentStep: number;
   totalSteps: number;
-  onNext: () => Promise<void>;
+  onNext?: () => Promise<void>;
+  onSave?: (data: any) => Promise<void>;
   onPrevious: () => void;
   isSubmitting: boolean;
 }
