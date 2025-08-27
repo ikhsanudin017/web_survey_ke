@@ -7,13 +7,13 @@ import { FormSummary } from './FormSummary';
 import { FormActions } from './FormActions';
 import { useToast } from '@/hooks/use-toast';
 import { validateStep } from '@/lib/validation-enhanced';
-import { 
-  UserIcon, 
-  BuildingIcon, 
-  FileTextIcon, 
-  ShieldIcon, 
+import {
+  UserIcon,
+  BuildingIcon,
+  FileTextIcon,
+  ShieldIcon,
   TrendingUpIcon,
-  CheckCircleIcon 
+  CheckCircleIcon
 } from 'lucide-react';
 
 interface EnhancedFormContainerProps {
@@ -104,35 +104,35 @@ export function EnhancedFormContainer({ initialData = {}, onComplete }: Enhanced
     }
   ];
 
-  const handleSaveDraft = async (data: any) => {
+  const handleSaveDraft = async () => { // Perubahan: Hapus parameter 'data'
     try {
       const response = await fetch('/api/enhanced-analysis/draft', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData), // Perubahan: Gunakan formData dari state
       });
 
       if (!response.ok) throw new Error('Failed to save draft');
-      
+
       setHasChanges(false);
     } catch (error) {
       throw error;
     }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async () => { // Perubahan: Hapus parameter 'data'
     setIsLoading(true);
     try {
       const response = await fetch('/api/enhanced-analysis/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData), // Perubahan: Gunakan formData dari state
       });
 
       if (!response.ok) throw new Error('Failed to submit');
 
       const result = await response.json();
-      
+
       if (onComplete) {
         onComplete(result);
       } else {
@@ -184,7 +184,7 @@ export function EnhancedFormContainer({ initialData = {}, onComplete }: Enhanced
 
   const getStepContent = (stepIndex: number) => {
     const step = steps[stepIndex];
-    
+
     if (step.id === 'summary') {
       return (
         <div className="space-y-6">
@@ -193,7 +193,7 @@ export function EnhancedFormContainer({ initialData = {}, onComplete }: Enhanced
             steps={steps.filter(s => s.id !== 'summary')}
             onEditStep={handleEditStep}
           />
-          
+
           <FormActions
             onSave={handleSaveDraft}
             onSubmit={handleSubmit}
@@ -248,7 +248,7 @@ export function EnhancedFormContainer({ initialData = {}, onComplete }: Enhanced
   const updateField = (key: string, value: any) => {
     const keys = key.split('.');
     const newData = { ...formData };
-    
+
     let current = newData;
     for (let i = 0; i < keys.length - 1; i++) {
       if (!current[keys[i]]) {
@@ -256,7 +256,7 @@ export function EnhancedFormContainer({ initialData = {}, onComplete }: Enhanced
       }
       current = current[keys[i]];
     }
-    
+
     current[keys[keys.length - 1]] = value;
     setFormData(newData);
     setHasChanges(true);
