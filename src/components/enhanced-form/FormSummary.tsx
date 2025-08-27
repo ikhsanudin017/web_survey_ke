@@ -67,8 +67,8 @@ export function FormSummary({ data, steps, onEditStep, className }: FormSummaryP
   };
 
   const isSectionComplete = (section: any) => {
-    return section.fields.every(field => {
-      const value = field.key.split('.').reduce((obj, k) => obj?.[k], data);
+    return section.fields.every((field: any) => {
+      const value = field.key.split('.').reduce((obj: any, k: any) => obj?.[k], data);
       return !field.required || (value !== undefined && value !== null && value !== '');
     });
   };
