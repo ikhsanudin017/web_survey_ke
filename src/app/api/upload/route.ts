@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { writeFile } from "fs/promises"
-import { join } from "path"
+import { put } from '@vercel/blob'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,16 +11,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file received." }, { status: 400 })
     }
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
     // Create unique filename
     const timestamp = Date.now()
     const filename = `${timestamp}-${file.name}`
-    const path = join(process.cwd(), "public/uploads", filename)
 
-    // Write the file
-    await writeFile(path, buffer)
+    // Upload to Vercel Blob
+    const blob = await put(filename, file, {
+      access: 'public',
+    })
 
     return NextResponse.json({ 
       message: "File uploaded successfully",
@@ -29,7 +26,7 @@ export async function POST(request: NextRequest) {
       originalName: file.name,
       size: file.size,
       category: category,
-      url: `/uploads/${filename}`
+      url: blob.url
     })
   } catch (error) {
     console.error("Error uploading file:", error)

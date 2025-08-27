@@ -265,9 +265,11 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
                   min="1"
                   max="5"
                   value={assessment.score}
-                  onChange={(e) => 
-                    form.setValue(`assessments.${key}.score`, parseInt(e.target.value))
-                  }
+                  onChange={(e) => {
+                    const assessments = form.getValues('assessments');
+                    assessments[key as keyof typeof assessments].score = parseInt(e.target.value) || 1;
+                    form.setValue('assessments', assessments);
+                  }}
                   onBlur={calculateAverageScore}
                 />
               </div>
@@ -275,9 +277,11 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
                 <Label>Nama Penilai</Label>
                 <Input
                   value={assessment.assessedBy}
-                  onChange={(e) => 
-                    form.setValue(`assessments.${key}.assessedBy`, e.target.value)
-                  }
+                  onChange={(e) => {
+                    const assessments = form.getValues('assessments');
+                    assessments[key as keyof typeof assessments].assessedBy = e.target.value;
+                    form.setValue('assessments', assessments);
+                  }}
                 />
               </div>
               <div className="text-sm text-gray-500">
