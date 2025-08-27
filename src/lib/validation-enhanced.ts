@@ -244,3 +244,12 @@ export const calculateProgress = (data: Partial<ApplicationFormData>): number =>
   
   return Math.round((filledFields / totalFields) * 100);
 };
+
+// Placeholder for step-specific validation
+export const validateStep = (formData: any, stepId: string): boolean => {
+  // TODO: Implement actual validation logic for each step based on stepId and formData
+  // This function should return true if the step is valid, false otherwise.
+  // For now, it always returns true to allow the application to compile.
+  console.warn(`Validation for step '${stepId}' is not yet implemented. Returning true.`);
+  return true;
+};
