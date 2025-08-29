@@ -27,14 +27,14 @@ export default function Topbar() {
   const isDashboard = pathname?.startsWith("/employee/dashboard")
 
   return (
-    <header className="sticky top-0 z-40 backdrop-blur bg-white/70 dark:bg-neutral-900/70 border-b">
+    <header className="sticky top-0 z-40 backdrop-blur bg-[var(--color-secondary)]/70 dark:bg-[#151310]/70 border-b border-[hsl(var(--color-border))]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link href="/">
             <Image src="/logo ksu ke.png" alt="KSU KE" width={32} height={32} className="rounded" />
           </Link>
           <div className="leading-tight">
-            <div className="font-semibold text-sm sm:text-base">KSU Kirap Entrepreneurship</div>
+            <div className="font-semibold text-sm sm:text-base text-[var(--color-primary-dark)]">KSU Kirap Entrepreneurship</div>
             <div className="text-xs text-muted-foreground hidden sm:block">Sistem Survey Pembiayaan</div>
           </div>
         </div>

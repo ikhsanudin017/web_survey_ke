@@ -12,10 +12,10 @@ export default function PageHeader({
   actions?: ReactNode
 }) {
   return (
-    <header className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur border-b">
+    <header className="bg-[var(--color-secondary)]/80 dark:bg-[#151310]/80 backdrop-blur border-b border-[hsl(var(--color-border))]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">{title}</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--color-primary-dark)] dark:text-[var(--color-primary-light)]">{title}</h1>
           {subtitle && (
             <p className="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>
           )}
@@ -25,4 +25,3 @@ export default function PageHeader({
     </header>
   )
 }
-

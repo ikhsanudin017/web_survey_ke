@@ -1,30 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  /* KSU KE Brand Colors - Enhanced */
-  --color-primary: #00704A; /* Emerald Green dari logo */
-  --color-primary-light: #10B981; /* Emerald 500 */
-  --color-primary-dark: #064E3B; /* Emerald 900 */
-  
-  --color-secondary: #D97706; /* Amber 600 - lebih vibrant dari gold */
-  --color-secondary-light: #F59E0B; /* Amber 500 */
-  --color-secondary-dark: #92400E; /* Amber 800 */
-  
-  --color-accent: #0891B2; /* Cyan 600 - modern teal */
-  --color-accent-light: #06B6D4; /* Cyan 500 */
-  --color-accent-dark: #164E63; /* Cyan 900 */
-  
-  /* Modern Neutral Palette */
-  --color-neutral-50: #FAFAFA;
-  --color-neutral-100: #F4F4F5;
-  --color-neutral-200: #E4E4E7;
-  --color-neutral-300: #D4D4D8;
-  --color-neutral-400: #A1A1AA;
-  --color-neutral-500: #71717A;
-  --color-neutral-600: #52525B;
-  --color-neutral-700: #3F3F46;
-  --color-neutral-800: #27272A;
-  --color-neutral-900: #18181B;
+  /* Golden Sunrise — Premium Islamic banking vibe */
+  /* Primary (Gold) */
+  --color-primary: #F59E0B; /* Golden */
+  --color-primary-light: #FBBF24; /* Lighter gold */
+  --color-primary-dark: #B45309; /* Deep gold/brown */
+
+  /* Accent (Deep Red for CTA) */
+  --color-accent: #DC2626; /* Deep Red */
+  --color-accent-light: #EF4444; /* Red 500 */
+  --color-accent-dark: #991B1B; /* Red 800 */
+
+  /* Secondary used for subtle surfaces (warm sand) */
+  --color-secondary: #FFF7ED; /* warm surface */
+  --color-secondary-light: #FFEDD5;
+  --color-secondary-dark: #FED7AA;
+
+  /* Warm Gray Neutrals */
+  --color-neutral-50: #FAFAF9;  /* stone-50 */
+  --color-neutral-100: #F5F5F4; /* stone-100 */
+  --color-neutral-200: #E7E5E4; /* stone-200 */
+  --color-neutral-300: #D6D3D1; /* stone-300 */
+  --color-neutral-400: #A8A29E; /* stone-400 */
+  --color-neutral-500: #78716C; /* stone-500 */
+  --color-neutral-600: #57534E; /* stone-600 */
+  --color-neutral-700: #44403C; /* stone-700 */
+  --color-neutral-800: #292524; /* stone-800 */
+  --color-neutral-900: #1C1917; /* stone-900 */
   
   /* Glassmorphism Variables */
   --glass-bg: rgba(255, 255, 255, 0.1);
@@ -39,7 +42,7 @@
   --popover: rgba(255, 255, 255, 0.95);
   --popover-foreground: var(--color-neutral-900);
   --primary: var(--color-primary);
-  --primary-foreground: #FFFFFF;
+  --primary-foreground: #1C1917; /* dark text on gold for accessibility */
   --secondary: var(--color-neutral-100);
   --secondary-foreground: var(--color-neutral-900);
   --muted: var(--color-neutral-100);
@@ -50,31 +53,31 @@
   --destructive-foreground: #FFFFFF;
   --border: var(--color-neutral-200);
   --input: var(--color-neutral-200);
-  --ring: var(--color-primary);
+  --ring: var(--color-accent);
   --radius: 12px;
 }
 
 .dark {
   /* Dark Theme */
-  --background: var(--color-neutral-900);
-  --foreground: var(--color-neutral-50);
-  --card: rgba(39, 39, 42, 0.8);
-  --card-foreground: var(--color-neutral-50);
-  --popover: rgba(39, 39, 42, 0.95);
-  --popover-foreground: var(--color-neutral-50);
-  --primary: var(--color-primary-light);
-  --primary-foreground: var(--color-neutral-900);
-  --secondary: var(--color-neutral-800);
-  --secondary-foreground: var(--color-neutral-50);
-  --muted: var(--color-neutral-800);
+  --background: #11100E; /* near-black warm */
+  --foreground: var(--color-neutral-100);
+  --card: rgba(28, 25, 23, 0.85);
+  --card-foreground: var(--color-neutral-100);
+  --popover: rgba(28, 25, 23, 0.95);
+  --popover-foreground: var(--color-neutral-100);
+  --primary: #F59E0B; /* retain gold */
+  --primary-foreground: #1C1917;
+  --secondary: #1F1B16;
+  --secondary-foreground: var(--color-neutral-100);
+  --muted: #1F1B16;
   --muted-foreground: var(--color-neutral-400);
-  --accent: var(--color-accent-light);
-  --accent-foreground: var(--color-neutral-900);
-  --destructive: #F87171;
-  --destructive-foreground: var(--color-neutral-900);
-  --border: var(--color-neutral-800);
-  --input: var(--color-neutral-800);
-  --ring: var(--color-primary-light);
+  --accent: #EF4444;
+  --accent-foreground: #FFFFFF;
+  --destructive: #7F1D1D;
+  --destructive-foreground: #FEE2E2;
+  --border: #26221E;
+  --input: #26221E;
+  --ring: #EF4444;
   
   /* Dark Glassmorphism */
   --glass-bg: rgba(39, 39, 42, 0.1);
