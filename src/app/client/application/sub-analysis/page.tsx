@@ -145,7 +145,8 @@ function SubAnalysisForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen relative">
+      <div className="absolute inset-0 -z-10 gradient-mesh opacity-50" />
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-4xl mx-auto">
           <CardHeader>
@@ -270,7 +271,7 @@ function SubAnalysisForm() {
               <Button 
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
+                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-8 py-3"
               >
                 {isSubmitting ? 'Menyimpan...' : 'Selesai dan Kirim'}
               </Button>

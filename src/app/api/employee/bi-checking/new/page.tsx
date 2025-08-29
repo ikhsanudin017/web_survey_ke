@@ -229,9 +229,10 @@ function BiCheckingForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen relative">
+      <div className="absolute inset-0 -z-10 gradient-mesh opacity-50" />
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm shadow-lg border-b border-emerald-100">
+      <div className="bg-[var(--color-secondary)]/80 backdrop-blur-sm shadow-lg border-b border-[var(--color-border)]">
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             <div>
@@ -241,7 +242,7 @@ function BiCheckingForm() {
             <Button 
               onClick={() => router.push('/employee/dashboard')} 
               variant="outline"
-              className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+              className="border-[var(--color-border)] text-[var(--color-primary-dark)] hover:bg-[var(--color-secondary)]"
             >
               Kembali
             </Button>
@@ -335,7 +336,7 @@ function BiCheckingForm() {
                     <Button
                       onClick={analyzeWithAI}
                       disabled={analyzingAI}
-                      className="bg-purple-600 hover:bg-purple-700"
+                      className="bg-[var(--color-accent)] hover:bg-[var(--color-accent-light)]"
                     >
                       {analyzingAI ? (
                         <>
@@ -353,7 +354,7 @@ function BiCheckingForm() {
 
             {/* AI Analysis Results */}
             {formData.aiAnalysisResult && (
-              <div className="space-y-6 bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-lg border border-purple-200">
+              <div className="space-y-6 p-6 rounded-lg border" style={{background:'var(--color-secondary)', borderColor:'var(--color-border)'}}>
                 <h3 className="text-lg font-bold text-gray-900 flex items-center">
                   <span className="mr-2">🤖</span>
                   Hasil Analisis AI
@@ -441,7 +442,7 @@ function BiCheckingForm() {
               <Button 
                 onClick={handleSubmit}
                 disabled={uploading || analyzingAI}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
+                 className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-8 py-3"
               >
                 {uploading || analyzingAI ? 'Processing...' : 'Simpan BI Checking'}
               </Button>

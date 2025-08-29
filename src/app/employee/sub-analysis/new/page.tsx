@@ -200,9 +200,10 @@ function SubAnalysisForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    <div className="min-h-screen relative">
+      <div className="absolute inset-0 -z-10 gradient-mesh opacity-50" />
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm shadow-lg border-b border-emerald-100">
+      <div className="bg-[var(--color-secondary)]/80 backdrop-blur-sm shadow-lg border-b border-[var(--color-border)]">
         <div className="container mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             <div>
@@ -211,7 +212,7 @@ function SubAnalysisForm() {
             <Button 
               onClick={() => router.push('/employee/dashboard')} 
               variant="outline"
-              className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+              className="border-[var(--color-border)] text-[var(--color-primary-dark)] hover:bg-[var(--color-secondary)]"
             >
               Kembali
             </Button>
@@ -542,7 +543,7 @@ function SubAnalysisForm() {
             <div className="flex justify-center pt-8">
               <Button 
                 onClick={handleSubmit}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3"
+                className="bg-[var(--color-accent)] hover:bg-[var(--color-accent-light)] text-white px-8 py-3"
               >
                 Simpan Sub Analisa Pembiayaan
               </Button>
@@ -559,7 +560,7 @@ export default function NewSubAnalysisPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 mx-auto" style={{borderColor:'var(--color-accent)'}}></div>
           <p className="mt-4 text-gray-600">Memuat halaman...</p>
         </div>
       </div>

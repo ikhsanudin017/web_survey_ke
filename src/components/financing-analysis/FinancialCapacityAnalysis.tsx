@@ -21,8 +21,8 @@ export function FinancialCapacityAnalysis({ netIncome }: FinancialCapacityAnalys
   }, [netIncome, loanTerm])
 
   return (
-    <div className="space-y-4 bg-purple-50 p-6 rounded-lg border border-purple-200">
-      <h3 className="text-lg font-bold text-purple-800 border-b border-purple-200 pb-2">ANALISA KAPASITAS KEUANGAN</h3>
+  <div className="space-y-4 p-6 rounded-lg border" style={{background:'var(--color-secondary)', borderColor:'var(--color-border)'}}>
+    <h3 className="text-lg font-bold text-[var(--color-primary-dark)] border-b pb-2" style={{borderColor:'var(--color-border)'}}>ANALISA KAPASITAS KEUANGAN</h3>
       
       <div className="space-y-4">
         <div className="flex items-center space-x-4">

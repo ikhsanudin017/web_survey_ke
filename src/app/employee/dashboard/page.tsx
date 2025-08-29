@@ -32,10 +32,10 @@ interface Stats {
 // --- STATS CARD COMPONENT ---
 const StatCard = ({ title, value, icon: Icon }: { title: string; value: number; icon: React.ElementType }) => (
   <Card className="group relative overflow-hidden border bg-white dark:bg-neutral-900 hover-lift">
-    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-indigo-500" />
+  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary-light)] to-[var(--color-accent)]" />
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <div className="flex items-center gap-3">
-        <div className="rounded-md p-2 text-white shadow ring-1 ring-black/10 bg-gradient-to-br from-emerald-500 to-teal-500">
+        <div className="rounded-md p-2 text-white shadow ring-1 ring-black/10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]">
           <Icon className="h-4 w-4" />
         </div>
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
@@ -419,7 +419,7 @@ export default function EmployeeDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-neutral-950">
-        <section className="bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 text-white">
+        <section className="bg-gradient-to-r from-[var(--color-primary-dark)] via-[var(--color-primary)] to-[var(--color-accent)] text-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="h-10 w-72 bg-white/20 rounded" />
           </div>
@@ -457,7 +457,7 @@ export default function EmployeeDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-neutral-950">
-      <section className="relative overflow-hidden border-b bg-gradient-to-r from-emerald-700 via-teal-700 to-sky-700">
+      <section className="relative overflow-hidden border-b bg-gradient-to-r from-[var(--color-primary-dark)] via-[var(--color-primary)] to-[var(--color-accent-dark)]">
         <div className="absolute inset-0 bg-black/15" aria-hidden="true" />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
           <div className="flex items-center justify-between gap-4">
@@ -466,8 +466,8 @@ export default function EmployeeDashboard() {
               <p className="hero-subtitle mt-1 text-sm sm:text-base">Pantau pengajuan, analisa, dan persetujuan dengan cepat.</p>
             </div>
             <div className="flex items-center gap-2">
-              <Button onClick={() => router.push('/employee/approval')} className="bg-white text-emerald-700 hover:bg-white/90 ring-1 ring-white/50 rounded-full px-4">Persetujuan Pembiayaan</Button>
-              <Button onClick={handleLogout} variant="secondary" className="bg-emerald-700/30 hover:bg-emerald-700/40 text-white ring-1 ring-white/30 rounded-full px-4">Logout</Button>
+              <Button onClick={() => router.push('/employee/approval')} className="bg-white text-[var(--color-primary-dark)] hover:bg-white/90 ring-1 ring-white/50 rounded-full px-4">Persetujuan Pembiayaan</Button>
+              <Button onClick={handleLogout} variant="secondary" className="bg-[var(--color-primary-dark)]/30 hover:bg-[var(--color-primary-dark)]/40 text-white ring-1 ring-white/30 rounded-full px-4">Logout</Button>
             </div>
           </div>
         </div>
@@ -496,7 +496,7 @@ export default function EmployeeDashboard() {
                   </Button>
                 ))}
                 <Button size="sm" variant="outline" onClick={() => { setSearch(""); setStatusFilter("ALL") }}>Reset</Button>
-                  <Button size="sm" onClick={handleExportSelected} disabled={selectedIds.length===0} className="bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 flex items-center gap-1">
+                  <Button size="sm" onClick={handleExportSelected} disabled={selectedIds.length===0} className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white disabled:opacity-50 flex items-center gap-1">
                     <FileDown className="h-4 w-4" /> Export PDF ({selectedIds.length})
                   </Button>
                 </div>

@@ -42,8 +42,8 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${overallProgress}%` }}
+              className="h-2 rounded-full transition-all duration-300"
+              style={{ background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent))', width: `${overallProgress}%` }}
             />
           </div>
         </div>
@@ -94,10 +94,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
                     <span>{step.progress}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-1">
-                    <div
-                      className="bg-blue-500 h-1 rounded-full transition-all duration-300"
-                      style={{ width: `${step.progress}%` }}
-                    />
+                    <div className="h-1 rounded-full transition-all duration-300" style={{ width: `${step.progress}%`, background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent))' }} />
                   </div>
                 </div>
               )}
@@ -123,8 +120,8 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${overallProgress}%` }}
+            className="h-2 rounded-full transition-all duration-300"
+            style={{ width: `${overallProgress}%`, background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent))' }}
           />
         </div>
       </div>
@@ -153,7 +150,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
               <div className="text-center mt-2">
                 <h4 className={cn(
                   'text-sm font-medium',
-                  step.status === 'current' ? 'text-blue-600' : 'text-gray-900'
+                step.status === 'current' ? 'text-[var(--color-primary-dark)]' : 'text-gray-900'
                 )}>
                   {step.title}
                 </h4>
@@ -164,10 +161,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
             </div>
 
             {index < steps.length - 1 && (
-              <div className={cn(
-                'flex-1 h-0.5 mx-2',
-                step.status === 'completed' ? 'bg-green-500' : 'bg-gray-300'
-              )} />
+              <div className={cn('flex-1 h-0.5 mx-2', step.status === 'completed' ? 'bg-[var(--color-primary)]' : 'bg-gray-300')} />
             )}
           </React.Fragment>
         ))}
@@ -189,8 +183,8 @@ export const MiniProgress: React.FC<{
       {label && <span className="text-sm text-gray-600">{label}</span>}
       <div className="flex-1 bg-gray-200 rounded-full h-1.5">
         <div
-          className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
-          style={{ width: `${progress}%` }}
+          className="h-1.5 rounded-full transition-all duration-300"
+          style={{ width: `${progress}%`, background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent))' }}
         />
       </div>
       <span className="text-xs text-gray-500">
