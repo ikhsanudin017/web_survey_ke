@@ -10,6 +10,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Only user "toha" (approver) can approve/reject
+    if ((session.user as any).id !== 'toha' || (session.user as any).role !== 'approver') {
+      return NextResponse.json({ error: 'Forbidden: hanya user "toha" yang dapat melakukan persetujuan.' }, { status: 403 });
+    }
+
     const { applicationId, decision, note } = await request.json();
 
     if (!applicationId || !decision || !note) {
@@ -26,9 +31,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get employee information
+    // Ensure employee exists and fetch by ID (email might be undefined for credentials login)
+    try {
+      await prisma.employee.upsert({
+        where: { id: (session.user as any).id },
+        update: {
+          name: (session.user as any).name ?? (session.user as any).id,
+          role: (session.user as any).role ?? 'employee',
+        },
+        create: {
+          id: (session.user as any).id,
+          email: `${(session.user as any).id}@local`,
+          password: 'local',
+          name: (session.user as any).name ?? (session.user as any).id,
+          role: (session.user as any).role ?? 'employee',
+        },
+      });
+    } catch (e) {
+      console.error('Failed to upsert employee before approval:', e);
+    }
+
     const employee = await prisma.employee.findUnique({
-      where: { email: session.user.email! }
+      where: { id: (session.user as any).id },
     });
 
     if (!employee) {
@@ -70,9 +94,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error processing approval decision:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('Error processing approval decision:', message, error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: message },
       { status: 500 }
     );
   }

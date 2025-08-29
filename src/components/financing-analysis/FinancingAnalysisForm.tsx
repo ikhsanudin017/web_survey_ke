@@ -25,7 +25,9 @@ interface FinancingAnalysisFormProps {
 export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: FinancingAnalysisFormProps) {
   const { toast } = useToast();
   const [clientData, setClientData] = useState<any>(null);
+  const [applicationId, setApplicationId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [biStatus, setBiStatus] = useState<string | null>(null);
 
   const form = useForm<FinancingAnalysisData>({
     resolver: zodResolver(financingAnalysisSchema),
@@ -85,6 +87,9 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
         const response = await fetch(`/api/clients/${clientId}`);
         const data = await response.json();
         setClientData(data);
+        if (data?.latestApplicationId) {
+          setApplicationId(data.latestApplicationId as string);
+        }
         
         // Auto-populate form with client data
         form.setValue('clientData', {
@@ -129,22 +134,34 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
         body: formData,
       });
 
-      const result = await response.json();
-      
+      const ct = response.headers.get('Content-Type') || '';
+      const raw = await response.text();
+      let result: any = {};
+      try {
+        result = ct.includes('application/json') ? JSON.parse(raw) : {};
+      } catch {
+        result = {};
+      }
+
+      if (!response.ok) {
+        throw new Error(result?.error || raw || 'Gagal menganalisis BI Checking');
+      }
+
       form.setValue('biChecking', {
         pdfUploaded: true,
         analysisResult: result.analysis,
         isEligible: result.isEligible,
       });
+      setBiStatus(result.status || null);
 
       toast({
         title: "Success",
         description: "BI Checking berhasil dianalisis",
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Gagal menganalisis BI Checking",
+        description: error?.message || "Gagal menganalisis BI Checking",
         variant: "destructive",
       });
     }
@@ -166,7 +183,12 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
       const response = await fetch('/api/ai/character-conclusion', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ averageScore: average }),
+        body: JSON.stringify({
+          averageScore: average,
+          characterSurvey: form.getValues('characterSurvey'),
+          assessments: form.getValues('assessments'),
+          applicationId: applicationId || undefined
+        }),
       });
 
       const result = await response.json();
@@ -512,40 +534,50 @@ export function FinancingAnalysisForm({ clientId, onSubmit, initialData }: Finan
         </CardContent>
       </Card>
 
-      {/* Document Checklist */}
+      {/* Document Checklist + BI Checking */}
       <Card>
         <CardHeader>
           <CardTitle>Kelengkapan Dokumen (Auto-populated)</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
-          {Object.entries(form.watch('documentChecklist')).map(([key, value]) => (
-            <div key={key} className="flex items-center space-x-2">
-              <Checkbox checked={value} disabled />
-              <Label>{getDocumentLabel(key)}</Label>
-              {value && <Badge variant="success">Tersedia</Badge>}
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            {Object.entries(form.watch('documentChecklist')).map(([key, value]) => (
+              <div key={key} className="flex items-center space-x-2">
+                <Checkbox checked={value} disabled />
+                <Label>{getDocumentLabel(key)}</Label>
+                {value && <Badge variant="success">Tersedia</Badge>}
+              </div>
+            ))}
+          </div>
 
-      {/* BI Checking */}
-      <Card>
-        <CardHeader>
-          <CardTitle>BI Checking</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <FileUpload
-            accept=".pdf"
-            onChange={handleBIUpload}
-            disabled={form.watch('biChecking.pdfUploaded')}
-          />
-          {form.watch('biChecking.analysisResult') && (
-            <Alert className="mt-4">
-              <AlertDescription>
-                {form.watch('biChecking.analysisResult')}
-              </AlertDescription>
-            </Alert>
-          )}
+          <div className="pt-4 border-t">
+            <div className="mb-2 font-medium">BI Checking</div>
+            <FileUpload
+              accept=".pdf"
+              onChange={handleBIUpload}
+              uploaded={form.watch('biChecking.pdfUploaded')}
+              showActions
+              onClear={() => form.setValue('biChecking', { pdfUploaded: false, analysisResult: undefined, isEligible: undefined })}
+            />
+            {form.watch('biChecking.analysisResult') && (
+              <Alert className="mt-4">
+                <AlertDescription>
+                  {form.watch('biChecking.analysisResult')}
+                </AlertDescription>
+              </Alert>
+            )}
+            {(biStatus || typeof form.watch('biChecking.isEligible') === 'boolean') && (
+              <div className="mt-2">
+                <Badge variant={
+                  biStatus === 'PERHATIAN'
+                    ? 'warning'
+                    : (form.watch('biChecking.isEligible') ? 'success' : 'destructive')
+                }>
+                  {biStatus === 'PERHATIAN' ? 'Perhatian' : (form.watch('biChecking.isEligible') ? 'Layak' : 'Tidak Layak')}
+                </Badge>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 

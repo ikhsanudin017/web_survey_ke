@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { toast } from 'sonner'
+import PageHeader from '@/components/PageHeader'
+import { Skeleton } from '@/components/ui/skeleton'
 import { FileText, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 
 interface ClientApplication {
@@ -80,33 +82,40 @@ export default function ClientStatusPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
-          <p className="mt-4 text-gray-600">Memuat status aplikasi...</p>
-        </div>
+      <div className="min-h-screen bg-gray-50">
+        <PageHeader title="Status Aplikasi Pembiayaan" subtitle="Pantau perkembangan aplikasi pembiayaan Anda" />
+        <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-5 w-72" />
+            </CardHeader>
+            <CardContent>
+              {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full mb-3" />
+              ))}
+            </CardContent>
+          </Card>
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-xl font-bold text-gray-800">Status Aplikasi Pembiayaan</h1>
-            <p className="text-sm text-gray-600">Pantau perkembangan aplikasi pembiayaan Anda</p>
-          </div>
-          <div className="flex items-center space-x-4">
+    <div className="min-h-screen bg-gray-100 dark:bg-neutral-900">
+      <PageHeader
+        title="Status Aplikasi Pembiayaan"
+        subtitle="Pantau perkembangan aplikasi pembiayaan Anda"
+        actions={
+          <>
             <Button onClick={() => router.push('/client/application/new')} className="bg-blue-600 hover:bg-blue-700">
               Ajukan Pembiayaan Baru
             </Button>
             <Button onClick={() => router.push('/client/dashboard')} variant="outline">
               Dashboard
             </Button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {applications.length === 0 ? (

@@ -10,6 +10,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Only approver 'toha' can view approval queue
+    if ((session.user as any).id !== 'toha' || (session.user as any).role !== 'approver') {
+      return NextResponse.json({ error: 'Forbidden: hanya user "toha" yang dapat melihat daftar persetujuan.' }, { status: 403 });
+    }
+
     // Fetch applications that have been analyzed and are waiting for approval
     const applications = await prisma.financingApplication.findMany({
       where: {

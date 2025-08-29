@@ -7,14 +7,35 @@ export async function GET(request: NextRequest) {
     const applicationId = searchParams.get('applicationId');
 
     if (applicationId) {
-      const subAnalysis = await prisma.subFinancingAnalysis.findUnique({
-        where: { applicationId },
-      });
-      if (subAnalysis) {
-        return NextResponse.json(subAnalysis);
-      } else {
-        return NextResponse.json({ message: "Sub-analysis not found for this application." }, { status: 404 });
-      }
+      const sub = await prisma.subFinancingAnalysis.findUnique({ where: { applicationId } });
+      if (!sub) return NextResponse.json({ message: 'Sub-analysis not found for this application.' }, { status: 404 });
+
+      // Map DB fields -> form field names expected by the page
+      const payload = {
+        suami: String(sub.pemasukanSuami ?? ''),
+        istri: String(sub.pemasukanIstri ?? ''),
+        lainnya1: String(sub.pemasukanLainnya1 ?? ''),
+        // Store total of other incomes in "lainnya2"; UI also has "lainnya3" which we leave empty
+        lainnya2: String(sub.pemasukanLainnya2 ?? ''),
+        lainnya3: '',
+
+        suamiPengeluaran: String(sub.pengeluaranSuami ?? ''),
+        istriPengeluaran: String(sub.pengeluaranIstri ?? ''),
+        makan: String(sub.makan ?? ''),
+        listrik: String(sub.listrik ?? ''),
+        sosial: String(sub.sosial ?? ''),
+        tanggunganLain: String(sub.tanggunganLain ?? ''),
+
+        jumlahAnak: String(sub.jumlahAnak ?? ''),
+        sekolah: String(sub.pengeluaranSekolah ?? ''),
+        uangSaku: String(sub.uangSaku ?? ''),
+
+        pendapatanBersih: String(sub.pendapatanBersih ?? ''),
+        jangkaPembiayaan: String(sub.jangkaPembiayaan ?? ''),
+        angsuranMaksimal: String(sub.angsuranMaksimal ?? ''),
+        plafonMaksimal: String(sub.plafonMaksimal ?? ''),
+      };
+      return NextResponse.json(payload);
     } else {
       // If no applicationId, return all (or handle as error if not intended)
       const subAnalyses = await prisma.subFinancingAnalysis.findMany({
@@ -56,7 +77,7 @@ export async function POST(request: NextRequest) {
     const istri = parseFloat(formData.istri) || 0
     const lainnya1 = parseFloat(formData.lainnya1) || 0
     const lainnya2 = parseFloat(formData.lainnya2) || 0
-    const lainnya3 = parseFloat(formData.lainnya3) || 0 // Added this field
+    const lainnya3 = parseFloat(formData.lainnya3) || 0 // Optional field; not stored separately
 
     const suamiPengeluaran = parseFloat(formData.suamiPengeluaran) || 0
     const istriPengeluaran = parseFloat(formData.istriPengeluaran) || 0
@@ -84,8 +105,8 @@ export async function POST(request: NextRequest) {
       pemasukanSuami: suami,
       pemasukanIstri: istri,
       pemasukanLainnya1: lainnya1,
-      pemasukanLainnya2: lainnya2,
-      pemasukanLainnya3: lainnya3,
+      // Store sum of other incomes 2+3 in field lainnya2
+      pemasukanLainnya2: (lainnya2 + lainnya3),
       pengeluaranSuami: suamiPengeluaran,
       pengeluaranIstri: istriPengeluaran,
       makan,
@@ -112,6 +133,19 @@ export async function POST(request: NextRequest) {
         where: { applicationId },
         data: dataToStore,
       });
+
+      // Check if FinancingAnalysis also exists and update application status
+      const financingAnalysisExists = await prisma.financingAnalysis.findUnique({
+        where: { applicationId },
+      });
+
+      if (financingAnalysisExists) {
+        await prisma.financingApplication.update({
+          where: { id: applicationId },
+          data: { status: 'ANALYZED' },
+        });
+      }
+
       return NextResponse.json(
         {
           message: "Sub-analisa berhasil diperbarui!",
@@ -127,6 +161,19 @@ export async function POST(request: NextRequest) {
           ...dataToStore,
         }
       })
+
+      // Check if FinancingAnalysis also exists and update application status
+      const financingAnalysisExists = await prisma.financingAnalysis.findUnique({
+        where: { applicationId },
+      });
+
+      if (financingAnalysisExists) {
+        await prisma.financingApplication.update({
+          where: { id: applicationId },
+          data: { status: 'ANALYZED' },
+        });
+      }
+
       return NextResponse.json(
         {
           message: "Sub-analisa berhasil disimpan!",

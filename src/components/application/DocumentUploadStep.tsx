@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const documentTypes = [
   { value: 'ktp', label: 'KTP' },
@@ -21,6 +22,7 @@ const documentTypes = [
   { value: 'lainnya', label: 'Dokumen Lainnya' },
 ];
 
+
 export default function DocumentUploadStep() {
   const { control, watch, setValue } = useFormContext();
   const uploadedFiles = watch('documentUpload.documents') || [];
@@ -28,11 +30,42 @@ export default function DocumentUploadStep() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+  const MIN_DIM = 1200; // px
+
+  useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl) }, [previewUrl]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setSelectedFile(file);
+      if (file.size > MAX_SIZE) {
+        toast.error('Ukuran file terlalu besar (maks 10MB).');
+        return;
+      }
+      // Validate minimal dimension for images
+      if (file.type.startsWith('image/')) {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          if (img.width < MIN_DIM && img.height < MIN_DIM) {
+            toast.error('Resolusi foto terlalu rendah. Gunakan min. sisi terpanjang 1200px.');
+            URL.revokeObjectURL(url);
+            return;
+          }
+          setSelectedFile(file);
+          setPreviewUrl(url);
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          setSelectedFile(file); // non-blocking; maybe not image
+        };
+        img.src = url;
+      } else {
+        setSelectedFile(file);
+        setPreviewUrl(null);
+      }
     }
   };
 
@@ -83,6 +116,14 @@ export default function DocumentUploadStep() {
         <CardDescription>Upload dokumen pendukung yang diperlukan. Dokumen wajib: KTP, KK, dan Slip Gaji/SKU.</CardDescription>
       </CardHeader>
       <CardContent>
+        {/* Tips kualitas foto */}
+        <Alert className="mb-4">
+          <AlertDescription>
+            Perhatian! Pastikan semua foto dan dokumen yang diunggah harus jelas, terang, tidak buram, dan seluruh objek terlihat utuh (tidak terpotong). Gunakan alas rata dan ambil foto tegak lurus (90°).
+          </AlertDescription>
+        </Alert>
+
+        {/* (Contoh foto dihilangkan sesuai permintaan) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end mb-6 p-4 border rounded-lg">
           <div className="space-y-2">
             <label htmlFor="category-select" className="text-sm font-medium">Kategori Dokumen</label>
@@ -100,7 +141,15 @@ export default function DocumentUploadStep() {
 
           <div className="space-y-2">
             <label htmlFor="file-input" className="text-sm font-medium">Pilih File</label>
-            <Input id="file-input" type="file" onChange={handleFileChange} />
+            <Input id="file-input" type="file" accept="image/*,.pdf" onChange={handleFileChange} />
+            <p className="text-xs text-gray-500">Direkomendasikan: JPG/PNG/PDF, resolusi minimal 1200px sisi terpanjang, pencahayaan baik dan tidak miring.</p>
+            {selectedFile && (
+              <div className="text-xs text-gray-600">Terpilih: {selectedFile.name} ({(selectedFile.size/1024).toFixed(0)} KB)</div>
+            )}
+            {previewUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={previewUrl} alt="Preview" className="mt-2 h-32 w-auto rounded border object-contain bg-white" />
+            )}
           </div>
 
           <div className="md:col-span-2 flex justify-end">

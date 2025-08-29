@@ -17,6 +17,7 @@ model Employee {
   password  String
   name      String
   position  String?
+  role      String @default("employee")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -189,6 +190,11 @@ model FinancingAnalysis {
   karakter_surveyRating3      String?
   karakter_surveyRating4      String?
   karakter_surveyRating5      String?
+  karakter_input1             String?
+  karakter_input2             String?
+  karakter_input3             String?
+  karakter_input4             String?
+  karakter_input5             String?
   karakter_kesimpulan         String?
 
   // 2. KAPASITAS DAN KEUANGAN

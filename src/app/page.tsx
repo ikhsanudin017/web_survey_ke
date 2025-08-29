@@ -10,25 +10,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
-      {/* Header dengan Logo */}
-      <div className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-emerald-100">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-center space-x-4">
-            <div className="relative w-16 h-16">
-              <Image
-                src="/logo ksu ke.png"
-                alt="Logo KSU Kirap Entrepreneurship"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-emerald-800">KSU Kirap Entrepreneurship</h2>
-              <p className="text-sm text-emerald-600">Sistem Survey Digital</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">

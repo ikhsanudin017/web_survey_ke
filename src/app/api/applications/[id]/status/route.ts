@@ -14,6 +14,26 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Ensure Employee exists for status history FK
+    try {
+      await prisma.employee.upsert({
+        where: { id: (session.user as any).id },
+        update: {
+          name: (session.user as any).name ?? (session.user as any).id,
+          role: (session.user as any).role ?? 'employee',
+        },
+        create: {
+          id: (session.user as any).id,
+          email: `${(session.user as any).id}@local`,
+          password: 'local',
+          name: (session.user as any).name ?? (session.user as any).id,
+          role: (session.user as any).role ?? 'employee',
+        },
+      });
+    } catch (e) {
+      console.error('Failed to upsert employee for status update:', e);
+    }
+
     const { status, note } = await request.json();
     const applicationId = id;
 

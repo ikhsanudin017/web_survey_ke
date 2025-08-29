@@ -13,6 +13,8 @@ export async function GET(request: Request, context: any) {
         client: true,
         documents: true,
         subFinancingAnalysis: true,
+        financingAnalysis: true,
+        biChecking: true,
       },
     });
 

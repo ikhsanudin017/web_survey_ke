@@ -1,13 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useSession } from 'next-auth/react'
+import { Session } from 'next-auth'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+interface CustomSession extends Session {
+  user: Session['user'] & { // Extend the existing user type
+    role?: string; // Add the role property
+  };
+}
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { toast } from 'sonner'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { Skeleton } from '@/components/ui/skeleton'
+import PageHeader from '@/components/PageHeader'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 
@@ -27,17 +37,18 @@ interface AnalyzedApplication {
   } | null;
 }
 
-export default function ApprovalPage() {
+function ApprovalComponent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session } = useSession() as { data: CustomSession | null };
   const [applications, setApplications] = useState<AnalyzedApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedApp, setSelectedApp] = useState<AnalyzedApplication | null>(null);
   const [approvalNote, setApprovalNote] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [decision, setDecision] = useState<'APPROVED' | 'REJECTED' | null>(null);
 
-  useEffect(() => {
-    fetchAnalyzedApplications();
-  }, []);
 
   const fetchAnalyzedApplications = async () => {
     try {
@@ -45,6 +56,20 @@ export default function ApprovalPage() {
       if (!response.ok) throw new Error('Failed to fetch applications');
       const data = await response.json();
       setApplications(data.applications);
+
+      // Check for applicationId from URL and open modal
+      const appIdFromUrl = searchParams.get('applicationId');
+      if (appIdFromUrl) {
+        const appToApprove = data.applications.find((app: AnalyzedApplication) => app.id === appIdFromUrl);
+        if (appToApprove) {
+          setSelectedApp(appToApprove);
+          // Default to showing the 'Approve' dialog first
+          setDecision('APPROVED'); 
+          setIsModalOpen(true);
+        } else {
+          toast.error('Aplikasi yang dimaksud tidak ditemukan atau sudah diproses.');
+        }
+      }
     } catch (error) {
       toast.error('Gagal memuat data aplikasi yang sudah dianalisa');
       console.error(error);
@@ -53,9 +78,35 @@ export default function ApprovalPage() {
     }
   };
 
-  const handleApproval = async (applicationId: string, decision: 'APPROVED' | 'REJECTED') => {
+  useEffect(() => {
+    fetchAnalyzedApplications();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Gate access: only approver 'toha'
+  useEffect(() => {
+    if (session?.user) {
+      const id = (session.user as any).id;
+      const role = (session.user as any).role;
+      if (id !== 'toha' || role !== 'approver') {
+        toast.error('Hanya user Toha yang dapat melakukan persetujuan');
+        router.push('/employee/dashboard');
+      }
+    }
+  }, [session, router]);
+
+  const openApprovalModal = (app: AnalyzedApplication, dec: 'APPROVED' | 'REJECTED') => {
+    setSelectedApp(app);
+    setDecision(dec);
+    setIsModalOpen(true);
+    setApprovalNote(''); // Reset note when opening
+  };
+
+  const handleApproval = async () => {
+    if (!selectedApp || !decision) return;
+
     if (!approvalNote.trim()) {
-      toast.error('Catatan persetujuan wajib diisi');
+      toast.error(`Catatan ${decision === 'APPROVED' ? 'persetujuan' : 'penolakan'} wajib diisi`);
       return;
     }
 
@@ -65,17 +116,38 @@ export default function ApprovalPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          applicationId,
+          applicationId: selectedApp.id,
           decision,
-          note: approvalNote
+          note: approvalNote,
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to process approval');
+      let result: any = {};
+      try {
+        result = await response.clone().json();
+      } catch (_) {
+        try {
+          const text = await response.clone().text();
+          result = text ? { error: text } : {};
+        } catch {
+          result = {};
+        }
+      }
+
+      if (!response.ok) {
+        const message = (result && (result.error || result.message))
+          || response.statusText
+          || 'Gagal memproses persetujuan';
+        toast.error(message);
+        setIsProcessing(false);
+        return;
+      }
 
       toast.success(`Aplikasi berhasil ${decision === 'APPROVED' ? 'disetujui' : 'ditolak'}`);
+      setIsModalOpen(false);
       setSelectedApp(null);
       setApprovalNote('');
+      setDecision(null);
       fetchAnalyzedApplications(); // Refresh the list
     } catch (error) {
       toast.error('Gagal memproses persetujuan');
@@ -100,25 +172,31 @@ export default function ApprovalPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p>Memuat data aplikasi...</p>
+      <div className="min-h-screen bg-gray-50">
+        <PageHeader title="Persetujuan Pembiayaan" subtitle="Kelola persetujuan aplikasi yang sudah dianalisa" />
+        <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-5 w-80" />
+            </CardHeader>
+            <CardContent>
+              {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className="h-10 w-full mb-3" />
+              ))}
+            </CardContent>
+          </Card>
+        </main>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-xl font-bold text-gray-800">Persetujuan Pembiayaan</h1>
-            <p className="text-sm text-gray-600">Kelola persetujuan aplikasi yang sudah dianalisa</p>
-          </div>
-          <Button onClick={() => router.push('/employee/dashboard')} variant="outline">
-            Kembali ke Dashboard
-          </Button>
-        </div>
-      </header>
+      <PageHeader
+        title="Persetujuan Pembiayaan"
+        subtitle="Kelola persetujuan aplikasi yang sudah dianalisa"
+        actions={<Button onClick={() => router.push('/employee/dashboard')} variant="outline">Kembali ke Dashboard</Button>}
+      />
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card>
@@ -127,9 +205,16 @@ export default function ApprovalPage() {
           </CardHeader>
           <CardContent>
             {applications.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">
-                Tidak ada aplikasi yang menunggu persetujuan
-              </p>
+              <div className="flex flex-col items-center justify-center text-center py-10">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-muted-foreground mb-2">
+                  <path d="M9 12l2 2 4-4" />
+                  <rect x="3" y="4" width="18" height="16" rx="2" ry="2" />
+                </svg>
+                <div className="text-sm text-muted-foreground">Tidak ada aplikasi yang menunggu persetujuan.</div>
+                <div className="mt-3">
+                  <Button size="sm" variant="outline" onClick={() => location.reload()}>Muat Ulang</Button>
+                </div>
+              </div>
             ) : (
               <Table>
                 <TableHeader>
@@ -159,101 +244,33 @@ export default function ApprovalPage() {
                       <TableCell>{app.financingAnalysis?.petugasSurvei || '-'}</TableCell>
                       <TableCell>{getStatusBadge(app.status)}</TableCell>
                       <TableCell>
-                        {app.status === 'ANALYZED' && (
+                        {app.status === 'ANALYZED' && session?.user?.role === 'approver' ? (
                           <div className="flex space-x-2">
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button 
-                                  size="sm" 
-                                  className="bg-green-600 hover:bg-green-700"
-                                  onClick={() => setSelectedApp(app)}
-                                >
-                                  Setujui
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Setujui Aplikasi Pembiayaan</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Anda akan menyetujui aplikasi pembiayaan untuk <strong>{app.fullName}</strong> 
-                                    sebesar Rp {new Intl.NumberFormat('id-ID').format(app.loanAmount)}.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <Label>Catatan Persetujuan</Label>
-                                    <Textarea
-                                      value={approvalNote}
-                                      onChange={(e) => setApprovalNote(e.target.value)}
-                                      placeholder="Masukkan catatan persetujuan..."
-                                      required
-                                    />
-                                  </div>
-                                </div>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel onClick={() => setApprovalNote('')}>Batal</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => handleApproval(app.id, 'APPROVED')}
-                                    disabled={isProcessing || !approvalNote.trim()}
-                                    className="bg-green-600 hover:bg-green-700"
-                                  >
-                                    {isProcessing ? 'Memproses...' : 'Setujui'}
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button 
-                                  size="sm" 
-                                  variant="destructive"
-                                  onClick={() => setSelectedApp(app)}
-                                >
-                                  Tolak
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Tolak Aplikasi Pembiayaan</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Anda akan menolak aplikasi pembiayaan untuk <strong>{app.fullName}</strong>.
-                                    Tindakan ini tidak dapat dibatalkan.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <Label>Alasan Penolakan</Label>
-                                    <Textarea
-                                      value={approvalNote}
-                                      onChange={(e) => setApprovalNote(e.target.value)}
-                                      placeholder="Masukkan alasan penolakan..."
-                                      required
-                                    />
-                                  </div>
-                                </div>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel onClick={() => setApprovalNote('')}>Batal</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => handleApproval(app.id, 'REJECTED')}
-                                    disabled={isProcessing || !approvalNote.trim()}
-                                    className="bg-red-600 hover:bg-red-700"
-                                  >
-                                    {isProcessing ? 'Memproses...' : 'Tolak'}
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
+                            <Button
+                              size="sm"
+                              className="bg-green-600 hover:bg-green-700"
+                              onClick={() => openApprovalModal(app, 'APPROVED')}
+                            >
+                              Setujui
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => openApprovalModal(app, 'REJECTED')}
+                            >
+                              Tolak
+                            </Button>
                           </div>
-                        )}
-                        {app.status !== 'ANALYZED' && (
-                          <Button 
-                            size="sm" 
+                        ) : app.status !== 'ANALYZED' ? (
+                          <Button
+                            size="sm"
                             variant="outline"
                             onClick={() => router.push(`/employee/applications/${app.id}`)}
                           >
                             Lihat Detail
                           </Button>
+                        ) : (
+                          <span className="text-sm text-gray-500">Menunggu...</span>
                         )}
                       </TableCell>
                     </TableRow>
@@ -264,6 +281,51 @@ export default function ApprovalPage() {
           </CardContent>
         </Card>
       </main>
+
+      {/* Approval Modal */}
+      <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {decision === 'APPROVED' ? 'Setujui Aplikasi' : 'Tolak Aplikasi'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Anda akan {decision === 'APPROVED' ? 'menyetujui' : 'menolak'} aplikasi untuk 
+              <strong> {selectedApp?.fullName}</strong>.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="approvalNote">
+              {decision === 'APPROVED' ? 'Catatan Persetujuan' : 'Alasan Penolakan'}
+            </Label>
+            <Textarea
+              id="approvalNote"
+              value={approvalNote}
+              onChange={(e) => setApprovalNote(e.target.value)}
+              placeholder={`Masukkan ${decision === 'APPROVED' ? 'catatan...' : 'alasan...'}`}
+              required
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleApproval}
+              disabled={isProcessing || !approvalNote.trim()}
+              className={decision === 'APPROVED' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}
+            >
+              {isProcessing ? 'Memproses...' : (decision === 'APPROVED' ? 'Setujui' : 'Tolak')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
+  );
+}
+
+export default function ApprovalPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50"><p>Memuat...</p></div>}>
+      <ApprovalComponent />
+    </Suspense>
   );
 }

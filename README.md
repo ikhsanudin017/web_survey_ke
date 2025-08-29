@@ -34,3 +34,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## BI Checking Analyzer
+
+- Endpoint: `POST /api/bi-checking/analyze`
+- Behavior:
+  - If no file is uploaded, returns status `PERHATIAN` by default.
+  - When a PDF is uploaded, the analyzer extracts text and compares it to sample PDFs in `BI Checking/Layak.pdf`, `BI Checking/Tidak Layak.pdf`, and `BI Checking/Perhatian.pdf`. The closest match (cosine similarity) overrides the rule-based decision.
+  - Response fields include `status` (one of: `LAYAK`, `TIDAK_LAYAK`, `PERHATIAN`), `isEligible`, and a human-readable `analysis` string. Only `LAYAK` sets `isEligible: true`; `PERHATIAN` is a warning state.

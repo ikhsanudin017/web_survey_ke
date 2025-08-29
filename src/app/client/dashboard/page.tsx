@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
+import { Skeleton } from '@/components/ui/skeleton'
 import { FileText, Plus, Eye, Clock, CheckCircle, XCircle } from 'lucide-react'
 
 interface ClientApplication {
@@ -72,11 +73,46 @@ export default function ClientDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
-          <p className="mt-4 text-gray-600">Memuat dashboard...</p>
-        </div>
+      <div className="min-h-screen bg-gray-50">
+        <header className="bg-white shadow-sm border-b">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div>
+              <Skeleton className="h-6 w-48 mb-2" />
+              <Skeleton className="h-4 w-64" />
+            </div>
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-10 w-32" />
+              <Skeleton className="h-10 w-40" />
+            </div>
+          </div>
+        </header>
+        <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+            {[...Array(4)].map((_, i) => (
+              <Card key={i}>
+                <CardHeader className="pb-2">
+                  <Skeleton className="h-4 w-24" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-8 w-16" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-5 w-80" />
+              <Skeleton className="h-4 w-96" />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {[...Array(6)].map((_, i) => (
+                  <Skeleton key={i} className="h-10 w-full" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </main>
       </div>
     );
   }

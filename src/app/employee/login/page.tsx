@@ -1,16 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { signIn, useSession, signOut } from 'next-auth/react'
 
 const employees = [
-  { id: 'sayudi', name: 'Sayudi', password: 'sayudi123' },
-  { id: 'upik', name: 'Upik', password: 'upik123' },
-  { id: 'arwan', name: 'Arwan', password: 'arwan123' },
-  { id: 'winarno', name: 'Winarno', password: 'winarno123' }
+  { id: 'sayudi', name: 'Sayudi', password: 'sayudi123', role: 'employee' },
+  { id: 'upik', name: 'Upik', password: 'upik123', role: 'employee' },
+  { id: 'arwan', name: 'Arwan', password: 'arwan123', role: 'employee' },
+  { id: 'winarno', name: 'Winarno', password: 'winarno123', role: 'employee' },
+  { id: 'toha', name: 'Toha', password: 'toha123', role: 'approver' }
 ]
 
 export default function EmployeeLoginPage() {
@@ -19,8 +21,9 @@ export default function EmployeeLoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { data: session, status } = useSession();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!selectedEmployee || !password) {
       setError('Silakan pilih nama dan masukkan password')
       return
@@ -29,23 +32,32 @@ export default function EmployeeLoginPage() {
     setLoading(true)
     setError('')
 
-    // Cari pegawai yang dipilih
-    const employee = employees.find(emp => emp.id === selectedEmployee)
-    
-    if (employee && employee.password === password) {
-      // Login berhasil
-      localStorage.setItem('currentEmployee', JSON.stringify({
-        id: employee.id,
-        name: employee.name
-      }))
-      router.push('/employee/dashboard')
-    } else {
-      setError('Password salah!')
-      setLoading(false)
+    try {
+      const result = await signIn('employee', {
+        redirect: false,
+        employeeId: selectedEmployee,
+        password: password,
+      });
+
+      console.log('signIn result:', result);
+
+      if (result?.error) {
+        setError('Login gagal: ' + result.error);
+      } else {
+        router.push('/employee/dashboard');
+      }
+    } catch (e: any) {
+      setError('Terjadi kesalahan saat login: ' + e.message);
+    } finally {
+      setLoading(false);
     }
   }
 
   const selectedEmployeeData = employees.find(emp => emp.id === selectedEmployee)
+
+  if (status === 'loading') {
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50"><p>Loading...</p></div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
@@ -62,6 +74,15 @@ export default function EmployeeLoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {status === 'authenticated' && (
+            <div className="p-3 rounded-md bg-yellow-50 border border-yellow-200 text-sm text-yellow-800">
+              <div className="mb-2">Anda sudah login sebagai <strong>{(session?.user as any)?.name || (session?.user as any)?.id}</strong>.</div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => router.push('/employee/dashboard')}>Ke Dashboard</Button>
+                <Button variant="destructive" onClick={async () => { await signOut({ redirect: false }); }}>Ganti Akun</Button>
+              </div>
+            </div>
+          )}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
               Pilih Nama Pegawai:

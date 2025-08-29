@@ -1,5 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import CredentialsProvider from "next-auth/providers/credentials"
+
+const employees = [
+  { id: 'sayudi', name: 'Sayudi', password: 'sayudi123', role: 'employee' },
+  { id: 'upik', name: 'Upik', password: 'upik123', role: 'employee' },
+  { id: 'arwan', name: 'Arwan', password: 'arwan123', role: 'employee' },
+  { id: 'winarno', name: 'Winarno', password: 'winarno123', role: 'employee' },
+  { id: 'toha', name: 'Toha', password: 'toha123', role: 'approver' }
+];
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma } from "./prisma"
 import bcrypt from "bcryptjs"
@@ -55,58 +64,24 @@ export const authOptions = {
       name: "employee",
       id: "employee",
       credentials: {
-        name: { label: "Name", type: "text" }, // Changed from email to name
+        employeeId: { label: "Employee ID", type: "text" }, // Changed from name to employeeId
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // Changed from credentials?.email to credentials?.name
-        if (!credentials?.name || !credentials?.password) {
+        if (!credentials?.employeeId || !credentials?.password) {
           return null
         }
 
-        try {
-          const employee = await prisma.employee.findFirst({ // Changed to findFirst
-            where: {
-              name: credentials.name
-            }
-          })
+        // Find the employee in the hardcoded array
+        const employee = employees.find(emp => emp.id === credentials.employeeId);
 
-          if (!employee) {
-            return null
-          }
-
-          // Optional: Check if multiple employees have the same name (if name is not unique in schema)
-          const duplicateEmployees = await prisma.employee.findMany({
-            where: {
-              name: credentials.name
-            }
-          });
-
-          if (duplicateEmployees.length > 1) {
-            console.error("Auth attempt: Multiple employees found with the same name. Please ensure names are unique for login:", credentials.name);
-            return null; // Prevent login if name is not unique
-          }
-
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            employee.password
-          )
-
-          if (!isPasswordValid) {
-            return null
-          }
-
-          return {
-            id: employee.id,
-            email: employee.email,
-            name: employee.name,
-            role: "employee",
-            position: employee.position
-          }
-        } catch (error) {
-          console.error("Employee auth error:", error)
-          return null
+        // If employee exists and password matches
+        if (employee && employee.password === credentials.password) {
+          // Return user object with id, name, and role
+          return { id: employee.id, name: employee.name, role: employee.role };
         }
+        // If no user found or password doesn't match
+        return null;
       }
     })
   ],
@@ -131,8 +106,8 @@ export const authOptions = {
     }
   },
   pages: {
-    signIn: "/auth/signin",
-    error: "/auth/signin"
+    signIn: "/employee/login",
+    error: "/employee/login"
   },
   debug: process.env.NODE_ENV === "development"
 }

@@ -165,6 +165,14 @@ h3 {
   color: hsl(var(--primary));
 }
 
+/* Hero title override to ensure contrast on gradients */
+.hero-title {
+  color: #fff !important;
+}
+.hero-subtitle {
+  color: rgba(255,255,255,0.92) !important;
+}
+
 /* Smooth Animations */
 * {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);

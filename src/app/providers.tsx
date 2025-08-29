@@ -2,6 +2,7 @@
 
 import React from "react"
 import { SessionProvider } from "next-auth/react"
+import { Toaster } from "sonner"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -12,6 +13,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
       refetchOnWindowFocus={true}
     >
       {children}
+      {/* Global toast notifications (success/error/loading) */}
+      <Toaster position="top-right" richColors closeButton expand={false} />
     </SessionProvider>
   )
 }
