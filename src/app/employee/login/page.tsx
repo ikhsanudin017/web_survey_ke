@@ -61,7 +61,6 @@ export default function EmployeeLoginPage() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4">
-      <div className="absolute inset-0 -z-10 gradient-mesh opacity-60" />
       <Card className="w-full max-w-md shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
         <CardHeader className="text-center pb-6">
           <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{background:'linear-gradient(135deg, var(--color-primary), var(--color-primary-light))'}}>

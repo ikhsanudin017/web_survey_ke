@@ -146,7 +146,6 @@ function SubAnalysisForm() {
 
   return (
     <div className="min-h-screen relative">
-      <div className="absolute inset-0 -z-10 gradient-mesh opacity-50" />
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-4xl mx-auto">
           <CardHeader>

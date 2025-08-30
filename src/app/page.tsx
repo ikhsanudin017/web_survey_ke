@@ -10,24 +10,24 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background mesh + glow */}
-      <div className="absolute inset-0 -z-10 gradient-mesh opacity-70" />
-      <div className="absolute -top-32 -right-24 -z-10 w-[32rem] h-[32rem] rounded-full blur-3xl opacity-20" style={{background: 'radial-gradient(circle, var(--color-primary) 0%, transparent 60%)'}}/>
-      <div className="absolute -bottom-32 -left-24 -z-10 w-[28rem] h-[28rem] rounded-full blur-3xl opacity-20" style={{background: 'radial-gradient(circle, var(--color-accent) 0%, transparent 60%)'}}/>
 
       <div className="container mx-auto px-4 py-16">
         {/* Hero */}
         <div className="text-center mb-14 animate-fade-up">
-          <span className="inline-block px-3 py-1 text-[11px] font-semibold rounded-full bg-[var(--color-secondary-dark)]/70 text-[var(--color-primary-dark)] border border-[var(--color-secondary-dark)]">Golden Sunrise Theme</span>
-          <h1 className="mt-4 text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary-light)] to-[var(--color-accent)] bg-clip-text text-transparent tracking-tight">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--color-border)]/80 surface-3d shadow-3d">
+            <Image src="/logo ksu ke.png" alt="KSU Kirap Entrepreneurship" width={20} height={20} className="rounded" />
+            <span className="text-xs font-semibold tracking-wide text-[var(--color-neutral-700)] dark:text-gray-200">KSU Kirap Entrepreneurship</span>
+          </div>
+          <h1 className="mt-4 text-5xl md:text-6xl font-extrabold tracking-tight text-gradient-brand-sheen">
             Sistem Survey Digital
           </h1>
+          <div className="mx-auto mt-3 h-1 w-28 rounded-full bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary-light)] to-[var(--color-accent)]" />
           <p className="mt-4 text-lg md:text-xl text-[var(--color-neutral-600)] max-w-3xl mx-auto leading-relaxed">
             Platform profesional untuk pengajuan pembiayaan dan analisa kredit koperasi syariah. Modern, efisien, dan terpercaya.
           </p>
           <div className="mt-8 flex items-center justify-center gap-3">
-            <Button variant="cta" className="px-6 py-6 rounded-xl text-base shadow-lg hover:shadow-xl" onClick={() => router.push('/client/application/new')}>Mulai Pengajuan</Button>
-            <Button variant="outline" className="px-6 py-6 rounded-xl text-base" onClick={() => router.push('/employee/login')}>Login Pegawai</Button>
+            <Button variant="cta" className="px-6 py-6 rounded-xl text-base btn-3d" onClick={() => router.push('/client/application/new')}>Mulai Pengajuan</Button>
+            <Button variant="outline" className="px-6 py-6 rounded-xl text-base btn-3d-outline" onClick={() => router.push('/employee/login')}>Login Pegawai</Button>
           </div>
         </div>
 

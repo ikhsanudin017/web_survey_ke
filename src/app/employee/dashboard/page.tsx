@@ -31,11 +31,11 @@ interface Stats {
 
 // --- STATS CARD COMPONENT ---
 const StatCard = ({ title, value, icon: Icon }: { title: string; value: number; icon: React.ElementType }) => (
-  <Card className="group relative overflow-hidden border bg-white dark:bg-neutral-900 hover-lift">
-  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary-light)] to-[var(--color-accent)]" />
+  <Card className="group relative overflow-hidden border bg-white dark:bg-neutral-900">
+    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary-light)] to-[var(--color-accent)]" />
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <div className="flex items-center gap-3">
-        <div className="rounded-md p-2 text-white shadow ring-1 ring-black/10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)]">
+        <div className="rounded-md p-2 text-white bg-[var(--color-primary)] shadow-3d">
           <Icon className="h-4 w-4" />
         </div>
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
@@ -418,10 +418,10 @@ export default function EmployeeDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-neutral-950">
-        <section className="bg-gradient-to-r from-[var(--color-primary-dark)] via-[var(--color-primary)] to-[var(--color-accent)] text-white">
+      <div className="min-h-screen bg-[hsl(var(--background))]">
+        <section className="border-b bg-[var(--color-secondary)]/90 dark:bg-[#0f172a] surface-3d shadow-3d">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="h-10 w-72 bg-white/20 rounded" />
+            <div className="h-10 w-72 bg-[var(--color-secondary-dark)]/60 rounded" />
           </div>
         </section>
         <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -456,18 +456,17 @@ export default function EmployeeDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-neutral-950">
-      <section className="relative overflow-hidden border-b bg-gradient-to-r from-[var(--color-primary-dark)] via-[var(--color-primary)] to-[var(--color-accent-dark)]">
-        <div className="absolute inset-0 bg-black/15" aria-hidden="true" />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
+    <div className="min-h-screen bg-[hsl(var(--background))]">
+      <section className="border-b bg-[var(--color-secondary)]/90 dark:bg-[#0f172a] surface-3d shadow-3d">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h1 className="hero-title text-3xl sm:text-4xl font-extrabold leading-tight">Dashboard Pegawai</h1>
-              <p className="hero-subtitle mt-1 text-sm sm:text-base">Pantau pengajuan, analisa, dan persetujuan dengan cepat.</p>
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--color-neutral-900)] dark:text-white">Dashboard Pegawai</h1>
+              <p className="mt-1 text-sm sm:text-base text-[var(--color-neutral-600)] dark:text-gray-300">Pantau pengajuan, analisa, dan persetujuan dengan cepat.</p>
             </div>
             <div className="flex items-center gap-2">
-              <Button onClick={() => router.push('/employee/approval')} className="bg-white text-[var(--color-primary-dark)] hover:bg-white/90 ring-1 ring-white/50 rounded-full px-4">Persetujuan Pembiayaan</Button>
-              <Button onClick={handleLogout} variant="secondary" className="bg-[var(--color-primary-dark)]/30 hover:bg-[var(--color-primary-dark)]/40 text-white ring-1 ring-white/30 rounded-full px-4">Logout</Button>
+              <Button onClick={() => router.push('/employee/approval')} className="rounded-full px-4">Persetujuan Pembiayaan</Button>
+              <Button onClick={handleLogout} variant="outline" className="rounded-full px-4">Logout</Button>
             </div>
           </div>
         </div>

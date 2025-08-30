@@ -230,7 +230,6 @@ function BiCheckingForm() {
 
   return (
     <div className="min-h-screen relative">
-      <div className="absolute inset-0 -z-10 gradient-mesh opacity-50" />
       {/* Header */}
       <div className="bg-[var(--color-secondary)]/80 backdrop-blur-sm shadow-lg border-b border-[var(--color-border)]">
         <div className="container mx-auto px-4 py-6">
